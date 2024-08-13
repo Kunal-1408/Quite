@@ -1,13 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { HoveredLink, Menu, MenuItem, useNavbarBackground, ProductItem } from "./ui/navbar-menu";
+import { HoveredLink, Menu, MenuItem, useNavbarBackground,activeLogo, ProductItem } from "./ui/navbar-menu";
 import { cn } from "@/lib/utils";
-
+import Link from "next/link";
+import Image from "next/image";
 
 export const Navbarimpli: React.FC = () =>{
     return (
         <div className="relative w-full flex items-center justify-center">
-          <Navbar className="top-2" />
+          <Navbar className="" />
         </div>
       );
 }
@@ -15,19 +16,30 @@ export const Navbarimpli: React.FC = () =>{
 function Navbar({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
   const isSolid= useNavbarBackground();
+  const isSecond = activeLogo();
 
   const navbarClass = cn(
     "fixed top-0 inset-x-0 max-w mx-auto z-50 transition-colors duration-300",
     className,
     {
       'bg-transparent text-white': !isSolid,
-      'bg-white text-black shadow-md': isSolid
+      'bg-white text-black shadow-md': isSolid,
+    
+    }
+  );
+  const logoClass = cn(
+    {
+      '../public/iCON.svg': !isSecond,
+      '../public/Logo.svg': isSecond,
     }
   );
   return (
     <div
       className={ navbarClass}
     >
+        <Link href={"#"}>
+          <Image src={logoClass} alt="logo" fill={true} className="duration-300"/>
+        </Link>
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
             <div className="flex flex-col space-y-4 text-sm">

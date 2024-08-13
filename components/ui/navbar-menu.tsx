@@ -15,6 +15,7 @@ const transition = {
 
 export const useNavbarBackground = () => {
   const [isSolid, setIsSolid] = useState(false);
+  
 
   useEffect(() => {
       const handleScroll = () => {
@@ -32,12 +33,35 @@ export const useNavbarBackground = () => {
       return () => {
           window.removeEventListener('scroll', handleScroll);
       };
-  }, []);
+  
+
+  
+    }, []);
 
   return isSolid;
 };
 
+export const activeLogo = ()=>{
+  const [isSecond, setSecond]= useState(false);
 
+  useEffect(()=>{
+
+    const handleLogo = () =>{
+      const height = window.innerHeight;
+      if(window.scrollY > height){
+        setSecond(true);
+      }else{
+        setSecond(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleLogo);
+    return ()=>{
+      window.removeEventListener('scroll', handleLogo);
+    };
+  },[]);
+  return isSecond;
+}
 
 export const MenuItem = ({
   setActive,
