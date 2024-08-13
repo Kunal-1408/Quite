@@ -134,13 +134,16 @@ const config = {
         fifth: "moveInCircle 20s ease infinite",
         scroll:
         "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
-        // scroll_rev:"scroll var(--animation-duration, 40s) var(--animation-direction, reverse) linear infinite",
+        
 
       },
     },
   },
   plugins: [require("tailwindcss-animate"),addVariablesForColors],
 } satisfies Config
+
+
+
 
 function addVariablesForColors({ addBase, theme }: any) {
   let allColors = flattenColorPalette(theme("colors"));
