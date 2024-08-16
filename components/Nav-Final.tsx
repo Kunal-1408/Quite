@@ -29,17 +29,20 @@ function Navbar({ className }: { className?: string }) {
   );
   const logoClass = cn(
     {
-      '../public/iCON.svg': !isSecond,
-      '../public/Logo.svg': isSecond,
+      'iCON.svg': !isSecond,
+      'Logo.svg': isSecond,
     }
   );
   return (
     <div
       className={ navbarClass}
     >
+        <div className="content-start">
         <Link href={"#"}>
           <Image src={logoClass} alt="logo" fill={true} className="duration-300"/>
         </Link>
+        </div>
+
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
             <div className="flex flex-col space-y-4 text-sm">
