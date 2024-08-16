@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { LogoCarousel } from "@/components/ui/test";
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
+import { Statistics } from "@/components/stats";
 
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -70,8 +71,12 @@ export default function Home() {
         direction="right"
         speed="slow"
       />
+      <div className="h-[40rem] rounded-md flex flex-col bg-white dark:bg-black dark:bg-grid-white/[0.05] w-fit mx-auto">
+        <p className=" text-slate-900 font-bold text-5xl py-10 " >Getting <span className="font-bold text-5xl text-orange-400">Quite Good</span> over the Years!!!</p>
+        <Statistics/>
       </div>
-      <div className=" bg-white flex flex-row justify-between">
+      </div>
+      <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">
             <h1 className="font-bold text-5xl text-orange-500 dark:text-neutral-200 justify-center py-10">
               Want better Reach?
@@ -81,7 +86,7 @@ export default function Home() {
             </p>
           </h1>
           <div className="flex flex-col justify-between">
-          <div  className=" items-center flex flex-row mx-auto my-auto divide-x-4">
+          <div  className=" items-center flex flex-row mx-auto my-auto  ">
               <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
@@ -108,7 +113,7 @@ export default function Home() {
               </p>
 
           </div>
-          <div  className=" items-start justify-between flex flex-row mx-auto my-auto divide-x-4">
+          <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
           <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">

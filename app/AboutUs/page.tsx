@@ -53,8 +53,8 @@ const content = [
 ];
 export default function AboutUs() {
   return (
-    <div className="p-10">
+    <main className="">
       <StickyScroll content={content} />
-    </div>
+    </main>
   );
 }
