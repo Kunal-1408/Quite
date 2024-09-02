@@ -37,9 +37,9 @@ function Navbar({ className }: { className?: string }) {
     <div
       className={ navbarClass}
     >
-        <div className="content-start">
+        <div className="fixed top-0 left-0 z-60">
         <Link href={"#"}>
-          <Image src={logoClass} alt="logo" fill={true} className="duration-300"/>
+          <Image src={logoClass} alt="logo" fill={true} className=" duration-300"/>
         </Link>
         </div>
 
@@ -96,6 +96,10 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/enterprise">4</HoveredLink>
           </div>
           </MenuItem>
+          <Link href={"lhttp://localhost:3000/AboutUs"}>
+          <MenuItem setActive={setActive} active={active} item="About">
+          </MenuItem>
+          </Link>
         </Menu>
     </div>
   );

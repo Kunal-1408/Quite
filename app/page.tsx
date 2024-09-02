@@ -40,22 +40,6 @@ const LabelInputContainer = ({
 };
 
 
-// async function getData() {
-//   try {
-//     const res = await fetch(`https://api.unsplash.com/photos/?client_id=${process.env.ACCESS_KEY}`);
-    
-//     if (!res.ok) {
-//       throw new Error(`HTTP error! status: ${res.status}`);
-//     }
-    
-//     const data = await res.json();
-//     return data;
-//   } catch (error) {
-//     console.error("Error fetching data:", error);
-//     throw error; 
-//   }
-// }
-
 
 export default function Home() {
   // const data = getData()
