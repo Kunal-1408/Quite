@@ -9,6 +9,8 @@ import { LogoCarousel } from "@/components/ui/test";
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
 import { Statistics } from "@/components/stats";
+import { FileUpload } from "@/components/ui/file-upload";
+import { useState } from "react";
 
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,6 +18,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   console.log("Form submitted");
 };
 
+  
 const BottomGradient = () => {
   return (
     <>
@@ -42,6 +45,11 @@ const LabelInputContainer = ({
 
 
 export default function Home() {
+  const [files, setFiles] = useState<File[]>([]);
+  const handleFileUpload = (files: File[]) => {
+    setFiles(files);
+    console.log(files);
+  };
   // const data = getData()
   return (
     <main className="bg-slate-100">
@@ -149,10 +157,14 @@ export default function Home() {
                   <Label htmlFor="email">Email Address</Label>
                   <Input id="email" placeholder="project@example.com" type="email" />
                 </LabelInputContainer>
-                <LabelInputContainer className="mb-4 box-content h-40">
+                <LabelInputContainer className="mb-4 box-content">
                   <Label htmlFor="Query">Query</Label>
                   <Input id="Query" placeholder="....." type="text" />
                 </LabelInputContainer>
+                <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                  <FileUpload onChange={handleFileUpload} />
+                </div>
+
 
                 <button
                   className="bg-gradient-to-br relative group/btn from-orange-400 dark:from-zinc-900 dark:to-zinc-900 to-orange-300 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"

@@ -19,7 +19,7 @@ function Navbar({ className }: { className?: string }) {
   const isSecond = activeLogo();
 
   const navbarClass = cn(
-    "fixed top-0 inset-x-0 max-w mx-auto z-50 transition-colors duration-300",
+    "fixed top-0 inset-x-0 max-w mx-auto z-50 transition-colors duration-300 ",
     className,
     {
       'bg-transparent text-white': !isSolid,
@@ -29,19 +29,20 @@ function Navbar({ className }: { className?: string }) {
   );
   const logoClass = cn(
     {
-      'iCON.svg': !isSecond,
+      'QGBLACK.svg': !isSecond,
       'Logo.svg': isSecond,
     }
   );
   return (
-    <div
-      className={ navbarClass}
-    >
-        <div className="fixed top-0 left-0 z-60">
+    <div className="content justify-evenly">
+      <div className="absolute top-0 left-0 z-60">
         <Link href={"#"}>
           <Image src={logoClass} alt="logo" fill={true} className=" duration-300"/>
         </Link>
         </div>
+      <div
+      className={ navbarClass}
+    >
 
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
@@ -102,5 +103,7 @@ function Navbar({ className }: { className?: string }) {
           </Link>
         </Menu>
     </div>
+    </div>
+    
   );
 }
