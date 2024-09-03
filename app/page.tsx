@@ -11,7 +11,13 @@ import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
 import { Statistics } from "@/components/stats";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
+import { PrismaClient} from '@prisma/client'
 
+const prisma = new PrismaClient()
+async function main() {
+  const allUsers = await prisma.user.findMany()
+  console.log(allUsers)
+}
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { HoveredLink, Menu, MenuItem, useNavbarBackground,activeLogo, ProductItem } from "./ui/navbar-menu";
+import { HoveredLink, Menu, MenuItem, useNavbarBackground,activeLogo, ProductItem,Item } from "./ui/navbar-menu";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
@@ -34,15 +34,14 @@ function Navbar({ className }: { className?: string }) {
     }
   );
   return (
-    <div className="content justify-evenly">
-      <div className="absolute top-0 left-0 z-60">
+      <div
+      className={ navbarClass}
+    >   
+        <div className="absolute top-0 left-0 z-60">
         <Link href={"#"}>
           <Image src={logoClass} alt="logo" fill={true} className=" duration-300"/>
         </Link>
         </div>
-      <div
-      className={ navbarClass}
-    >
 
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
@@ -89,13 +88,11 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/enterprise">Enterprise</HoveredLink>
             </div>
           </MenuItem>
-          <Link href={"lhttp://localhost:3000/AboutUs"}>
-          <MenuItem setActive={setActive} active={active} item="About">
-          </MenuItem>
-          </Link>
+          <Item title="About" href="/AboutUs" >
+          </Item>
         </Menu>
     </div>
-    </div>
+
     
   );
 }

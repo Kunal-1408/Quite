@@ -170,3 +170,11 @@ export const HoveredLink = ({ children, ...rest }: any) => {
   );
 };
 
+export const Item = ({title,href}:{title:string,href:string})=>{
+  return(
+      <Link href={href} scroll={false} className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white">
+        {title}
+      </Link>
+  )
+
+}

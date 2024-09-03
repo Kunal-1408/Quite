@@ -105,7 +105,7 @@ export default function ExpandableCardDemo() {
                     exit={{ opacity: 0 }}
                     href={active.ctaLink}
                     target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-green-500 text-white"
+                    className="px-4 py-3 text-sm rounded-full font-bold bg-orange-400 text-white"
                   >
                     {active.ctaText}
                   </motion.a>
@@ -160,16 +160,22 @@ export default function ExpandableCardDemo() {
                   {card.description}
                 </motion.p>
                 <div className="items-start py-5">
-                      {card.tags?.map((tag, index) => (
-                        <motion.button
-                          key={`${tag}-${index}`}  
-                          layoutId={`tags-${tag}-${index}-${id}`} 
-                          className="px-4 py-2 m-1 rounded-md border border-black bg-white text-black text-sm hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
-                        >
-                          {tag}
-                        </motion.button>
-                      ))}
-                  </div>
+                  {card.tags?.map((tag, index) => (
+                    <motion.button
+                      key={`${tag}-${index}-${id}`}
+                      className="px-4 py-2 m-1 text-xs rounded-md border border-black bg-white text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        duration: 0.05,   // Fast animation
+                        ease: "easeInOut"  // Smooth acceleration and deceleration
+                      }}
+                    >
+                      {tag}
+                    </motion.button>
+                  ))}
+                </div>
+
 
               </div>
             </div>
@@ -378,6 +384,28 @@ const cards = [
   },{
     description: "Lana Del Rey",
     title: "Project4",
+    src: "https://i.imgur.com/eLSAjEc.png",
+    ctaText: "Visit",
+    ctaLink: "https://ui.aceternity.com/templates",
+    tags: ["React", "Next.js", "Tailwind CSS"],
+    content: () => {
+      return (
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
+           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
+           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
+            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
+             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
+             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
+             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
+        </p>
+      );
+    },
+  },{
+    description: "Babbu Maan",
+    title: "Mitran Di Chhatri1",
     src: "https://i.imgur.com/eLSAjEc.png",
     ctaText: "Visit",
     ctaLink: "https://ui.aceternity.com/templates",
