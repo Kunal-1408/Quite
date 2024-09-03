@@ -23,7 +23,7 @@ function Navbar({ className }: { className?: string }) {
     className,
     {
       'bg-transparent text-white': !isSolid,
-      'bg-white text-black shadow-md': isSolid,
+      'bg-white text-black shadow-md border-b-2 border-neutral-500': isSolid,
     
     }
   );
@@ -88,14 +88,6 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/team">Team</HoveredLink>
               <HoveredLink href="/enterprise">Enterprise</HoveredLink>
             </div>
-          </MenuItem>
-          <MenuItem setActive={setActive} active={active} item="Careers">
-          <div className="flex flex-col space-y-4 text-sm">
-          <HoveredLink href="/hobby">1</HoveredLink>
-              <HoveredLink href="/individual">2</HoveredLink>
-              <HoveredLink href="/team">3</HoveredLink>
-              <HoveredLink href="/enterprise">4</HoveredLink>
-          </div>
           </MenuItem>
           <Link href={"lhttp://localhost:3000/AboutUs"}>
           <MenuItem setActive={setActive} active={active} item="About">
