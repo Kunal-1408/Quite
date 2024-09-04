@@ -70,10 +70,10 @@ export default function Home() {
         direction="right"
         speed="slow"
       />
-      <div className="h-[40rem] rounded-md flex flex-col bg-white dark:bg-black dark:bg-grid-white/[0.05] w-fit mx-auto">
+      {/* <div className="h-[40rem] rounded-md flex flex-col bg-white dark:bg-black dark:bg-grid-white/[0.05] w-fit mx-auto">
         <p className=" text-slate-900 font-bold text-5xl py-10 " >Getting <span className="font-bold text-5xl text-orange-400">Quite Good</span> over the Years!!!</p>
         <Statistics/>
-      </div>
+      </div> */}
       </div>
       <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">

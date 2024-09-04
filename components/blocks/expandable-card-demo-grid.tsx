@@ -110,6 +110,22 @@ export default function ExpandableCardDemo() {
                     {active.ctaText}
                   </motion.a>
                 </div>
+                <div className="items-start py-3 px-5">
+                  {active.tags?.map((tag, index) => (
+                    <motion.span
+                      key={`${tag}-${index}-${id}`}
+                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        duration: 0.05,   // Fast animation
+                        ease: "easeInOut"  // Smooth acceleration and deceleration
+                      }}
+                    >
+                      {tag}
+                    </motion.span>
+                  ))}
+                </div>
                 <div className="pt-4 relative px-4">
                   <motion.div
                     layout

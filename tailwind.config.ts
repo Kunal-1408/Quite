@@ -67,6 +67,24 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+
+        typing: {
+          "0%": {
+            width: "0%",
+            visibility: "hidden"
+          },
+          "100%": {
+            width: "100%"
+          }  
+        },
+        blink: {
+          "50%": {
+            borderColor: "transparent"
+          },
+          "100%": {
+            borderColor: "neutral"
+          }  
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -134,6 +152,7 @@ const config = {
         fifth: "moveInCircle 20s ease infinite",
         scroll:
         "scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite",
+         typing: "typing 2s steps(20),blink .7s infinite"
         
 
       },
