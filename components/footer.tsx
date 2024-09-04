@@ -13,7 +13,7 @@ export const Footer: React.FC = () =>{
 
 export const Footerimpli: React.FC = () =>{
     return (
-        <div className="relative w-full flex items-center justify-between flex-col bg-white">
+        <div className="relative w-full flex items-center justify-between flex-col bg-white border-t-2 border-orange-100">
                 <div className="flex flex-row items-center justify-center space-x-4 text-sm font-medium py-5">
                     <Link href={"#"}>
                         <span className="text-md text-slate-600"> Privacy Policy</span>

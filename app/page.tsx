@@ -12,12 +12,13 @@ import { Statistics } from "@/components/stats";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 import { PrismaClient} from '@prisma/client'
+import { Separator } from "@radix-ui/react-separator";
 
-const prisma = new PrismaClient()
-async function main() {
-  const allUsers = await prisma.user.findMany()
-  console.log(allUsers)
-}
+// const prisma = new PrismaClient()
+// async function main() {
+//   const allUsers = await prisma.user.findMany()
+//   console.log(allUsers)
+// }
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -91,18 +92,21 @@ export default function Home() {
                     example@quitegood.com
                 </span>
               </p>
+              <Separator orientation="vertical"/>
               <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
+              <Separator orientation="vertical"/>
               <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
+              <Separator orientation="vertical"/>
               <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
@@ -111,6 +115,7 @@ export default function Home() {
               </p>
 
           </div>
+          <Separator/>
           <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
           <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
                 Business Queries

@@ -19,17 +19,17 @@ function Navbar({ className }: { className?: string }) {
   const isSecond = activeLogo();
 
   const navbarClass = cn(
-    "fixed top-0 inset-x-0 max-w mx-auto z-50 transition-colors duration-300 ",
+    "fixed top-0 w-full max-w mx-auto z-50 transition-colors duration-300 flex ",
     className,
     {
       'bg-transparent text-white': !isSolid,
-      'bg-white text-black shadow-md border-b-2 border-neutral-500': isSolid,
+      'bg-white text-black shadow-md border-b-2 border-neutral-400': isSolid,
     
     }
   );
   const logoClass = cn(
     {
-      'QGBLACK.svg': !isSecond,
+      '/QG BLACK.png': !isSecond,
       'Logo.svg': isSecond,
     }
   );
@@ -37,12 +37,14 @@ function Navbar({ className }: { className?: string }) {
       <div
       className={ navbarClass}
     >   
-        <div className="absolute top-0 left-0 z-60">
-        <Link href={"#"}>
-          <Image src={logoClass} alt="logo" fill={true} className=" duration-300"/>
+        <div className="bg-transparent grow-0">
+        <Link href={"http://localhost:3000"}>
+          <Image src={logoClass} alt="logo" height={85} width={85} className=""/>
         </Link>
         </div>
 
+        
+        <div className="grow">
         <Menu setActive={setActive}>
           <MenuItem setActive={setActive} active={active} item="Services">
             <div className="flex flex-col space-y-4 text-sm">
@@ -91,6 +93,8 @@ function Navbar({ className }: { className?: string }) {
           <Item title="About" href="/AboutUs" >
           </Item>
         </Menu>
+        </div>
+
     </div>
 
     

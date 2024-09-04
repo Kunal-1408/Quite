@@ -128,13 +128,13 @@ export default function ExpandableCardDemo() {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 md:grid-cols-3 items-start gap-4">
+      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 md:grid-cols-3 items-start gap-4 py-10">
         {cards.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={card.title}
             onClick={() => setActive(card)}
-            className="p-4 flex flex-col  hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            className="p-4 flex flex-col bg-neutral-50  hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
             <div className="flex gap-4 flex-col  w-full">
               <motion.div layoutId={`image-${card.title}-${id}`}>
@@ -159,11 +159,11 @@ export default function ExpandableCardDemo() {
                 >
                   {card.description}
                 </motion.p>
-                <div className="items-start py-5">
+                <div className="items-start py-3">
                   {card.tags?.map((tag, index) => (
-                    <motion.button
+                    <motion.span
                       key={`${tag}-${index}-${id}`}
-                      className="px-4 py-2 m-1 text-xs rounded-md border border-black bg-white text-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{
@@ -172,7 +172,7 @@ export default function ExpandableCardDemo() {
                       }}
                     >
                       {tag}
-                    </motion.button>
+                    </motion.span>
                   ))}
                 </div>
 
