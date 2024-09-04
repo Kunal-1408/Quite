@@ -59,12 +59,16 @@ export default function Home() {
   };
   // const data = getData()
   return (
-    <main className="bg-slate-100">
+    <main className="bg-white">
       <Hero/>
       <HeroParallax products={products} />
       <LogoCarousel logos={images} direction="left"/>
-      <div className="h-[40rem] rounded-md flex flex-col bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-      <h2 className=" text-slate-900 font-bold text-5xl py-10 " >Testimonials</h2>
+      <div className="flex flex-col bg mx-20 pt-20">
+          <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Testimonials</h2>  
+          <h3 className=" text-slate-900  text-3xl  " >Others are okay but we are <span className="text-orange-400 font-bold">Quite Good</span></h3>  
+      </div>
+      <div className="h-[30rem] rounded-md flex flex-col dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+      
       <InfiniteMovingCards
         items={testimonials}
         direction="right"
