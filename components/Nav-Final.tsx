@@ -39,7 +39,7 @@ function Navbar({ className }: { className?: string }) {
     >   
         <div className="bg-transparent grow-0">
         <Link href={"http://localhost:3000"}>
-          <Image src={logoClass} alt="logo" height={90} width={90} className=""/>
+          <Image src={logoClass} alt="logo" height={70} width={90} className="h-22"/>
         </Link>
         </div>
 

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { LogoCarousel } from "@/components/ui/test";
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
-import { Statistics } from "@/components/stats";
+import { Marquee } from "@/components/ui/marquee";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 import { PrismaClient} from '@prisma/client'
@@ -29,7 +29,7 @@ const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 const BottomGradient = () => {
   return (
     <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-emerald-400 to-transparent" />
       <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
     </>
   );
@@ -62,7 +62,12 @@ export default function Home() {
     <main className="bg-white">
       <Hero/>
       <HeroParallax products={products} />
-      <LogoCarousel logos={images} direction="left"/>
+      <div className="">
+
+
+      </div>
+      {/* <LogoCarousel logos={images} direction="left"/> */}
+      <Marquee logos={images}/>
       <div className="flex flex-col bg mx-20 pt-20">
           <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Testimonials</h2>  
           <h3 className=" text-slate-900  text-3xl  " >Others are okay but we are <span className="text-orange-400 font-bold">Quite Good</span></h3>  
@@ -287,8 +292,9 @@ const testimonials = [
   ];
   const images =[
     {
-      image:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://i.imgur.com/WUtsRM9.png',
       alt:'first photo',
+  
       
     }
   ];
