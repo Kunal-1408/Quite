@@ -7,9 +7,13 @@ import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "framer-motion";
 
 
-// function Tags(){
-//   const [active, setActive]= useState<(typeof tag)>
-// }
+function Tags(){
+  const [active, setActive]= useState<(typeof tag)[number]|boolean|null>(null);
+  useEffect(()=>{
+
+  })
+
+}
 
 const checker =()=>{
   const [check,setChecked]= useState('false')
@@ -46,7 +50,6 @@ export default function Works (){
               <div className="grid grid-cols-5"> 
                 <div className="col-span-1 py-10 mx-5 flex flex-col">
                   <LabelInputContainer>
-                      {/* <Label htmlFor="Search">Search</Label> */}
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
                     <div className="flex flex-col justify-center my-4 mx-4 border-t-2 border-b-2 border-neutral-200">
@@ -118,9 +121,15 @@ export default function Works (){
 
                     </div>
                 </div>
-                <div className="col-span-4">
-                <ExpandableCardDemo/>
-                </div>
+                {/* <div className="col-span-4 flex flex-row"> */}
+                  <div className="flex flex-1 col-span-4">
+
+                    <div
+                      className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
+                      <ExpandableCardDemo/>
+                  </div>
+
+                {/* </div> */}
               
 
               </div>
