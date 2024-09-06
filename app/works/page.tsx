@@ -5,25 +5,40 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { AnimatePresence, motion } from "framer-motion";
+import { DynamicCheckbox } from "@/components/ui/dynamic-checkbox";
 
+// function Tags(){
+//   const [active, setActive]= useState<(typeof tag)[number]|boolean|null>(null);
 
-function Tags(){
-  const [active, setActive]= useState<(typeof tag)[number]|boolean|null>(null);
-  useEffect(()=>{
+//   const handleClick =()=>{
+//     setActive(!active)
+//   }
+//   const onmousedown =()=>{
+//     setActive(false)
+//   }
 
-  })
+//   useEffect(()=>{
 
-}
+//     window.addEventListener("mousedown",onmousedown);
+//     return ()=>{
+//       window.removeEventListener("mousedown", onmousedown)
+//     }
+//   },[active]);
 
-const checker =()=>{
-  const [check,setChecked]= useState('false')
+//   return(
+//     <>
+//     <AnimatePresence>
+//       {active && typeof active ==="object" &&(
 
-  useEffect(()=>{
-    const handleCheck = ()=>{
+//         <div className="">
+//         </div>
 
-    }
-  })
-}
+//       )}
+//     </AnimatePresence>
+//     </>
+//   )
+
+// }
 
 const LabelInputContainer = ({
   children,
@@ -52,7 +67,8 @@ export default function Works (){
                   <LabelInputContainer>
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
-                    <div className="flex flex-col justify-center my-4 mx-4 border-t-2 border-b-2 border-neutral-200">
+                    <DynamicCheckbox tags={tag}/>
+                    {/* <div className="flex flex-col justify-center my-4 mx-4 border-t-2 border-b-2 border-neutral-200">
                       <h3 className="text-neutral-600">Site Type</h3>
                       <ul className="items-center text-sm list-none">
                         <li className="flex items-center py-2 mx-auto">
@@ -119,7 +135,7 @@ export default function Works (){
                         </li>
                       </ul>
 
-                    </div>
+                    </div> */}
                 </div>
                 {/* <div className="col-span-4 flex flex-row"> */}
                   <div className="flex flex-1 col-span-4">
@@ -148,6 +164,7 @@ export default function Works (){
 //     </>
 //   );
 // };
-const tag =[
-  {},
-]
+const tag =
+  {item:["Static","Dynamic","Micro"],
+    colors:"blue"
+  }
