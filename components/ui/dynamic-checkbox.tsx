@@ -1,6 +1,5 @@
 'use client'
 
-import { cn } from "@/lib/utils"
 import React, { useEffect, useState,useId } from "react"
 import { AnimatePresence,motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
@@ -11,7 +10,7 @@ export const DynamicCheckbox =({
     tags:{item: string[];
     colors: string;
 };
-}) => { const [active, setActive]= useState<(typeof tags)|boolean >(true);
+}) => { const [active, setActive]= useState<(typeof tags)|boolean >(false);
     const id = useId();
     const handleClick =()=>{
       setActive(active)
@@ -19,7 +18,11 @@ export const DynamicCheckbox =({
     const onmousedown =()=>{
       setActive(false)
     }
-  
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setActive(e.target.checked);
+      };
+
+
     useEffect(()=>{
   
       window.addEventListener("mousedown",onmousedown);
@@ -65,7 +68,7 @@ export const DynamicCheckbox =({
         <ul className="w-full mx-auto items-center list-none">
             {tags.item.map((item,index)=>(
                         <li key={`${item}-${index}-${id}`} className="flex items-center py-2 mx-auto">
-                        <input  type="checkbox" onClick={handleClick} checked={false} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        <input  type="checkbox" onChange={handleCheckboxChange} checked={active} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
                         <Label className="ms-2 text-sm font-medium text-neutral-400">{item}</Label>
                       </li>
 
