@@ -60,26 +60,26 @@ export const Marquee = ({
         }
       });
 
-    //   getDirection();
+      getDirection();
       getSpeed();
       setStarter(true);
     }
   }
-//   const getDirection = () => {
-//     if (containerRef.current) {
-//       if (direction === "left") {
-//         containerRef.current.style.setProperty(
-//           "--animation-direction",
-//           "forwards"
-//         );
-//       } else {
-//         containerRef.current.style.setProperty(
-//           "--animation-direction",
-//           "reverse"
-//         );
-//       }
-//     }
-//   };
+  const getDirection = () => {
+    if (containerRef.current) {
+      if (direction === "left") {
+        containerRef.current.style.setProperty(
+          "--animation-direction",
+          "forwards"
+        );
+      } else {
+        containerRef.current.style.setProperty(
+          "--animation-direction",
+          "reverse"
+        );
+      }
+    }
+  };
   const getSpeed = () => {
     if (containerRef.current) {
       if (speed === "fast") {
