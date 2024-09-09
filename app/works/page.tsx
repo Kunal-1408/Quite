@@ -4,8 +4,7 @@ import ExpandableCardDemo from "@/components/blocks/expandable-card-demo-grid";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { AnimatePresence, motion } from "framer-motion";
-import { DynamicCheckbox } from "@/components/ui/dynamic-checkbox";
+import { DynamicCheckbox } from "@/components/ui/checkbox-test";
 
 // function Tags(){
 //   const [active, setActive]= useState<(typeof tag)[number]|boolean|null>(null);
@@ -68,74 +67,6 @@ export default function Works (){
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
                     <DynamicCheckbox tags={tag}/>
-                    {/* <div className="flex flex-col justify-center my-4 mx-4 border-t-2 border-b-2 border-neutral-200">
-                      <h3 className="text-neutral-600">Site Type</h3>
-                      <ul className="items-center text-sm list-none">
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Static</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Dynamic</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Micro</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">E-commerce</Label>
-                        </li>
-                      </ul>
-
-                    </div>
-
-                    <div className="flex flex-col justify-center my-4 mx-4 border-b-2 border-neutral-200">
-                      <h3 className="text-neutral-600">Countries</h3>
-                      <ul className=" text-sm list-none">
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Static</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Dynamic</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Micro</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">E-commerce</Label>
-                        </li>
-                      </ul>
-
-                    </div>
-
-                    <div className="flex flex-col justify-center my-4 mx-4 border-b-2 border-neutral-200">
-                      <h3 className="text-neutral-600">Industry</h3>
-                      <ul className="items-center text-sm list-none">
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Healthcare</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Industry1</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Industry2</Label>
-                        </li>
-                        <li className="flex items-center py-2 mx-auto">
-                          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
-                          <Label htmlFor="default-checkbox" className="ms-2 text-sm font-medium text-neutral-400">Industy3</Label>
-                        </li>
-                      </ul>
-
-                    </div> */}
                 </div>
                 {/* <div className="col-span-4 flex flex-row"> */}
                   <div className="flex flex-1 col-span-4">
@@ -165,6 +96,6 @@ export default function Works (){
 //   );
 // };
 const tag =
-  {item:["Static","Dynamic","Micro"],
-    colors:"blue"
+  {items:["Static","Dynamic","Micro"],
+    color:"blue"
   }
