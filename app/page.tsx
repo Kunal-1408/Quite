@@ -66,7 +66,6 @@ export default function Home() {
 
 
       </div>
-      {/* <LogoCarousel logos={images} direction="left"/> */}
       <Marquee logos={images}/>
       <div className="flex flex-col bg mx-20 pt-20">
           <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Testimonials</h2>  

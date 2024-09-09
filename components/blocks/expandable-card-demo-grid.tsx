@@ -6,15 +6,18 @@ import { useOutsideClick } from "../hooks/use-outside-click";
 import { PrismaClient
  } from "@prisma/client";
 
+
+
  const prisma= new PrismaClient();
 
  const fitlered= await prisma.user.findMany({
         where:{
-          
+
         }
  })
 
 export default function ExpandableCardDemo() {
+
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null
   );

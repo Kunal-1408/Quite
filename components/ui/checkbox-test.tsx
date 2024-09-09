@@ -4,7 +4,14 @@ import { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 
+
+
+
 export const DynamicCheckbox =({tags}:{tags:{items:string[]; color:string};}) =>  {
+  interface ChildComponentProps {
+    onSelectedItemsChange: (items: string[]) => void;
+  }
+  
 
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const handleCheckboxChange = (item:string) => {
@@ -13,6 +20,11 @@ export const DynamicCheckbox =({tags}:{tags:{items:string[]; color:string};}) =>
     } else {
       setSelectedItems([...selectedItems, item])
     }
+    const updatedItems = selectedItems.includes(item)
+      ? selectedItems.filter((i) => i !== item)
+      : [...selectedItems, item];
+
+      onSelectedItemsChange(updatedItems);
   }
   return (
     <div className="w-full max-w-md mx-auto">

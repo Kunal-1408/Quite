@@ -4,12 +4,12 @@ import ExpandableCardDemo from "@/components/blocks/expandable-card-demo-grid";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DynamicCheckbox } from "@/components/ui/checkbox-test";
-import { PrismaClient } from "@prisma/client";   
+ 
 
 function checklist(){
   const [active,isActive]= useState<string[]>([])
 
-  const handleCheckboxChange= (data:String[]) {
+  const handleCheckboxChange= (data:String[])=> {
     isActive (data)
   }
 }

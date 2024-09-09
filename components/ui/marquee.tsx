@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const Marquee = ({
     logos,
-    direction = "left",
+    direction ,
     speed = "fast",
     pauseOnHover = true,
     className,
