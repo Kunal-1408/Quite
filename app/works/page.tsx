@@ -1,43 +1,18 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import ExpandableCardDemo from "@/components/blocks/expandable-card-demo-grid";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DynamicCheckbox } from "@/components/ui/checkbox-test";
+import { PrismaClient } from "@prisma/client";   
 
-// function Tags(){
-//   const [active, setActive]= useState<(typeof tag)[number]|boolean|null>(null);
+function checklist(){
+  const [active,isActive]= useState<string[]>([])
 
-//   const handleClick =()=>{
-//     setActive(!active)
-//   }
-//   const onmousedown =()=>{
-//     setActive(false)
-//   }
-
-//   useEffect(()=>{
-
-//     window.addEventListener("mousedown",onmousedown);
-//     return ()=>{
-//       window.removeEventListener("mousedown", onmousedown)
-//     }
-//   },[active]);
-
-//   return(
-//     <>
-//     <AnimatePresence>
-//       {active && typeof active ==="object" &&(
-
-//         <div className="">
-//         </div>
-
-//       )}
-//     </AnimatePresence>
-//     </>
-//   )
-
-// }
+  const handleCheckboxChange= (data:String[]) {
+    isActive (data)
+  }
+}
 
 const LabelInputContainer = ({
   children,
@@ -68,7 +43,7 @@ export default function Works (){
                     </LabelInputContainer>
                     <DynamicCheckbox tags={tag}/>
                 </div>
-                {/* <div className="col-span-4 flex flex-row"> */}
+                <div className="col-span-4 flex flex-row">
                   <div className="flex flex-1 col-span-4">
 
                     <div
@@ -76,7 +51,7 @@ export default function Works (){
                       <ExpandableCardDemo/>
                   </div>
 
-                {/* </div> */}
+                </div>
               
 
               </div>
@@ -87,14 +62,6 @@ export default function Works (){
 
 };
 
-// const BottomGradient = () => {
-//   return (
-//     <>
-//       <span className="group-hover/input:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-orange-300 to-transparent" />
-//       {/* <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" /> */}
-//     </>
-//   );
-// };
 const tag =
   {items:["Static","Dynamic","Micro"],
     color:"blue"

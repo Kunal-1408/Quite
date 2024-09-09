@@ -18,9 +18,9 @@ export const DynamicCheckbox =({tags}:{tags:{items:string[]; color:string};}) =>
     <div className="w-full max-w-md mx-auto">
       <div className="flex items-center justify-between mb-4">
         {selectedItems.length > 0 && (
-          <div className="inline-flex items-center rounded-md bg-orange-400 px-2.5 py-0.5 text-xs font-semibold text-white">
+          <div className="inline-flex items-center rounded-md  px-2.5 py-0.5 text-xs font-semibold text-white">
             {selectedItems.map((item) => (
-              <div key={item} className="flex items-center justify-between gap-2">
+              <div key={item} className="flex items-center justify-between gap-2 bg-orange-400">
                 {item}
                 <button
                   className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-[#0070f3] focus:ring-offset-2"
@@ -45,7 +45,7 @@ export const DynamicCheckbox =({tags}:{tags:{items:string[]; color:string};}) =>
     </div>
   )
 }
-
+ 
 function XIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
