@@ -3,19 +3,17 @@ import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "../hooks/use-outside-click";
-import { PrismaClient
- } from "@prisma/client";
 
+interface Props{
+  tags: string[]
+}
 
+export const CardRender: React.FC<Props> = ({ tags }) => {
+  if (tags.length==0) {
+    return <ExpandableCardDemo/>
+  }
 
- const prisma= new PrismaClient();
-
- const fitlered= await prisma.user.findMany({
-        where:{
-
-        }
- })
-
+}
 export default function ExpandableCardDemo() {
 
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
@@ -131,8 +129,8 @@ export default function ExpandableCardDemo() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{
-                        duration: 0.05,   // Fast animation
-                        ease: "easeInOut"  // Smooth acceleration and deceleration
+                        duration: 0.05,  
+                        ease: "easeInOut"  
                       }}
                     >
                       {tag}
@@ -196,8 +194,8 @@ export default function ExpandableCardDemo() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       transition={{
-                        duration: 0.05,   // Fast animation
-                        ease: "easeInOut"  // Smooth acceleration and deceleration
+                        duration: 0.05,   
+                        ease: "easeInOut"  
                       }}
                     >
                       {tag}

@@ -1,18 +1,10 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import ExpandableCardDemo from "@/components/blocks/expandable-card-demo-grid";
+import {CardRender} from "@/components/blocks/expandable-card-demo-grid";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DynamicCheckbox } from "@/components/ui/checkbox-test";
  
-
-function checklist(){
-  const [active,isActive]= useState<string[]>([])
-
-  const handleCheckboxChange= (data:String[])=> {
-    isActive (data)
-  }
-}
 
 const LabelInputContainer = ({
   children,
@@ -29,6 +21,14 @@ const LabelInputContainer = ({
 };
 export default function Works (){
 
+  const [active,Isactive]= useState<string[]>([]);
+
+  const handleIsactive=(items: string[])=>{
+    Isactive(items)
+  }
+
+  console.log(active);
+
     return(
         <div className="bg-white">
               <div className="max-w-7xl pt-20 md:pt-40 pb-10  px-4 w-full top-0 border-b-2 border-orange-100">
@@ -41,14 +41,14 @@ export default function Works (){
                   <LabelInputContainer>
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
-                    <DynamicCheckbox tags={tag}/>
+                    <DynamicCheckbox onIsActive={handleIsactive} tags={tag}/>
                 </div>
                 <div className="col-span-4 flex flex-row">
                   <div className="flex flex-1 col-span-4">
 
                     <div
                       className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
-                      <ExpandableCardDemo/>
+                      <CardRender tags={active}/>
                   </div>
 
                 </div>
