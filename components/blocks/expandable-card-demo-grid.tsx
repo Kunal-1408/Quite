@@ -10,11 +10,13 @@ interface Props{
 
 export const CardRender: React.FC<Props> = ({ tags }) => {
   if (tags.length==0) {
-    return <ExpandableCardDemo/>
+    return <ExpandableCardDemo tags={tags}/>
   }
+  else{
 
+  }
 }
-export default function ExpandableCardDemo() {
+const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
 
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null
