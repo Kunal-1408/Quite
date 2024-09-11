@@ -2,7 +2,7 @@ import React from "react";
 
 import Link from "next/link";
 import Image from "next/image";
-import { Separator } from "./ui/separator";
+
 
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
 
@@ -28,13 +28,13 @@ export const Footerimpli: React.FC = () =>{
                     <h3 className=" text-neutral-500 mb-3 mt-2">Quick Links</h3>
                     <ul className="list-none text-neutral-400 text-sm">
                         <li className="mx-1"><Link href={"localhost:3000/works"}>Works </Link></li>
-                        <Separator orientation="vertical"/>
+                        
                         <li className="mx-1"><Link href={"localhost:3000/works"}>Agency </Link></li>
-                        <Separator orientation="vertical"/>
+                        
                         <li className="mx-1"><Link href={"localhost:3000/works"}>About </Link></li>
-                        <Separator orientation="vertical"/>
+                        
                         <li className="mx-1"><Link href={"localhost:3000/works"}>Case Studies </Link></li>
-                        <Separator orientation="vertical"/>
+                       
                         <li className="mx-1"><Link href={"localhost:3000/works"}>Pricing </Link></li>
                     </ul>
 
