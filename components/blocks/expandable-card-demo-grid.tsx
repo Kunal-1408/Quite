@@ -9,13 +9,22 @@ interface Props{
   tags: string[]
 }
 
-// const prisma= new PrismaClient
+const prisma= new PrismaClient
 
-// async function main () {
+async function main () {
 
-//   const allUser= await prisma.Aggregration.findMany();
-  
-// }
+  const allUser= await prisma.Aggregration.findMany();
+  console.log(allUser)
+}
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
 
 export const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
 

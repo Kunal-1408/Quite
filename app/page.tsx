@@ -96,21 +96,24 @@ export default function Home() {
                     example@quitegood.com
                 </span>
               </p>
-              <Separator orientation="vertical"/>
+              <div
+                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
               <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
-              <Separator orientation="vertical"/>
+              <div
+                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
               <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
-              <Separator orientation="vertical"/>
+              <div
+                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
               <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
@@ -119,7 +122,7 @@ export default function Home() {
               </p>
 
           </div>
-          <Separator/>
+           
           <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
           <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
@@ -127,6 +130,8 @@ export default function Home() {
                     example@quitegood.com
                 </span>
               </p>
+              <div
+                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
               <p className="text-md text-slate-600 py-2  px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">

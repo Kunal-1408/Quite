@@ -33,9 +33,9 @@ export const DynamicCheckbox: React.FC<Props> =({ onIsActive, tags }) =>  {
     <div className="w-full max-w-md mx-auto">
       <div className="flex items-center justify-between mb-4">
         {selectedItems.length > 0 && (
-          <div className="inline-flex items-center rounded-md  px-2.5 py-0.5 text-xs font-semibold text-white">
+          <div className="inline-flex items-center rounded-md justify-between  px-2.5 py-0.5 text-xs font-semibold text-white">
             {selectedItems.map((item) => (
-              <div key={item} className="flex items-center justify-between gap-2 bg-orange-400">
+              <span key={item} className="flex items-center border-rounded gap-2 px-2 bg-orange-400">
                 {item}
                 <button
                   className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-[#0070f3] focus:ring-offset-2"
@@ -44,18 +44,21 @@ export const DynamicCheckbox: React.FC<Props> =({ onIsActive, tags }) =>  {
                 >
                   <XIcon className="h-3 w-3" />
                 </button>
-              </div>
+              </span>
             ))}
           </div>
         )}
       </div>
-      <div className="space-y-2 border-t-2 border-neutral-200">
+      <div className="space-y-2 border-neutral-200">
+      <hr className=" h-0.5 border-t-0 bg-neutral-200 dark:bg-white/10" />
         {tags.items.map((option) => (
-          <Label key={option} className="flex items-center gap-2 font-normal ">
+          <Label key={option} className="flex items-center gap-2 font-normal pt-2 ">
             <Checkbox checked={selectedItems.includes(option)} onCheckedChange={() => handleCheckboxChange(option)} />
             {option}
           </Label>
+
         ))}
+        <hr className=" h-0.5 border-t-0 bg-neutral-200 dark:bg-white/10" />
       </div>
     </div>
   )

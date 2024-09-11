@@ -8,8 +8,7 @@ datasource db {
 }
 
 model Aggregration {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  String?
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId 
   Brand_Name  String  @map("Brand Name")
   Site_Type   String  @map("Site Type")
   URL         String?
