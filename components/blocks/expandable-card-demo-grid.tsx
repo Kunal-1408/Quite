@@ -3,20 +3,27 @@ import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "../hooks/use-outside-click";
+import { PrismaClient } from "@prisma/client";
 
 interface Props{
   tags: string[]
 }
 
-export const CardRender: React.FC<Props> = ({ tags }) => {
-  if (tags.length==0) {
-    return <ExpandableCardDemo tags={tags}/>
-  }
-  else{
+// const prisma= new PrismaClient
 
-  }
-}
-const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
+// async function main () {
+
+//   const allUser= await prisma.Aggregration.findMany();
+  
+// }
+
+export const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
+
+  const filteredCards = tags.length
+  ? cards.filter(card =>
+      tags.every(tag => card.tags.includes(tag))
+    )
+  : cards;
 
   const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
     null
@@ -157,8 +164,8 @@ const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 md:grid-cols-2 items-start gap-4 py-10">
-        {cards.map((card, index) => (
+      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 md:grid-cols-3 items-start gap-4 py-10">
+        {filteredCards.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={card.title}
@@ -255,7 +262,7 @@ const cards = [
     src: "https://i.imgur.com/eLSAjEc.png",
     ctaText: "Visit",
     ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
+    tags: ["React", "Static", "Dynamic"],
     content: () => {
       return (
         <p>
@@ -278,7 +285,7 @@ const cards = [
     src: "https://i.imgur.com/eLSAjEc.png",
     ctaText: "Visit",
     ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
+    tags: ["React", "Next.js", "Static"],
     content: () => {
       return (
         <p>
@@ -302,7 +309,7 @@ const cards = [
     src: "https://i.imgur.com/eLSAjEc.png",
     ctaText: "Visit",
     ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
+    tags: ["Static", "Micro", "Dynamic"],
     content: () => {
       return (
         <p>

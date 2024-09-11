@@ -14,11 +14,7 @@ import { useState } from "react";
 import { PrismaClient} from '@prisma/client'
 import { Separator } from "@radix-ui/react-separator";
 
-// const prisma = new PrismaClient()
-// async function main() {
-//   const allUsers = await prisma.user.findMany()
-//   console.log(allUsers)
-// }
+
 
 const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
@@ -94,28 +90,28 @@ export default function Home() {
           </h1>
           <div className="flex flex-col justify-between">
           <div  className=" items-center flex flex-row mx-auto my-auto  ">
-              <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
               <Separator orientation="vertical"/>
-              <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
               <Separator orientation="vertical"/>
-              <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
               <Separator orientation="vertical"/>
-              <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
@@ -125,13 +121,13 @@ export default function Home() {
           </div>
           <Separator/>
           <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
-          <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+          <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com
                 </span>
               </p>
-              <p className="text-md text-slate-600 py-2 mx-auto flex flex-col items-center">
+              <p className="text-md text-slate-600 py-2  px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
                     example@quitegood.com

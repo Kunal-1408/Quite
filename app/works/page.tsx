@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import {CardRender} from "@/components/blocks/expandable-card-demo-grid";
+import { ExpandableCardDemo } from "@/components/blocks/expandable-card-demo-grid";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { DynamicCheckbox } from "@/components/ui/checkbox-test";
@@ -48,7 +48,7 @@ export default function Works (){
 
                     <div
                       className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
-                      <CardRender tags={active}/>
+                      <ExpandableCardDemo tags={active}/>
                   </div>
 
                 </div>
