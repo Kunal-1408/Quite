@@ -46,7 +46,7 @@ function Navbar({ className }: { className?: string }) {
         
         <div className="grow">
         <Menu setActive={setActive}>
-        <Item title="Home" href="/AboutUs" >
+        <Item title="Home" href="http://localhost:3000" >
         </Item>
           <MenuItem setActive={setActive} active={active} item="Services">
             <div className="flex flex-col space-y-4 text-sm">
@@ -56,6 +56,7 @@ function Navbar({ className }: { className?: string }) {
               <HoveredLink href="/branding">Branding</HoveredLink>
             </div>
           </MenuItem>
+          <Item title="Works" href="/works"></Item>
           <MenuItem setActive={setActive} active={active} item="Case studies">
             <div className="  text-sm grid grid-cols-2 gap-10 p-4">
               <ProductItem
