@@ -17,6 +17,9 @@ async function main () {
   console.log(allUser)
 
 }
+
+
+
 main()
   .then(async () => {
     await prisma.$disconnect();

@@ -11,7 +11,7 @@ import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
 import { Marquee } from "@/components/ui/marquee";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
-import { PrismaClient} from '@prisma/client'
+
 
 
 async function sendEmail() {
