@@ -103,7 +103,7 @@ export const Marquee = ({
       <ul
         ref={scrollerRef}
         className={cn(
-          " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+          " flex min-w-full shrink-0 w-max flex-nowrap",
           start && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]",
           direction && "left"
@@ -111,7 +111,7 @@ export const Marquee = ({
       >
         {logos.map((item, idx) => (
           <li
-            className="w-[350px] max-w-full relative rounded-2xl border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
+            className="w-[350px] max-w-full relative  border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
             style={{
               background:
                 "linear-gradient(180deg, var(--gray-800), var(--gray-900)",
@@ -133,7 +133,7 @@ export const Marquee = ({
       <ul
         ref={scrollerRef1}
         className={cn(
-          " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+          " flex min-w-full shrink-0 w-max flex-nowrap",
           Starter && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]",
           direction && "right"
@@ -141,7 +141,7 @@ export const Marquee = ({
       >
         {logos.map((item, idx) => (
           <li
-            className="w-[350px] max-w-full relative rounded-2xl border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
+            className="w-[350px] max-w-full relative border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
             style={{
               background:
                 "linear-gradient(180deg, var(--gray-800), var(--gray-900)",

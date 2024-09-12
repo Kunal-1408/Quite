@@ -13,8 +13,9 @@ const prisma= new PrismaClient
 
 async function main () {
 
-  const allUser= await prisma.Aggregration.findMany();
+  const allUser= await prisma.clients.findMany();
   console.log(allUser)
+
 }
 main()
   .then(async () => {
@@ -173,7 +174,7 @@ export const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
           </div>
         ) : null}
       </AnimatePresence>
-      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 md:grid-cols-3 items-start gap-4 py-10">
+      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1  items-start gap-4 py-10">
         {filteredCards.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}

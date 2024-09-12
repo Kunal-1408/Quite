@@ -5,14 +5,27 @@ import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
-import { LogoCarousel } from "@/components/ui/test";
+
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
 import { Marquee } from "@/components/ui/marquee";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 import { PrismaClient} from '@prisma/client'
-import { Separator } from "@radix-ui/react-separator";
+
+
+async function sendEmail() {
+  const res= fetch('/api/send',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json'
+    },
+  });
+
+  const data=(await res).json();
+
+  console.log(data);
+}
 
 
 
@@ -74,10 +87,6 @@ export default function Home() {
         direction="right"
         speed="slow"
       />
-      {/* <div className="h-[40rem] rounded-md flex flex-col bg-white dark:bg-black dark:bg-grid-white/[0.05] w-fit mx-auto">
-        <p className=" text-slate-900 font-bold text-5xl py-10 " >Getting <span className="font-bold text-5xl text-orange-400">Quite Good</span> over the Years!!!</p>
-        <Statistics/>
-      </div> */}
       </div>
       <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">
@@ -186,7 +195,7 @@ export default function Home() {
                 </div>
 
 
-                <button
+                <button onClick={sendEmail}
                   className="bg-gradient-to-br relative group/btn from-orange-400 dark:from-zinc-900 dark:to-zinc-900 to-orange-300 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                   type="submit"
                 >

@@ -54,7 +54,7 @@ export const Footerimpli: React.FC = () =>{
 
 
                 </div>
-{/* 
+
                 <div className=" items-center col-span-1 px-20">
                     <h3 className=" text-neutral-500 mb-3 mt-2">Sitemap</h3>
                     <ul className="list-none text-neutral-400 text-sm ">
@@ -62,7 +62,7 @@ export const Footerimpli: React.FC = () =>{
                         <li className="mb-1"><Link href={"localhost:3000/works"}>Privacy Policy </Link></li>
                     </ul>
 
-                </div> */}
+                </div>
 
             </div>
             <hr className="w-64 h-0.5 mx-auto my-4 bg-neutral-300 border-0 rounded dark:bg-gray-700"/>
