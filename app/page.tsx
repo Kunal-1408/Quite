@@ -1,5 +1,5 @@
 'use client'
-import { Hero } from "@/components/hero";
+import Hero  from "@/components/hero";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { Label } from "../components/ui/label";
@@ -26,14 +26,6 @@ async function sendEmail() {
 
   console.log(data);
 }
-
-
-
-const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  console.log("Form submitted");
-};
-
   
 const BottomGradient = () => {
   return (
@@ -132,7 +124,7 @@ export default function Home() {
 
           </div>
            
-          <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
+           <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
           <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
                 <span className="text-sm text-slate-500 py-4">
@@ -154,7 +146,7 @@ export default function Home() {
                 <FaFacebook className="h-12 w-12 py-2 px-2 mx-auto"/>
               </Link>
               <Link href={"#"}>
-                <FaInstagram className="h-12 w-12 py-2 px-2 mx-auto"/>
+                <FaInstagram className="h-12 w-12 py-2 px-2 mx-auto"/> 
               </Link>
               <Link href={"#"}>
                 <FaTwitter className="h-12 w-12 py-2 px-2 mx-auto"/>
@@ -167,7 +159,7 @@ export default function Home() {
         </div>
           <div className="max-w-md w-full mx-auto rounded-none border-slate-400 md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
               <p className="text-2xl text-slate-700 text-bold py-5 ">Let us know your requirements!!</p>
-              <form className="my-8" onSubmit={handleSubmit}>
+              <form className="my-8" onSubmit={sendEmail}>
                 <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
                   <LabelInputContainer>
                     <Label htmlFor="firstname">First name</Label>
