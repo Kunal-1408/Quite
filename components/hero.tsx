@@ -10,12 +10,12 @@ const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
   ssr: false,
 });
 
-export default function Hero() {
+export default function () {
   const globeConfig = {
     pointSize: 4,
     globeColor: "#07315e",
     showAtmosphere: true,
-    atmosphereColor: "#ffffff",
+    atmosphereColor: "#296c8d",
     atmosphereAltitude: 0.15,
     emissive: "#07315e",
     emissiveIntensity: 0.3,
