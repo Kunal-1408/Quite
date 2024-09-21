@@ -148,7 +148,7 @@ export const Marquee = ({
             }}
             key={idx}
           >
-            <Image src={item.src} alt={item.alt} fill={true} ></Image>
+            <Image src={item.src} alt={item.alt} fill={true} className=""></Image>
           </li>
         ))}
       </ul>

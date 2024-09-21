@@ -6,17 +6,36 @@ import dynamic from "next/dynamic";
 import { ShootingStars } from "./ui/shooting-stars";
 import { StarsBackground
  } from "./ui/stars";
+import { TypewriterEffect } from "./ui/typewriter-effect";
 const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
   ssr: false,
 });
 
 export default function () {
+  const words = [
+    {
+      text: "Reach",
+    },
+    {
+      text: "new",
+    },
+    {
+      text:"horizons"
+    },
+    {
+      text: "with",
+    },
+    {
+      text: "Quite Good",
+      className: "text-orange-500",
+    },
+  ];
   const globeConfig = {
     pointSize: 4,
     globeColor: "#07315e",
     showAtmosphere: true,
     atmosphereColor: "#296c8d",
-    atmosphereAltitude: 0.15,
+    atmosphereAltitude: 0.2,
     emissive: "#07315e",
     emissiveIntensity: 0.3,
     shininess: 1.2,
@@ -25,10 +44,10 @@ export default function () {
     directionalLeftLight: "#ffffff",
     directionalTopLight: "#ffffff",
     pointLight: "#ffffff",
-    arcTime: 1000,
+    arcTime: 1500,
     arcLength: 0.9,
-    rings: 1,
-    maxRings: 3,
+    rings: 2,
+    maxRings: 4,
     initialPosition: { lat: 22.3193, lng: 114.1694 },
     autoRotate: true,
     autoRotateSpeed: 0.5,
@@ -414,18 +433,23 @@ export default function () {
           }}
           className="div"
         >
-          <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
+          {/* <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
             The Ultimate Marketing Agency
           </h2>
           <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
             Reach New Horizons with <span className="text-orange-400"> Quite Good!</span>
-          </p>
+          </p> */}
+          
         </motion.div>
-        <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
-        <div>
+        <div className="absolute w-full bottom-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
+        
+
         <div className="absolute w-full -bottom-20 h-72 md:h-full z-10 ">
+          <div className="flex flex-row">
           <World data={sampleArcs} globeConfig={globeConfig} />
-        </div>
+          <TypewriterEffect words={words}/>
+          </div>
+          
 
         <StarsBackground/>
         <ShootingStars maxDelay={1000} minDelay={500} maxSpeed={15}/>
