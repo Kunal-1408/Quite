@@ -445,17 +445,11 @@ export default function () {
         
 
         <div className="absolute w-full -bottom-20 h-72 md:h-full z-10 ">
-          <div className="flex flex-row">
           <World data={sampleArcs} globeConfig={globeConfig} />
-          <TypewriterEffect words={words}/>
-          </div>
-          
-
         <StarsBackground/>
         <ShootingStars maxDelay={1000} minDelay={500} maxSpeed={15}/>
-
-
         </div>
+        <TypewriterEffect words={words}/>
 
       </div>
     </div>

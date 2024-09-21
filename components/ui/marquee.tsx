@@ -111,14 +111,14 @@ export const Marquee = ({
       >
         {logos.map((item, idx) => (
           <li
-            className="w-[350px] max-w-full relative  border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
+            className="w-[350px] max-w-full relative  border border-b-0 flex-shrink-0 px-8 py-6 md:w-[450px]"
             style={{
               background:
-                "linear-gradient(180deg, var(--gray-800), var(--gray-900)",
+                "",
             }}
             key={idx}
           >
-            <Image src={item.src} alt={item.alt} fill={true}></Image>
+            <Image src={item.src} alt={item.alt} fill={true} className="grayscale hover:grayscale-0"></Image>
           </li>
         ))}
       </ul>
@@ -148,7 +148,7 @@ export const Marquee = ({
             }}
             key={idx}
           >
-            <Image src={item.src} alt={item.alt} fill={true} className=""></Image>
+            <Image src={item.src} alt={item.alt} fill={true} className="grayscale hover:grayscale-0"></Image>
           </li>
         ))}
       </ul>
