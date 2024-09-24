@@ -1,5 +1,5 @@
 'use client'
-import Hero  from "@/components/hero";
+import Hero  from "../components/hero";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { Label } from "../components/ui/label";
@@ -60,7 +60,7 @@ export default function Home() {
   };
   // const data = getData()
   return (
-    <main className="bg-white">
+    <main className=" dark:border-black">
       <Hero/>
       <HeroParallax products={products} />
       <div className="">

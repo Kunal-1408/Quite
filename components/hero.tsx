@@ -433,23 +433,23 @@ export default function () {
           }}
           className="div"
         >
-          {/* <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
+          <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
             The Ultimate Marketing Agency
           </h2>
           <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
             Reach New Horizons with <span className="text-orange-400"> Quite Good!</span>
-          </p> */}
+          </p>
           
         </motion.div>
         <div className="absolute w-full bottom-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
-        
+        <StarsBackground/>
+        <ShootingStars maxDelay={1000} minDelay={500} maxSpeed={15}/>
 
         <div className="absolute w-full -bottom-20 h-72 md:h-full z-10 ">
           <World data={sampleArcs} globeConfig={globeConfig} />
-        <StarsBackground/>
-        <ShootingStars maxDelay={1000} minDelay={500} maxSpeed={15}/>
+
         </div>
-        <TypewriterEffect words={words}/>
+        {/* <TypewriterEffect words={words}/> */}
 
       </div>
     </div>
