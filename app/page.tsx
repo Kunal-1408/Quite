@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
-import { Marquee } from "@/components/ui/marquee";
+import  Marquee  from "@/components/ui/marquee";
 import { FileUpload } from "@/components/ui/file-upload";
 import { useState } from "react";
 
@@ -60,7 +60,7 @@ export default function Home() {
   };
   // const data = getData()
   return (
-    <main className=" dark:border-black">
+    <main className="bg-white dark:bg-neutral-900">
       <Hero/>
       <HeroParallax products={products} />
       <div className="">
