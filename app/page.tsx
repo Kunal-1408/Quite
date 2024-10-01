@@ -1,13 +1,11 @@
 'use client'
 import Hero  from "../components/hero";
-import { HeroParallax } from "@/components/ui/hero-parallax";
-import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
+
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
-import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
+
+
 import  {Marquee}  from "@/components/ui/marquee";
 import { useState } from "react";
 import Cards from "@/components/service_cards";
@@ -54,10 +52,7 @@ const LabelInputContainer = ({
 
 export default function Home() {
   const [files, setFiles] = useState<File[]>([]);
-  const handleFileUpload = (files: File[]) => {
-    setFiles(files);
-    console.log(files);
-  };
+
   // const data = getData()
   return (
     <main className="bg-white dark:bg-neutral-900">
@@ -90,7 +85,7 @@ export default function Home() {
              <text>Drop us a line and we&apos;ll get back!!!</text>
             </p>
           </h1>
-          <div className="flex flex-col justify-between">
+          {/* <div className="flex flex-col justify-between">
           <div  className=" items-center flex flex-row mx-auto my-auto  ">
               <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
                 Business Queries
@@ -156,7 +151,7 @@ export default function Home() {
                 <FaLinkedin className="h-12 w-12 py-2 px-2 mx-auto"/>
               </Link>
           </div>
-          </div>
+          </div> */}
         </div>
           <div className="max-w-md w-full mx-auto rounded-none border-slate-400 md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
               <p className="text-2xl text-slate-700 text-bold py-5 ">Let us know your requirements!!</p>

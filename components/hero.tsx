@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { ShootingStars } from "./ui/shooting-stars";
 import { StarsBackground
  } from "./ui/stars";
-import { TypewriterEffect } from "./ui/typewriter-effect";
 const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
   ssr: false,
 });
@@ -417,7 +416,7 @@ export default function () {
   ];
 
   return (
-    <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto dark:bg-black  bg-white relative w-full">
+    <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto bg-gradient-to-b from-black from-0% via-neutral-600 w-full">
       <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
         <motion.div
           initial={{
@@ -433,15 +432,15 @@ export default function () {
           }}
           className="div"
         >
-          <h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
+          <h2 className="text-center text-xl md:text-4xl font-bold text-neutral-50 dark:text-white">
             The Ultimate Marketing Agency
           </h2>
-          <p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
+          <p className="text-center text-base md:text-lg font-normal text-neutral-50 dark:text-neutral-200 max-w-md mt-2 mx-auto">
             Reach New Horizons with <span className="text-orange-400"> Quite Good!</span>
           </p>
           
         </motion.div>
-        <div className="absolute w-full bottom-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
+        {/* <div className="absolute w-full bottom-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" /> */}
         <StarsBackground/>
         <ShootingStars maxDelay={1000} minDelay={500} maxSpeed={15}/>
 

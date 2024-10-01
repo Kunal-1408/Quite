@@ -19,7 +19,7 @@ function Navbar({ className }: { className?: string }) {
   const isSecond = activeLogo();
 
   const navbarClass = cn(
-    "fixed top-0 w-full max-w mx-auto z-50 transition-colors duration-300 flex ",
+    "fixed top-0 center w-full mx-auto z-50 transition-colors duration-300 flex px-10",
     className,
     {
       'bg-transparent text-white': !isSolid,
