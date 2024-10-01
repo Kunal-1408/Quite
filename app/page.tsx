@@ -5,13 +5,13 @@ import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
-
+import Image from "next/image";
 import Link from "next/link";
 import { FaInstagram, FaFacebook,FaTwitter,FaLinkedin } from "react-icons/fa";
-import  Marquee  from "@/components/ui/marquee";
-import { FileUpload } from "@/components/ui/file-upload";
+import  {Marquee}  from "@/components/ui/marquee";
 import { useState } from "react";
-
+import Cards from "@/components/service_cards";
+import Infor from "@/components/info";
 
 
 async function sendEmail() {
@@ -62,24 +62,25 @@ export default function Home() {
   return (
     <main className="bg-white dark:bg-neutral-900">
       <Hero/>
-      <HeroParallax products={products} />
-      <div className="">
-
-
+      {/* <HeroParallax products={products} /> */}
+      <Infor/>
+      <div className="flex flex-col bg mx-10 py-16">
+          <h2 className=" text-slate-900 font-extrabold text-5xl pb-5 " >Our Clients </h2>  
       </div>
-      <Marquee logos={images}/>
-      <div className="flex flex-col bg mx-20 pt-20">
-          <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Testimonials</h2>  
+      <Marquee logos={images} />
+      <div className="flex flex-col bg mx-10 pt-20">
+          <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Solutions</h2>  
           <h3 className=" text-slate-900  text-3xl  " >Others are okay but we are <span className="text-orange-400 font-bold">Quite Good</span></h3>  
       </div>
-      <div className="h-[30rem] rounded-md flex flex-col dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+      {/* <div className="h-[30rem] rounded-md flex flex-col dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
       
       <InfiniteMovingCards
         items={testimonials}
         direction="right"
         speed="slow"
       />
-      </div>
+      </div> */}
+      <Cards/>
       <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">
             <h1 className="font-bold text-5xl text-orange-500 dark:text-neutral-200 justify-center py-10">
@@ -182,9 +183,6 @@ export default function Home() {
                   <Label htmlFor="Query">Query</Label>
                   <Input id="Query" placeholder="....." type="text" />
                 </LabelInputContainer>
-                <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                  <FileUpload onChange={handleFileUpload} />
-                </div>
 
 
                 <button onClick={sendEmail}
@@ -294,8 +292,34 @@ const testimonials = [
   const images =[
     {
       src:'https://i.imgur.com/WUtsRM9.png',
+      alt:'second photo',
+  
+      
+    },    {
+      src:'https://i.imgur.com/WUtsRM9.png',
       alt:'first photo',
   
       
-    }
+    },    {
+      src:'https://i.imgur.com/WUtsRM9.png',
+      alt:'third photo',
+  
+      
+    },    {
+      src:'https://i.imgur.com/WUtsRM9.png',
+      alt:'fourth photo',
+  
+      
+    },    {
+      src:'https://i.imgur.com/WUtsRM9.png',
+      alt:'fifth photo',
+  
+      
+    },    {
+      src:'https://i.imgur.com/WUtsRM9.png',
+      alt:'sixth photo',
+  
+      
+    },
+    
   ];

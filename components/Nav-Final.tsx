@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { HoveredLink, Menu, MenuItem, useNavbarBackground,activeLogo, ProductItem,Item } from "./ui/navbar-menu";
+import { HoveredLink, Menu, MenuItem, useNavbarBackground,activeLogo,Item } from "./ui/navbar-menu";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
@@ -44,7 +44,7 @@ function Navbar({ className }: { className?: string }) {
         </div>
 
         
-        <div className="grow">
+        <div className="grow justify-between">
         <Menu setActive={setActive}>
         <Item title="Home" href="http://localhost:3000" >
         </Item>
@@ -57,14 +57,6 @@ function Navbar({ className }: { className?: string }) {
             </div>
           </MenuItem>
           <Item title="Works" href="/works"></Item>
-          <MenuItem setActive={setActive} active={active} item="Pricing">
-            <div className="flex flex-col space-y-4 text-sm">
-              <HoveredLink href="/hobby">Hobby</HoveredLink>
-              <HoveredLink href="/individual">Individual</HoveredLink>
-              <HoveredLink href="/team">Team</HoveredLink>
-              <HoveredLink href="/enterprise">Enterprise</HoveredLink>
-            </div>
-          </MenuItem>
           <Item title="About" href="/AboutUs" >
           </Item>
         </Menu>

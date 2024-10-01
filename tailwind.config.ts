@@ -15,7 +15,7 @@ const config = {
   prefix: "",
   theme: {
   	container: {
-  		center: 'true',
+  		
   		padding: '2rem',
   		screens: {
   			'2xl': '1400px'
@@ -66,22 +66,6 @@ const config = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		keyframes: {
-  			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
-  			},
-  			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
-  			},
   			aurora: {
   				from: {
   					backgroundPosition: '50% 50%, 50% 50%'
@@ -155,8 +139,8 @@ const config = {
   			fourth: 'moveHorizontal 40s ease infinite',
   			fifth: 'moveInCircle 20s ease infinite',
   			scroll: 'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite',
-  			marquee: 'marquee var(--duration) infinite linear',
-  			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite'
+ 			marquee: "marquee var(--duration) linear infinite",
+        	"marquee-vertical": "marquee-vertical var(--duration) linear infinite"
   		}
   	}
   },
