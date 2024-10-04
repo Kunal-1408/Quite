@@ -41,7 +41,10 @@ export default function Works (){
                   <LabelInputContainer>
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
-                    <DynamicCheckbox onIsActive={handleIsactive} tags={tag}/>
+                    {tag.map((tag)=>(
+                        <DynamicCheckbox onIsActive={handleIsactive} tags={tag}/>
+                    ))}
+                    
                 </div>
                 <div className="col-span-4 flex flex-row">
                   <div className="flex flex-1 col-span-4">
@@ -62,7 +65,21 @@ export default function Works (){
 
 };
 
-const tag =
-  {items:["Static","Dynamic","Micro"],
-    color:"blue"
+const tag =[
+  {title:"Site Type",
+    details:{items:["Static","Dynamic","Micro"],
+      color:"blue-400"
+    }
+  },
+  {title:"Industry",
+    details:{items:["Pharamceutical","Agriculture","Hardware","Mining","Fashion"],
+      color:"yellow-400"
+    }
+  },
+  {title:"Country",
+    details:{items:["India","Sri-Lanka","Dubai"],
+      color:"green-400"
+    }
   }
+
+]

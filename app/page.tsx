@@ -10,19 +10,61 @@ import  {Marquee}  from "@/components/ui/marquee";
 import { useState } from "react";
 import Cards from "@/components/service_cards";
 import Infor from "@/components/info";
-
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Choose from "@/components/choose";
 
 async function sendEmail() {
-  const res= fetch('/api/send',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json'
-    },
-  });
 
-  const data=(await res).json();
-
-  console.log(data);
+  event.preventDefault();
+  
+    try {
+      // Trigger toast before the fetch request
+      toast.info('Submitted!', { 
+        position: "bottom-left",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+  
+      // Fetch request
+      const res = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ /* your data */ }),
+      });
+  
+      // Handle response
+      const data = await res.json();
+  
+      if (res.ok) {
+        // Show success toast after email is successfully sent
+        toast.success('Email sent successfully!', { 
+          position: "bottom-left",
+          autoClose: 2000,
+          theme: "light",
+        });
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      // Assert error as Error type to access the message
+      const errorMessage = (error as Error).message || 'Unknown error occurred';
+      toast.error(`Error: ${errorMessage}`, { 
+        position: "bottom-left",
+        autoClose: 2000,
+        theme: "light",
+      });
+      console.log(error)
+    }
+  
 }
   
 const BottomGradient = () => {
@@ -51,30 +93,27 @@ const LabelInputContainer = ({
 
 
 export default function Home() {
-  const [files, setFiles] = useState<File[]>([]);
+  
 
   // const data = getData()
   return (
     <main className="bg-white dark:bg-neutral-900">
       <Hero/>
-      {/* <HeroParallax products={products} /> */}
+      
       <Infor/>
+      <h1 className=" text-slate-900 font-bold text-5xl pb-5 ml-5">Why Choose us?</h1>
+      <Choose/>
       <div className="flex flex-col bg mx-10 py-16">
           <h2 className=" text-slate-900 font-extrabold text-5xl pb-5 " >Our Clients </h2>  
       </div>
-      <Marquee logos={images} />
+      <div className="items-center ">
+        <Marquee logos={images} />
+      </div>
+      
       <div className="flex flex-col bg mx-10 pt-20">
           <h2 className=" text-slate-900 font-bold text-5xl pb-5 " >Solutions</h2>  
           <h3 className=" text-slate-900  text-3xl  " >Others are okay but we are <span className="text-orange-400 font-bold">Quite Good</span></h3>  
       </div>
-      {/* <div className="h-[30rem] rounded-md flex flex-col dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-      
-      <InfiniteMovingCards
-        items={testimonials}
-        direction="right"
-        speed="slow"
-      />
-      </div> */}
       <Cards/>
       <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">
@@ -187,6 +226,19 @@ export default function Home() {
                   Submit &rarr;
                   <BottomGradient />
                 </button>
+                <ToastContainer
+                    position="bottom-left"
+                    autoClose={2000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                    
+                    />
 
                 <div className="bg-gradient-to-r from-transparent via-orange-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 

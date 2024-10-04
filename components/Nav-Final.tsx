@@ -23,7 +23,7 @@ function Navbar({ className }: { className?: string }) {
     className,
     {
       'bg-transparent text-white': !isSolid,
-      'bg-white text-black shadow-md border-b-2 border-neutral-400': isSolid,
+      'bg-white  shadow-md border-b-2 border-neutral-400': isSolid,
     
     }
   );
@@ -39,7 +39,7 @@ function Navbar({ className }: { className?: string }) {
     >   
         <div className="bg-transparent grow-0">
         <Link href={"http://localhost:3000"}>
-          <Image src={logoClass} alt="logo" height={70} width={90} className="h-22"/>
+          <Image src={logoClass} alt="logo" height={50} width={90} className=""/>
         </Link>
         </div>
 

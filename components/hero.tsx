@@ -416,7 +416,7 @@ export default function () {
   ];
 
   return (
-    <div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto bg-gradient-to-b from-black from-0% via-neutral-600 w-full">
+    <div className="flex flex-row items-center justify-center py-20 max-h-screen md:h-auto bg-gradient-to-b from-black from-0% via-neutral-600 w-full">
       <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
         <motion.div
           initial={{
@@ -430,7 +430,7 @@ export default function () {
           transition={{
             duration: 1,
           }}
-          className="div"
+          className="div pt-10 h-full"
         >
           <h2 className="text-center text-xl md:text-4xl font-bold text-neutral-50 dark:text-white">
             The Ultimate Marketing Agency

@@ -96,7 +96,7 @@ export const Marquee = ({
             <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20  max-w-screen-2xl overflow-hidden  [mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)]",
+        "scroller relative z-20  max-w-screen-2xl overflow-hidden  ",
         className
       )}
     >
@@ -126,7 +126,7 @@ export const Marquee = ({
     <div
       ref={containerRef1}
       className={cn(
-        "scroller relative z-20  max-w-screen-2xl overflow-hidden  [mask-image:linear-gradient(to_right,transparent,white_8%,white_92%,transparent)]",
+        "scroller relative z-20  max-w-screen-2xl overflow-hidden  ",
         className
       )}
     >

@@ -14,6 +14,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'img1.wsimg.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
         hostname: 'assets.aceternity.com',
         port: '',
       },

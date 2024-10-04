@@ -1,6 +1,8 @@
+import Link from "next/link"
+
 export default function CMS(){
     return(
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-white">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-white min-h-screen w-full">
         <div className="flex items-center">
           <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
         </div>
@@ -9,9 +11,11 @@ export default function CMS(){
         >
           <div className="flex flex-col items-center gap-1 text-center">
             <h3 className="text-2xl font-bold tracking-tight">
-              Welcome to Content Management System
+              Welcome to <span className="text-orange-400"> Quite Good</span>
             </h3>
-            <button className="mt-4">Get Started</button>
+            <Link  href="/CMS/Dashboard" >
+            <button className="mt-4 bg-orange-400 text-sm text-white font-semibold h-10 px-4 py-2 border hover:bg-orange-500 rounded ">Get Started</button>
+            </Link>
           </div>
         </div>
       </main>
