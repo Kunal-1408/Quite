@@ -12,16 +12,26 @@ model Clients {
   Brand_Name  String  @map("Brand Name")
   Site_Type   String  @map("Site Type")
   URL         String?
-  description String? @map("description")
-  Tags        JSON?
+  description String
+  tags        Json
 }
 
-model Queries {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  firstName     String  @map("First Name")
-  lastName      String  @map("Last Name")
-  mobileNumber  BigInt  @map("Mobile Number")
-  email         String? @map("E-mail")
-  query         String  @map("Query")
+model Websites {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  backupDate          String?  @map("Backup Date") // Optional field with correct name
+  Content_Update_Date String? @map("Content Update Date")
+  Description         String
+  Status              String?
+  Tags                String
+  Title               String
+  URL                 String?
 }
 
+model queries {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  E_mail        String @map("E-mail")
+  First_Name    String @map("First Name")
+  Last_Name     String @map("Last Name")
+  Mobile_Number BigInt @map("Mobile Number")
+  Query         String
+}
