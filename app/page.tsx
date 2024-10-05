@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 
 
 import  {Marquee}  from "@/components/ui/marquee";
-import { useState } from "react";
 import Cards from "@/components/service_cards";
 import Infor from "@/components/info";
 import { Bounce, ToastContainer, toast } from 'react-toastify';

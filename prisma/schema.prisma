@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Clients {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId 
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
   Brand_Name  String  @map("Brand Name")
   Site_Type   String  @map("Site Type")
   URL         String?
@@ -18,13 +18,14 @@ model Clients {
 
 model Websites {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  backupDate          String?  @map("Backup Date") // Optional field with correct name
-  Content_Update_Date String? @map("Content Update Date")
+  Backup_Date         String?  @map("Backup Date")
+  Content_Update_Date String?  @map("Content Update Date")
   Description         String
   Status              String?
-  Tags                String
+  Tags                String[]
   Title               String
   URL                 String?
+  archive             Boolean
 }
 
 model queries {
