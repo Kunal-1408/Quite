@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   ArrowUpDown,
@@ -41,32 +41,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import prisma from "@/lib"
 
 interface Website {
   id: string
-  backupDate: string
-  Content_Update_Date: string
+  Backup_Date: string|null
+  Content_Update_Date: string|null
   Description: string
-  Status: string
+  Status: string|null
   Tags: string[]
   Title: string
-  URL: string
+  URL: string|null
   archive: boolean
 }
 
 // Mock function to simulate fetching data from a database
-const getWebsites = (page: number = 1, perPage: number = 10): { websites: Website[], total: number } => {
-  const allWebsites = Array.from({ length: 116 }, (_, i) => ({
-    id: `${i + 1}`,
-    backupDate: `2023-05-${(i % 30) + 1}`.padStart(10, '0'),
-    Content_Update_Date: `2023-05-${(i % 30) + 1}`.padStart(10, '0'),
-    Description: `Website ${i + 1} description`,
-    Status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Inactive" : "Archived",
-    Tags: [`tag${i % 5 + 1}`, `tag${i % 3 + 1}`],
-    Title: `Website ${i + 1}`,
-    URL: `https://example${i + 1}.com`,
-    archive: i % 5 === 0,
-  }))
+const getWebsites = async (page: number = 1, perPage: number = 10): Promise<{ websites: Website[]; total: number} > => {
+  const allWebsites =  await prisma.websites.findMany()
 
   const start = (page - 1) * perPage
   const end = start + perPage
@@ -82,6 +73,7 @@ const getAllTags = () => {
 }
 
 export default function Dashboard() {
+
   const [currentPage, setCurrentPage] = useState(1)
   const [activeTagManager, setActiveTagManager] = useState<string | null>(null)
   const [websites, setWebsites] = useState<Website[]>([])
@@ -237,7 +229,7 @@ export default function Dashboard() {
                         {activeTagManager === website.id && (
                           <div className="absolute z-10 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg">
                             <div className="p-2">
-                              <input 
+                              {/* <input 
                                 type="text" 
                                 placeholder="Add new tag" 
                                 className="w-full px-2 py-1 text-sm border rounded"
@@ -248,14 +240,14 @@ export default function Dashboard() {
                                   }
                                 }}
                                 onClick={(e) => e.stopPropagation()}
-                              />
+                              /> */}
                             </div>
                             <div className="p-2 max-h-60 overflow-y-auto">
-                              <div className="flex flex-wrap gap-1">
+                              <div className="flex flex-wrap gap-3">
                                 {allTags.filter(tag => !website.Tags.includes(tag)).map((tag, index) => (
                                   <span 
                                     key={index} 
-                                    className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(255,183,77)] transition duration-200"
+                                    className="bg-white/20 h-6 w-14 items-center text-gray-800 text-xs font-semibold me-2 px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-400 border border-blue-300 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0)] transition duration-200"
                                     onClick={(e) => {
                                       e.stopPropagation()
                                       addTag(website.id, tag)
@@ -303,7 +295,7 @@ export default function Dashboard() {
               </div>
               <div className="flex items-center space-x-2">
                 <button
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-4"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
                   onClick={prevPage}
                   disabled={currentPage === 1}
                 >
@@ -311,7 +303,7 @@ export default function Dashboard() {
                   Previous
                 </button>
                 <button
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-4"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
                   onClick={nextPage}
                   disabled={currentPage === totalPages}
                 >
