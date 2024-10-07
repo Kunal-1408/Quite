@@ -57,7 +57,6 @@ export const DynamicCheckbox: React.FC<Props> =({ onIsActive, tags }) =>  {
         )}
       </div>
       <div className="space-y-2 border-neutral-200">
-      {/* <hr className=" h-0.5 border-t-0 bg-neutral-200 dark:bg-white/10" /> */}
       <h2 className="text-neutral-500 font-medium">{tags.title}</h2>
         {tags.details.items.map(( items ) => (
           <div>
