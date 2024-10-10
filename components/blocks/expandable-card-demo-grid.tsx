@@ -1,72 +1,66 @@
-"use client";
-import Image from "next/image";
-import React, { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useOutsideClick } from "../hooks/use-outside-click";
-import { PrismaClient } from "@prisma/client";
+"use client"
 
-interface Props{
-  tags: string[]
+import Image from "next/image"
+import React, { useEffect, useId, useRef, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { X } from "lucide-react"
+
+interface Website {
+  id: string
+  Description: string
+  Status?: string
+  Tags: string[]
+  Title: string
+  URL?: string
 }
 
-const prisma= new PrismaClient
-
-async function main () {
-
-  const allUser= await prisma.clients.findMany();
-  console.log(allUser)
-
+interface ExpandableCardDemoProps {
+  websites: Website[]
+  filterTags?: string[]
+  imagePlaceholder: string
 }
 
+export default function ExpandableCardDemo({ websites, filterTags = [], imagePlaceholder }: ExpandableCardDemoProps) {
+  const [active, setActive] = useState<Website | null>(null)
+  const id = useId()
+  const ref = useRef<HTMLDivElement>(null)
 
-
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
-
-export const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
-
-  const filteredCards = tags.length
-  ? cards.filter(card =>
-      tags.every(tag => card.tags.includes(tag))
-    )
-  : cards;
-
-  const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
-    null
-  );
-  const id = useId();
-  const ref = useRef<HTMLDivElement>(null);
+  const filteredWebsites = filterTags.length
+    ? websites.filter((website) => filterTags.every((tag) => website.Tags.includes(tag)))
+    : websites
 
   useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
+    const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setActive(false);
+        setActive(null)
       }
     }
 
-    if (active && typeof active === "object") {
-      document.body.style.overflow = "hidden";
+    if (active) {
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"
     }
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [active]);
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [active])
 
-  useOutsideClick(ref, () => setActive(null));
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setActive(null)
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick)
+    return () => document.removeEventListener("mousedown", handleOutsideClick)
+  }, [ref])
 
   return (
     <>
       <AnimatePresence>
-        {active && typeof active === "object" && (
+        {active && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -76,403 +70,131 @@ export const ExpandableCardDemo: React.FC<Props> = ({ tags }) => {
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {active && typeof active === "object" ? (
-          <div className="fixed inset-0  grid place-items-center z-[100]">
+        {active && (
+          <div className="fixed inset-0 grid place-items-center z-[100]">
             <motion.button
-              key={`button-${active.title}-${id}`}
+              key={`button-${active.id}-${id}`}
               layout
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: 0.05,
-                },
-              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.05 } }}
               className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
               onClick={() => setActive(null)}
             >
-              <CloseIcon />
+              <X className="h-4 w-4" />
             </motion.button>
             <motion.div
-              layoutId={`card-${active.title}-${id}`}
+              layoutId={`card-${active.id}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px]  h-full md:h-fit md:max-h-[90%]  flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
+              <motion.div layoutId={`image-${active.id}-${id}`}>
                 <Image
                   priority
-                  width={200}
-                  height={200}
-                  src={active.src}
-                  alt={active.title}
+                  width={500}
+                  height={300}
+                  src={imagePlaceholder}
+                  alt={active.Title}
                   className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
                 />
               </motion.div>
 
-              <div>
-                <div className="flex justify-between items-start p-4">
-                  <div className="">
-                    <motion.h3
-                      layoutId={`title-${active.title}-${id}`}
-                      className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
-                    >
-                      {active.title}
-                    </motion.h3>
-                    <motion.p
-                      layoutId={`description-${active.description}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400 text-base"
-                    >
-                      {active.description}
-                    </motion.p>
-                  </div>
-
+              <div className="p-4">
+                <motion.h3
+                  layoutId={`title-${active.id}-${id}`}
+                  className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
+                >
+                  {active.Title}
+                </motion.h3>
+                <motion.p
+                  layoutId={`description-${active.id}-${id}`}
+                  className="text-neutral-600 dark:text-neutral-400 text-base mt-2"
+                >
+                  {active.Description}
+                </motion.p>
+                {active.URL && (
                   <motion.a
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    href={active.ctaLink}
+                    href={active.URL}
                     target="_blank"
-                    className="px-4 py-3 text-sm rounded-full font-bold bg-orange-400 text-white"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-4 px-4 py-2 text-sm rounded-full font-bold bg-primary text-primary-foreground"
                   >
-                    {active.ctaText}
+                    Visit Website
                   </motion.a>
-                </div>
-                <div className="items-start py-3 px-5">
-                  {active.tags?.map((tag, index) => (
+                )}
+                <div className="mt-4">
+                  {active.Tags.map((tag, index) => (
                     <motion.span
                       key={`${tag}-${index}-${id}`}
-                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{
-                        duration: 0.05,  
-                        ease: "easeInOut"  
-                      }}
+                      className="inline-block bg-secondary text-secondary-foreground text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-secondary-foreground/20 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] transition duration-200"
                     >
                       {tag}
                     </motion.span>
                   ))}
                 </div>
-                <div className="pt-4 relative px-4">
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
-                  >
-                    {typeof active.content === "function"
-                      ? active.content()
-                      : active.content}
-                  </motion.div>
-                </div>
+                {active.Status && (
+                  <div className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
+                    <p>Status: {active.Status}</p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
-        ) : null}
+        )}
       </AnimatePresence>
-      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1  items-start gap-4 py-10">
-        {filteredCards.map((card, index) => (
+      <ul className="max-w-5xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-10">
+        {filteredWebsites.map((website) => (
           <motion.div
-            layoutId={`card-${card.title}-${id}`}
-            key={card.title}
-            onClick={() => setActive(card)}
-            className="p-4 flex flex-col bg-neutral-50  hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+            layoutId={`card-${website.id}-${id}`}
+            key={website.id}
+            onClick={() => setActive(website)}
+            className="p-4 flex flex-col bg-card hover:bg-card/90 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-200"
           >
-            <div className="flex gap-4 flex-col  w-full">
-              <motion.div layoutId={`image-${card.title}-${id}`}>
-                <Image
-                  width={100}
-                  height={100}
-                  src={card.src}
-                  alt={card.title}
-                  className="h-60 w-full  rounded-lg object-cover object-top"
-                />
-              </motion.div>
-              <div className="flex justify-center items-center flex-col">
-                <motion.h3
-                  layoutId={`title-${card.title}-${id}`}
-                  className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left text-base"
-                >
-                  {card.title}
-                </motion.h3>
-                <motion.p
-                  layoutId={`description-${card.description}-${id}`}
-                  className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-base"
-                >
-                  {card.description}
-                </motion.p>
-                <div className="items-start py-3">
-                  {card.tags?.map((tag, index) => (
-                    <motion.span
-                      key={`${tag}-${index}-${id}`}
-                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{
-                        duration: 0.05,   
-                        ease: "easeInOut"  
-                      }}
-                    >
-                      {tag}
-                    </motion.span>
-                  ))}
-                </div>
-
-
+            <motion.div layoutId={`image-${website.id}-${id}`}>
+              <Image
+                width={400}
+                height={225}
+                src={imagePlaceholder}
+                alt={website.Title}
+                className="h-48 w-full rounded-lg object-cover object-top"
+              />
+            </motion.div>
+            <div className="mt-4">
+              <motion.h3
+                layoutId={`title-${website.id}-${id}`}
+                className="font-medium text-card-foreground text-lg"
+              >
+                {website.Title}
+              </motion.h3>
+              <motion.p
+                layoutId={`description-${website.id}-${id}`}
+                className="text-muted-foreground text-sm mt-2 line-clamp-2"
+              >
+                {website.Description}
+              </motion.p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {website.Tags.slice(0, 3).map((tag, index) => (
+                  <motion.span
+                    key={`${tag}-${index}-${id}`}
+                    className="bg-secondary text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded"
+                  >
+                    {tag}
+                  </motion.span>
+                ))}
+                {website.Tags.length > 3 && (
+                  <span className="text-muted-foreground text-xs">+{website.Tags.length - 3} more</span>
+                )}
               </div>
             </div>
           </motion.div>
         ))}
       </ul>
     </>
-  );
+  )
 }
 
-export const CloseIcon = () => {
-  return (
-    <motion.svg
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      exit={{
-        opacity: 0,
-        transition: {
-          duration: 0.05,
-        },
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-black"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-};
 
-const cards = [
-  {
-    description: "Lana Del Rey",
-    title: "Project0",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Static", "Dynamic"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Babbu Maan",
-    title: "Mitran Di Chhatri",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Static"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-
-  {
-    description: "Metallica",
-    title: "For Whom The Bell Tolls",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["Static", "Micro", "Dynamic"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Lord Himesh",
-    title: "Aap Ka Suroor",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Lana Del Rey",
-    title: "Project1",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Lana Del Rey",
-    title: "Project2",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },
-  {
-    description: "Lana Del Rey",
-    title: "Project3",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },{
-    description: "Lana Del Rey",
-    title: "Project4",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  },{
-    description: "Babbu Maan",
-    title: "Mitran Di Chhatri1",
-    src: "https://i.imgur.com/eLSAjEc.png",
-    ctaText: "Visit",
-    ctaLink: "https://ui.aceternity.com/templates",
-    tags: ["React", "Next.js", "Tailwind CSS"],
-    content: () => {
-      return (
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-           Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. 
-           Nulla maximus sed lacus sit amet suscipit. Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-            <br /> <br /> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Pellentesque venenatis, urna nec convallis congue, mauris purus sagittis leo, in euismod purus metus sed dolor.
-             Vestibulum pulvinar ullamcorper scelerisque. Fusce viverra eros eu risus semper fermentum. Nulla maximus sed lacus sit amet suscipit. 
-             Vivamus convallis tortor id eleifend congue. Pellentesque dictum nunc eu nulla condimentum suscipit. Ut imperdiet tristique tortor nec imperdiet. 
-             Nunc massa erat, convallis eu bibendum id, rhoncus sed nunc.
-        </p>
-      );
-    },
-  }
-];

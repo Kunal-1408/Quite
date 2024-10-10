@@ -43,13 +43,13 @@ import {
 
 interface Website {
   id: string
-  backupDate: string
-  Content_Update_Date: string
+  backupDate: string|null
+  Content_Update_Date: string|null
   Description: string
   Status: string
   Tags: string[]
   Title: string
-  URL: string
+  URL: string|null
   archive: boolean
 }
 interface TagGroup {
@@ -80,7 +80,9 @@ export default function Dashboard() {
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [isAddingWebsite, setIsAddingWebsite] = useState(false)
+  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [searchQuery, setSearchQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
   const [currentSearchQuery, setCurrentSearchQuery] = useState("")
   const [newWebsite, setNewWebsite] = useState<Website>({
     id: '',
@@ -100,26 +102,29 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchWebsites = async () => {
       try {
-        const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}&search=${currentSearchQuery}`, {
+        const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}`, {
           method: 'GET',
         })
         const data = await response.json()
         
         if (Array.isArray(data.websites)) {
           setWebsites(data.websites)
+          setFilteredWebsites(data.websites)
           setTotal(data.total)
         } else {
           console.error('Unexpected data structure:', data)
-          addNotification("Unexpected structure","error")
+          addNotification("","error")
         }
       } catch (error) {
         console.error('Error fetching websites:', error)
-        addNotification("failed to search","error")
+        addNotification("","error")
       }
     }
 
-    fetchWebsites()
-  }, [currentPage, currentSearchQuery])
+    if (!isSearching) {
+      fetchWebsites()
+    }
+  }, [currentPage, isSearching])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -335,13 +340,22 @@ export default function Dashboard() {
 
   }
   const executeSearch = () => {
-    setCurrentSearchQuery(searchQuery)
-    setCurrentPage(1) 
+    setIsSearching(true)
+    const lowercasedQuery = searchQuery.toLowerCase()
+    const filtered = websites.filter(website => 
+      (website.Title?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+      (website.Description?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+      (website.URL?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+      (website.Tags?.some(tag => tag.toLowerCase().includes(lowercasedQuery)) ?? false)
+    )
+    setFilteredWebsites(filtered)
+    setCurrentPage(1)
   }
   const clearSearch = () => {
     setSearchQuery("")
-    setCurrentSearchQuery("")
-    setCurrentPage(1) // Reset to first page when clearing search
+    setIsSearching(false)
+    setFilteredWebsites(websites)
+    setCurrentPage(1)
   }
 
   return (
@@ -423,19 +437,27 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {websites && websites.length > 0 ? (
-                   websites.map((website) => (
+                {filteredWebsites.length > 0 ? (
+                   filteredWebsites.map((website) => (
                     <TableRow key={website.id} className={website.archive ? "opacity-50" : ""}>
                       <TableCell className="font-medium">{website.Title}</TableCell>
                       <TableCell>{website.Description}</TableCell>
-                      <TableCell>
-                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          website.Status === "Active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}>
-                          {website.Status}
-                        </span>
+                      <TableCell onSelect={(e) => e.preventDefault()}>
+                      <label className="flex items-center cursor-pointer">
+                                <div className="relative">
+                                  <input
+                                    type="checkbox"
+                                    className="sr-only"
+                                    checked={website.archive}
+                                    onChange={() => toggleArchive(website.id)}
+                                  />
+                                  <div className={`block w-8 h-4 rounded-full ${website.archive ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                                  <div className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition ${website.archive ? 'transform translate-x-4' : ''}`}></div>
+                                </div>
+                                <div className="ml-3 text-sm font-medium">
+                                  {website.archive ? 'Unarchive' : 'Archive'}
+                                </div>
+                              </label>
                       </TableCell>
                       <TableCell>
                         {website.URL && (
@@ -484,7 +506,7 @@ export default function Dashboard() {
                               Edit
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} >
+                            {/* <DropdownMenuItem onSelect={(e) => e.preventDefault()} >
                             <label className="flex items-center cursor-pointer">
                                 <div className="relative">
                                   <input
@@ -500,7 +522,7 @@ export default function Dashboard() {
                                   {website.archive ? 'Unarchive' : 'Archive'}
                                 </div>
                               </label>
-                            </DropdownMenuItem>
+                            </DropdownMenuItem> */}
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
