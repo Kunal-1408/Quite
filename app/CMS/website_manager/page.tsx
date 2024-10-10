@@ -8,7 +8,6 @@ import {
   ChevronRight,
   File,
   Globe,
-  ListFilter,
   MoreHorizontal,
   PlusCircle,
   Search,
@@ -25,7 +24,6 @@ import {
 } from "@/components/ui/card"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -54,53 +52,81 @@ interface Website {
   URL: string
   archive: boolean
 }
-
-interface tags{
-  tag:{
-    type: string;
-    content: string[];
-  }
+interface TagGroup {
+  title: string
+  tags: string[]
+  color: string
 }
 
-
-
+interface Notification {
+  id: number
+  message: string
+  type: 'success' | 'error'
+}
 
 export default function Dashboard() {
-  // const [currentPage, setCurrentPage] = useState(1)
   const [activeTagManager, setActiveTagManager] = useState<string | null>(null)
 
-  const allTags = [{title:"Site Type",tags:["E-commerce","Dynamic","Micro"]},
-  {title:"Industry",tags:["Agriculture","Healthcare","Manufacturing","Fashion","Cosmetic"]},
-  {title:"Country",tags:["India","Dubai","Sri-Lanka"]}]
-
+  const allTags: TagGroup[] = [
+    {title:"Site Type", tags:["E-commerce","Dynamic","Micro"], color: "hsl(221, 83%, 53%)"},
+    {title:"Industry", tags:["Agriculture","Healthcare","Manufacturing","Fashion","Cosmetic"], color: "hsl(140, 71%, 45%)"},
+    {title:"Country", tags:["India","Dubai","Sri-Lanka"], color: "hsl(291, 64%, 42%)"}
+  ]
 
   const [editingWebsite, setEditingWebsite] = useState<string | null>(null)
   const [editedWebsite, setEditedWebsite] = useState<Website | null>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const [websites, setWebsites] = useState<Website[]>([]); 
-  const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const websitesPerPage = 10;
+  const [websites, setWebsites] = useState<Website[]>([])
+  const [total, setTotal] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isAddingWebsite, setIsAddingWebsite] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [currentSearchQuery, setCurrentSearchQuery] = useState("")
+  const [newWebsite, setNewWebsite] = useState<Website>({
+    id: '',
+    backupDate: '',
+    Content_Update_Date: new Date().toISOString().split('T')[0],
+    Description: '',
+    Status: 'Active',
+    Tags: [],
+    Title: '',
+    URL: '',
+    archive: false,
+  })
+  const [notifications, setNotifications] = useState<Notification[]>([])
+
+  const websitesPerPage = 10
 
   useEffect(() => {
     const fetchWebsites = async () => {
-      const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}`, {
-        method: 'GET',
-      });
-      const { websites, total } = await response.json();
+      try {
+        const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}&search=${currentSearchQuery}`, {
+          method: 'GET',
+        })
+        const data = await response.json()
+        
+        if (Array.isArray(data.websites)) {
+          setWebsites(data.websites)
+          setTotal(data.total)
+        } else {
+          console.error('Unexpected data structure:', data)
+          addNotification("Unexpected structure","error")
+        }
+      } catch (error) {
+        console.error('Error fetching websites:', error)
+        addNotification("failed to search","error")
+      }
+    }
 
-      setWebsites(websites);
-      setTotal(total);
-    };
-
-    fetchWebsites();
-  }, [currentPage]);
+    fetchWebsites()
+  }, [currentPage, currentSearchQuery])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
         setEditingWebsite(null)
         setEditedWebsite(null)
+        setIsAddingWebsite(false)
       }
     }
 
@@ -110,14 +136,14 @@ export default function Dashboard() {
     }
   }, [])
 
-  const totalPages = Math.ceil(total / websitesPerPage);
+
+  const totalPages = Math.ceil(total / websitesPerPage)
 
   const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages))
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1))
 
-
   const toggleTagManager = () => {
-    setActiveTagManager(activeTagManager ? null : editingWebsite)
+    setActiveTagManager(activeTagManager ? null : editingWebsite || 'new')
   }
 
   const addTag = (newTag: string) => {
@@ -125,6 +151,11 @@ export default function Dashboard() {
       setEditedWebsite({
         ...editedWebsite,
         Tags: [...new Set([...editedWebsite.Tags, newTag])]
+      })
+    } else if (isAddingWebsite) {
+      setNewWebsite({
+        ...newWebsite,
+        Tags: [...new Set([...newWebsite.Tags, newTag])]
       })
     }
   }
@@ -134,6 +165,11 @@ export default function Dashboard() {
       setEditedWebsite({
         ...editedWebsite,
         Tags: editedWebsite.Tags.filter(tag => tag !== tagToRemove)
+      })
+    } else if (isAddingWebsite) {
+      setNewWebsite({
+        ...newWebsite,
+        Tags: newWebsite.Tags.filter(tag => tag !== tagToRemove)
       })
     }
   }
@@ -149,65 +185,209 @@ export default function Dashboard() {
     }
   }
 
-  const updateWebsite = () => {
+  const addNotification = (message: string, type: 'success' | 'error') => {
+    const id = Date.now()
+    setNotifications(prev => [...prev, { id, message, type }])
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(notification => notification.id !== id))
+    }, 5000)
+  }
+
+
+  const updateWebsite = async () => {
     if (editedWebsite) {
-      setWebsites(websites.map(w => w.id === editedWebsite.id ? editedWebsite : w))
-      setEditingWebsite(null)
-      setEditedWebsite(null)
-      setActiveTagManager(null)
+      try {
+        const response = await fetch('/api/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            
+            ...editedWebsite,
+          }),
+        });
+
+        const updatedWebsite = await response.json();
+        
+        if (updatedWebsite) {
+          setWebsites(websites.map(w => w.id === updatedWebsite.id ? updatedWebsite : w))
+          setEditingWebsite(null)
+          setEditedWebsite(null)
+          setActiveTagManager(null)
+          addNotification("The website has been successfully updated.", "success")
+        } else {
+          throw new Error('Failed to update website')
+        }
+      } catch (error) {
+        console.error('Error updating website:', error)
+        addNotification("There was an error updating the website. Please try again.", "error")
+      }
     }
   }
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof Website) => {
+
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: keyof Website) => {
     if (editedWebsite) {
       setEditedWebsite({
         ...editedWebsite,
         [field]: e.target.value
       })
+    } else if (isAddingWebsite) {
+      setNewWebsite({
+        ...newWebsite,
+        [field]: e.target.value
+      })
     }
+  }
+
+  const addWebsite = async () => {
+    try {
+      const response = await fetch('/api/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newWebsite),
+      });
+
+      const addedWebsite = await response.json();
+      
+      if (addedWebsite) {
+        setWebsites([...websites, addedWebsite])
+        setTotal(total + 1)
+        setIsAddingWebsite(false)
+        setNewWebsite({
+          id: '',
+          backupDate: '',
+          Content_Update_Date: new Date().toISOString().split('T')[0],
+          Description: '',
+          Status: 'Active',
+          Tags: [],
+          Title: '',
+          URL: '',
+          archive: false,
+        })
+        addNotification("The website has been successfully added.", "success")
+      } else {
+        throw new Error('Failed to add website')
+      }
+    } catch (error) {
+      console.error('Error adding website:', error)
+      addNotification("There was an error adding the website. Please try again.", "error")
+    }
+  }
+
+  const toggleArchive = async (websiteId: string) => {
+    const websiteToUpdate = websites.find(w => w.id === websiteId)
+    if (websiteToUpdate) {
+      try {
+        const response = await fetch('/api/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: websiteId,
+            archive: !websiteToUpdate.archive,
+          }),
+        });
+
+        const updatedWebsite = await response.json();
+        
+        if (updatedWebsite) {
+          setWebsites(websites.map(website => 
+            website.id === updatedWebsite.id ? updatedWebsite : website
+          ))
+          addNotification(`The website has been ${updatedWebsite.archive ? 'archived' : 'unarchived'} successfully.`, "success")
+        } else {
+          throw new Error('Failed to update archive status')
+        }
+      } catch (error) {
+        console.error('Error updating archive status:', error)
+        addNotification("There was an error updating the website. Please try again.", "error")
+      }
+    }
+  }
+
+
+  const exportWebsites = () => {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "ID,Title,Description,Status,URL,Tags,Last Updated,Archived\n"
+      + websites.map(website => 
+          `${website.id},"${website.Title}","${website.Description}",${website.Status},${website.URL},"${website.Tags.join(', ')}",${website.Content_Update_Date},${website.archive}`
+        ).join("\n")
+
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement("a")
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", "websites_export.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+  const getTagColor = (tag: string) => {
+    const tagGroup = allTags.find(group => group.tags.includes(tag));
+    return tagGroup ? tagGroup.color : 'hsl(0, 0%, 50%)';
+  }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+
+  }
+  const executeSearch = () => {
+    setCurrentSearchQuery(searchQuery)
+    setCurrentPage(1) 
+  }
+  const clearSearch = () => {
+    setSearchQuery("")
+    setCurrentSearchQuery("")
+    setCurrentPage(1) // Reset to first page when clearing search
   }
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search websites..."
-              className="w-full bg-neutral-200 rounded-lg pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
+        <div className="flex items-center">
+              <Input
+                type="search"
+                placeholder="Search websites..."
+                className="w-full bg-neutral-200 rounded-l-lg pl-3 md:w-[200px] lg:w-[336px]"
+                value={searchQuery}
+                onChange={handleSearch}
+              />
+              <button 
+                className="rounded-l-none" 
+                onClick={executeSearch}
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+              {currentSearchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="ml-2 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+                  aria-label="Clear search"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-neutral-300 hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1">
-                    <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                      Filter
-                    </span>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Active
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Inactive</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-neutral-300 hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1">
+            <button
+            onClick={exportWebsites}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-neutral-300 hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1">
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Export
                 </span>
               </button>
-              <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 gap-1">
+              <button 
+              onClick={() => setIsAddingWebsite(true)}
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Website
@@ -227,7 +407,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[100px]">
-                      <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 p-0">
+                    <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 p-0">
                         Title
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </button>
@@ -243,8 +423,9 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {websites.map((website) => (
-                    <TableRow key={website.id}>
+                  {websites && websites.length > 0 ? (
+                   websites.map((website) => (
+                    <TableRow key={website.id} className={website.archive ? "opacity-50" : ""}>
                       <TableCell className="font-medium">{website.Title}</TableCell>
                       <TableCell>{website.Description}</TableCell>
                       <TableCell>
@@ -266,17 +447,29 @@ export default function Dashboard() {
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
-                          {website.Tags.map((tag, index) => (
-                            <span key={index} className="inline-flex items-center rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-medium text-orange-800">
-                              {tag}
-                            </span>
-                          ))}
+                        {website.Tags.map((tag, index) => {
+
+                              return (
+                                <span 
+                                key={index} 
+                                className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" 
+                                style={{
+                                  backgroundColor: `color-mix(in srgb, ${getTagColor(tag)} 25%, white)`,
+                                  color: getTagColor(tag),
+                                }}
+                              >
+                                {tag}
+                              </span>
+                              );
+                            })}
                         </div>
                       </TableCell>
+                      
                       <TableCell>{website.Content_Update_Date}</TableCell>
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
+                          
                             <button
                               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
                               aria-haspopup="true"
@@ -287,29 +480,49 @@ export default function Dashboard() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => toggleEdit(website)}>
+                            <DropdownMenuItem onClick={() => toggleEdit(website)} className="items-center">
                               Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>View Backups</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              {website.archive ? "Unarchive" : "Archive"}
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} >
+                            <label className="flex items-center cursor-pointer">
+                                <div className="relative">
+                                  <input
+                                    type="checkbox"
+                                    className="sr-only"
+                                    checked={website.archive}
+                                    onChange={() => toggleArchive(website.id)}
+                                  />
+                                  <div className={`block w-8 h-4 rounded-full ${website.archive ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                                  <div className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition ${website.archive ? 'transform translate-x-4' : ''}`}></div>
+                                </div>
+                                <div className="ml-3 text-sm font-medium">
+                                  {website.archive ? 'Unarchive' : 'Archive'}
+                                </div>
+                              </label>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-4">
+                        No websites found.
+                      </TableCell>
                     </TableRow>
-                  ))}
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
             <CardFooter className="flex items-center justify-between">
-              <div className="text-sm text-muted-foreground">
-                Showing <strong>{(currentPage - 1) * websitesPerPage + 1}-{Math.min(currentPage * websitesPerPage, total)}</strong> of <strong>{total}</strong> websites
-              </div>
+            <div className="text-sm text-muted-foreground">
+              Showing <strong>{websites.length > 0 ? (currentPage - 1) * websitesPerPage + 1 : 0}-{Math.min(currentPage * websitesPerPage, total)}</strong> of <strong>{total}</strong> websites
+            </div>
               <div className="flex items-center space-x-2">
-                <button
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
+              <button
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none  focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
                   onClick={prevPage}
                   disabled={currentPage === 1}
                 >
@@ -329,45 +542,41 @@ export default function Dashboard() {
           </Card>
         </main>
       </div>
-      {editingWebsite && editedWebsite && (
+      {(editingWebsite && editedWebsite) || isAddingWebsite ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div ref={popoverRef} className="bg-white rounded-lg p-6 w-[800px] max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4">Edit Website</h2>
+          <h2 className="text-xl font-bold mb-4">{isAddingWebsite ? "Add Website" : "Edit Website"}</h2>
             <div className="space-y-4">
               <div>
                 <label htmlFor="title" className="block text-md font-semibold text-gray-700">Title</label>
                 <Input
                   id="title"
-                  value={editedWebsite.Title}
-                  onChange={(e) => setEditedWebsite({...editedWebsite, Title: e.target.value})}
+                  value={isAddingWebsite ? newWebsite.Title : editedWebsite?.Title ?? ''}
+                  onChange={(e) => handleInputChange(e, 'Title')}
                   className="mt-1"
                 />
               </div>
               <div>
                 <label htmlFor="description" className="block text-md font-semibold text-gray-700">Description</label>
                 <Input
-                      id="description"
-                      value={editedWebsite.Description}
-                      onChange={(e) => handleInputChange(e, 'Description')}
-                      className="mt-1"
-                      onInput={(e) => {
-                        e.currentTarget.style.height = 'auto'
-                        e.currentTarget.style.height = e.currentTarget.scrollHeight + 'px'
-                      }}
-                      style={{
-                        minHeight: '100px',
-                        height: 'auto',
-                        overflow: 'hidden',
-                        resize: 'none',
-                      }}
-                  />
+                  id="description"
+                  value={isAddingWebsite ? newWebsite.Description : editedWebsite?.Description ?? ''}
+                  onChange={(e) => handleInputChange(e, 'Description')}
+                  className="mt-1"
+                  style={{
+                    minHeight: '100px',
+                    height: 'auto',
+                    overflow: 'hidden',
+                    resize: 'none',
+                  }}
+                />
               </div>
               <div>
                 <label htmlFor="status" className="block text-md font-semibold text-gray-700">Status</label>
                 <select
                   id="status"
-                  value={editedWebsite.Status}
-                  onChange={(e) => setEditedWebsite({...editedWebsite, Status: e.target.value})}
+                  value={isAddingWebsite ? newWebsite.Status : editedWebsite?.Status ?? ''}
+                  onChange={(e) => handleInputChange(e, 'Status')}
                   className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                 >
                   <option value="Active">Active</option>
@@ -379,93 +588,116 @@ export default function Dashboard() {
                 <label htmlFor="url" className="block text-md font-semibold text-gray-700">URL</label>
                 <Input
                   id="url"
-                  value={editedWebsite.URL}
-                  onChange={(e) => setEditedWebsite({...editedWebsite, URL: e.target.value})}
+                  value={isAddingWebsite ? newWebsite.URL : editedWebsite?.URL ?? ''}
+                  onChange={(e) => handleInputChange(e, 'URL')}
                   className="mt-1"
                 />
               </div>
               <div>
                 <label htmlFor="tags" className="block text-md font-semibold text-gray-700">Tags</label>
                 <div className="mt-1 flex flex-wrap gap-2 cursor-pointer" onClick={toggleTagManager}>
-                  {editedWebsite.Tags.map((tag, index) => (
-                    <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                      {tag}
-                    </span>
+                  {(isAddingWebsite ? newWebsite.Tags : editedWebsite?.Tags ?? []).map((tag, index) => (
+                    <span 
+                        key={index} 
+                        className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" 
+                        style={{
+                          backgroundColor: `color-mix(in srgb, ${getTagColor(tag)} 25%, white)`,
+                          color: getTagColor(tag),
+                        }}
+                      >
+                        {tag}
+                      </span>
                   ))}
                 </div>
                 {activeTagManager === editingWebsite && (
-                    <div className="mt-2 p-2 ">
-                      <div className="flex flex-col space-y-4">
-                        {allTags.map((title, index) => (
-                          <div key={index} className="pb-2 flex flex-col border border-dashed border-gray-200 rounded-md"> 
-                            <h5 className="text-neutral-400 text-md font-semibold mb-2">
-                              {title.title}
+                  <div className="mt-2 p-2 ">
+                    <div className="flex flex-col space-y-4">
+                      {allTags.map((tagGroup, index) => (
+                        <div key={index} className="pb-2 flex flex-col border border-dashed border-gray-200 rounded-md"> 
+                            <h5 className={`text-${tagGroup.color}-600 text-md font-semibold mb-2`}>
+                              {tagGroup.title}
                             </h5>
-                            <div className="flex flex-wrap gap-2 "> 
-                              {title.tags.map((tag, idx) => (
-                                <span
-                                  key={idx}
-                                  className={`cursor-pointer h-6 max-w-full flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border border-orange-300 hover:shadow-[3px_3px_0px_0px_rgba(0,0,0)] transition duration-200 ${
-                                    editedWebsite.Tags.includes(tag)
-                                      ? "bg-orange-200 text-orange-800"
-                                      : "bg-white/20 text-gray-800 hover:bg-gray-200"
-                                  }`}
-                                  onClick={() =>
-                                    editedWebsite.Tags.includes(tag) ? removeTag(tag) : addTag(tag)
-                                  }
-                                >
-                                  {tag}
-                                  {editedWebsite.Tags.includes(tag) && (
-                                    <X
-                                      className="ml-1 h-3 w-3"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeTag(tag);
-                                      }}
-                                    />
-                                  )}
-                                </span>
-                              ))}
-                            </div>
+                          <div className="flex flex-wrap gap-2 "> 
+                            {tagGroup.tags.map((tag, idx) => (
+                              <span
+                                key={idx}
+                                className="cursor-pointer h-6 max-w-full flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border hover:shadow-[3px_3px_0px_0px_rgba(0,0,0)] transition duration-200"
+                                style={{
+                                  backgroundColor: (isAddingWebsite ? newWebsite.Tags : editedWebsite?.Tags ?? []).includes(tag)
+                                    ? `color-mix(in srgb, ${tagGroup.color} 25%, white)`
+                                    : 'white',
+                                  color: tagGroup.color,
+                                  borderColor: tagGroup.color,
+                                }}
+                                
+                                onClick={() =>
+                                  (isAddingWebsite ? newWebsite.Tags : editedWebsite?.Tags ?? []).includes(tag) ? removeTag(tag) : addTag(tag)
+                                }
+                              >
+                                {tag}
+                                {(isAddingWebsite ? newWebsite.Tags : editedWebsite?.Tags ?? []).includes(tag) && (
+                                  <X
+                                    className="ml-1 h-3 w-3"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeTag(tag);
+                                    }}
+                                  />
+                                )}
+                              </span>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
-                  )}
-
+                  </div>
+                )}
               </div>
               <div>
                 <label htmlFor="lastUpdated" className="block text-sm font-medium text-gray-700">Last Updated</label>
                 <Input
                   id="lastUpdated"
                   type="date"
-                  value={editedWebsite.Content_Update_Date}
-                  onChange={(e) => setEditedWebsite({...editedWebsite, Content_Update_Date: e.target.value})}
+                  value={isAddingWebsite ? newWebsite.Content_Update_Date : editedWebsite?.Content_Update_Date ?? ''}
+                  onChange={(e) => handleInputChange(e, 'Content_Update_Date')}
                   className="mt-1"
                 />
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-3">
-              <button
+            <button
                 onClick={() => {
                   setEditingWebsite(null)
                   setEditedWebsite(null)
                   setActiveTagManager(null)
+                  setIsAddingWebsite(false)
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Cancel
               </button>
               <button
-                onClick={updateWebsite}
+                onClick={isAddingWebsite ? addWebsite : updateWebsite}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Save
+                {isAddingWebsite ? "Add" : "Save"}
               </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
+      <div className="fixed bottom-4 right-4 z-50">
+        {notifications.map((notification) => (
+          <div
+            key={notification.id}
+            className={`mb-2 p-4 rounded-md ${
+              notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`}
+          >
+            {notification.message}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

@@ -94,13 +94,13 @@ const LabelInputContainer = ({
 export default function Home() {
   
 
-  // const data = getData()
+ 
   return (
     <main className="bg-white dark:bg-neutral-900">
       <Hero/>
       
       <Infor/>
-      <h1 className=" text-slate-900 font-bold text-5xl pb-5 ml-5">Why Choose us?</h1>
+      <h1 className=" text-slate-900 font-bold text-5xl pb-5 mx-20">Why Choose us?</h1>
       <Choose/>
       <div className="flex flex-col bg mx-10 py-16">
           <h2 className=" text-slate-900 font-extrabold text-5xl pb-5 " >Our Clients </h2>  
@@ -123,73 +123,6 @@ export default function Home() {
              <text>Drop us a line and we&apos;ll get back!!!</text>
             </p>
           </h1>
-          {/* <div className="flex flex-col justify-between">
-          <div  className=" items-center flex flex-row mx-auto my-auto  ">
-              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-              <div
-                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
-              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-              <div
-                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
-              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-              <div
-                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
-              <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-
-          </div>
-           
-           <div  className=" items-start justify-between flex flex-row mx-auto my-auto  ">
-          <p className="text-md text-slate-600 py-2 px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-              <div
-                  className="h-20 min-h-[1em] w-px self-stretch bg-gradient-to-tr from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400"></div>
-              <p className="text-md text-slate-600 py-2  px-2 flex flex-col items-center">
-                Business Queries
-                <span className="text-sm text-slate-500 py-4">
-                    example@quitegood.com
-                </span>
-              </p>
-
-          </div>
-          <div className=" flex flex-row items-start py-8">
-              <Link href={"#"}>
-                <FaFacebook className="h-12 w-12 py-2 px-2 mx-auto"/>
-              </Link>
-              <Link href={"#"}>
-                <FaInstagram className="h-12 w-12 py-2 px-2 mx-auto"/> 
-              </Link>
-              <Link href={"#"}>
-                <FaTwitter className="h-12 w-12 py-2 px-2 mx-auto"/>
-              </Link>
-              <Link href={"#"}>
-                <FaLinkedin className="h-12 w-12 py-2 px-2 mx-auto"/>
-              </Link>
-          </div>
-          </div> */}
         </div>
           <div className="max-w-md w-full mx-auto rounded-none border-slate-400 md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
               <p className="text-2xl text-slate-700 text-bold py-5 ">Let us know your requirements!!</p>
@@ -282,59 +215,8 @@ const testimonials = [
     },
   ];
 
-  const products = [
-    {
-        title: "Product 1",
-        link: "https://example.com/product1",
-        thumbnail: "https://i.imgur.com/eLSAjEc.png"
-    },
-    {
-        title: "Product 2",
-        link: "https://example.com/product2",
-        thumbnail: "https://i.imgur.com/eLSAjEc.png"
-    },
-    {
-        title: "Product 3",
-        link: "https://example.com/product3",
-        thumbnail: "https://i.imgur.com/eLSAjEc.png"
-    },
-    {
-        title: "Product 4",
-        link: "https://example.com/product4",
-        thumbnail:"https://i.imgur.com/eLSAjEc.png"
-    },
-    {
-        title: "Product 5",
-        link: "https://example.com/product5",
-        thumbnail: "https://i.imgur.com/eLSAjEc.png"
-    },
-    {
-      title: "Product 1",
-      link: "https://example.com/product1",
-      thumbnail: "https://i.imgur.com/eLSAjEc.png"
-  },
-  {
-      title: "Product 2",
-      link: "https://example.com/product2",
-      thumbnail: "https://i.imgur.com/eLSAjEc.png"
-  },
-  {
-      title: "Product 3",
-      link: "https://example.com/product3",
-      thumbnail: "https://i.imgur.com/eLSAjEc.png"
-  },
-  {
-      title: "Product 4",
-      link: "https://example.com/product4",
-      thumbnail:"https://i.imgur.com/eLSAjEc.png"
-  },
-  {
-      title: "Product 5",
-      link: "https://example.com/product5",
-      thumbnail: "https://i.imgur.com/eLSAjEc.png"
-  }
+  
     
-  ];
   const images =[
     {
       src:'https://i.imgur.com/WUtsRM9.png',

@@ -96,14 +96,14 @@ export const Marquee = ({
             <div
       ref={containerRef}
       className={cn(
-        "scroller relative z-20  max-w-screen-2xl overflow-hidden  ",
+        "scroller relative z-20  max-w-7xl overflow-hidden   ",
         className
       )}
     >
       <ul
         ref={scrollerRef}
         className={cn(
-          " flex min-w-full shrink-0 w-max flex-nowrap",
+          " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
           start && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]",
           direction && "left"
@@ -126,14 +126,14 @@ export const Marquee = ({
     <div
       ref={containerRef1}
       className={cn(
-        "scroller relative z-20  max-w-screen-2xl overflow-hidden  ",
+        "scroller relative z-20  max-w-7xl overflow-hidden  ",
         className
       )}
     >
       <ul
         ref={scrollerRef1}
         className={cn(
-          " flex min-w-full shrink-0 w-max flex-nowrap",
+          "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
           Starter && "animate-scroll ",
           pauseOnHover && "hover:[animation-play-state:paused]",
           direction && "right"

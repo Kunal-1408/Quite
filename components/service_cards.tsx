@@ -44,7 +44,7 @@ export default function Cards() {
             className={`overflow-hidden transition-all duration-300 ${
               hoveredIndex === null || hoveredIndex === index
                 ? "hover:shadow-xl scale-100 blur-none"
-                : "scale-95 blur-sm"
+                : "scale-95 "
             }`}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}

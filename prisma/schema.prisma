@@ -7,15 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Clients {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  Brand_Name  String  @map("Brand Name")
-  Site_Type   String  @map("Site Type")
-  URL         String?
-  description String
-  tags        Json
-}
-
 model Websites {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   Backup_Date         String?  @map("Backup Date")
@@ -26,6 +17,15 @@ model Websites {
   Title               String
   URL                 String?
   archive             Boolean
+}
+
+model clients {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  Brand_Name  String  @map("Brand Name")
+  Site_Type   String  @map("Site Type")
+  URL         String?
+  description String
+  tags        Json
 }
 
 model queries {

@@ -40,25 +40,12 @@ export default function Choose() {
     }, [activeImage, previousImage])
   
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 overflow-hidden rounded-lg shadow-lg relative h-[500px]">
-        <img 
-          ref={imageRef}
-          src={previousImage} 
-          alt="Feature showcase" 
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
-        />
-        <img 
-          src={activeImage} 
-          alt="Feature showcase" 
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${isTransitioning ? 'opacity-100' : 'opacity-0'}`}
-        />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="container mx-auto  py-8 grid grid-cols-3 gap-10">
+         <div className="grid grid-rows-1 md:grid-rows-3 gap-4 col-span-1">
           {features.map((feature, index) => (
             <Card 
               key={index}
-              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-300 group h-64 ${
+              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-300 group h-64  ${
                 index === activeIndex ? 'ring-2 ring-primary' : ''
               }`}
               onMouseEnter={() => {
@@ -73,6 +60,20 @@ export default function Choose() {
             </Card>
           ))}
         </div>
+        <div className=" overflow-hidden rounded-lg shadow-lg relative h-[600px] w-[950px] mx-16 mt-20 col-span-2">
+        <img 
+          ref={imageRef}
+          src={previousImage} 
+          alt="Feature showcase" 
+          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
+        />
+        <img 
+          src={activeImage} 
+          alt="Feature showcase" 
+          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-500 ease-in-out ${isTransitioning ? 'opacity-100' : 'opacity-0'}`}
+        />
+        </div>
+       
       </div>
     )
   }
