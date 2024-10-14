@@ -21,6 +21,7 @@ interface ExpandableCardDemoProps {
 }
 
 export default function ExpandableCardDemo({ websites, filterTags = [], imagePlaceholder }: ExpandableCardDemoProps) {
+
   const [active, setActive] = useState<Website | null>(null)
   const id = useId()
   const ref = useRef<HTMLDivElement>(null)
@@ -121,7 +122,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [], imagePla
                     href={active.URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block mt-4 px-4 py-2 text-sm rounded-full font-bold bg-primary text-primary-foreground"
+                    className="inline-block mt-4 px-4 py-2 text-sm rounded-full font-bold  text-primary-foreground bg-orange-300 hover:bg-orange-400"
                   >
                     Visit Website
                   </motion.a>
@@ -130,29 +131,31 @@ export default function ExpandableCardDemo({ websites, filterTags = [], imagePla
                   {active.Tags.map((tag, index) => (
                     <motion.span
                       key={`${tag}-${index}-${id}`}
-                      className="inline-block bg-secondary text-secondary-foreground text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-secondary-foreground/20 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.1)] transition duration-200"
+                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        duration: 0.05,  
+                        ease: "easeInOut"  
+                      }}
                     >
                       {tag}
                     </motion.span>
                   ))}
                 </div>
-                {active.Status && (
-                  <div className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">
-                    <p>Status: {active.Status}</p>
-                  </div>
-                )}
+               
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-      <ul className="max-w-5xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 py-10">
+      <ul className="max-w-5xl mx-auto w-full grid grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1  items-start gap-4 py-10">
         {filteredWebsites.map((website) => (
           <motion.div
             layoutId={`card-${website.id}-${id}`}
             key={website.id}
             onClick={() => setActive(website)}
-            className="p-4 flex flex-col bg-card hover:bg-card/90 rounded-xl cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-200"
+            className="p-4 flex flex-col bg-neutral-50  hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
           >
             <motion.div layoutId={`image-${website.id}-${id}`}>
               <Image
@@ -160,27 +163,33 @@ export default function ExpandableCardDemo({ websites, filterTags = [], imagePla
                 height={225}
                 src={imagePlaceholder}
                 alt={website.Title}
-                className="h-48 w-full rounded-lg object-cover object-top"
+                className="h-60 w-full  rounded-lg object-cover object-top"
               />
             </motion.div>
             <div className="mt-4">
               <motion.h3
                 layoutId={`title-${website.id}-${id}`}
-                className="font-medium text-card-foreground text-lg"
+                className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left text-base"
               >
                 {website.Title}
               </motion.h3>
               <motion.p
                 layoutId={`description-${website.id}-${id}`}
-                className="text-muted-foreground text-sm mt-2 line-clamp-2"
+                className="text-neutral-600 dark:text-neutral-400 text-center md:text-left text-base"
               >
                 {website.Description}
               </motion.p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {website.Tags.slice(0, 3).map((tag, index) => (
                   <motion.span
-                    key={`${tag}-${index}-${id}`}
-                    className="bg-secondary text-secondary-foreground text-xs font-medium px-2 py-0.5 rounded"
+                      key={`${tag}-${index}-${id}`}
+                      className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{
+                        duration: 0.05,   
+                        ease: "easeInOut"  
+                      }}
                   >
                     {tag}
                   </motion.span>
