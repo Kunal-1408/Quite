@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ExpandableCardDemo  from "@/components/blocks/expandable-card-demo-grid";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { DynamicCheckbox } from "@/components/ui/checkbox-test";
+import  DynamicCheckbox  from "@/components/ui/checkbox-test";
 import { ChevronLeft, ChevronRight } from "lucide-react";
  
 interface Website {
@@ -71,9 +71,9 @@ export default function Works (){
                   <LabelInputContainer>
                       <Input id="Search" placeholder="Search" type="text" className="rounded" />
                     </LabelInputContainer>
-                    {tag.map((tag)=>(
-                        <DynamicCheckbox onIsActive={handleIsactive} tags={tag}/>
-                    ))}
+                    
+                        <DynamicCheckbox onIsActive={handleIsactive} tags={allTags}/>
+                  
                     
                 </div>
                 <div className="col-span-4 flex flex-col">
@@ -83,7 +83,7 @@ export default function Works (){
                       className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
                       <ExpandableCardDemo websites={websites} filterTags={active} imagePlaceholder="/website.png"/>
                   </div>
-              <div className="absolute right-0 bottom-0">
+              <div className="absolute bottom-0 right-0">
               <div className="flex items- space-x-2">
               <button
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none  focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-orange-400 text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
@@ -119,21 +119,8 @@ export default function Works (){
 
 };
 
-const tag =[
-  {title:"Site Type",
-    details:{items:["Static","Dynamic","Micro"],
-      color:"blue-400"
-    }
-  },
-  {title:"Industry",
-    details:{items:["Pharamceutical","Agriculture","Hardware","Mining","Fashion"],
-      color:"yellow-400"
-    }
-  },
-  {title:"Country",
-    details:{items:["India","Sri-Lanka","Dubai"],
-      color:"green-400"
-    }
-  }
-
+const allTags = [
+  {title:"Site Type", tags:["E-commerce","Dynamic","Micro"], color: "hsl(221, 83%, 53%)"},
+  {title:"Industry", tags:["Agriculture","Healthcare","Manufacturing","Fashion","Cosmetic"], color: "hsl(140, 71%, 45%)"},
+  {title:"Country", tags:["India","Dubai","Sri-Lanka"], color: "hsl(291, 64%, 42%)"}
 ]

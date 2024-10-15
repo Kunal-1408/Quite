@@ -6,6 +6,11 @@ import type { Config } from "tailwindcss"
 
 const config = {
   darkMode: ["class"],
+  safelist: [
+    {
+      pattern: /bg-(red|blue|green|yellow|purple|pink|indigo|gray)-(500|600)/,
+    },
+  ],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

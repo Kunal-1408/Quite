@@ -1,96 +1,91 @@
 "use client"
 
-import { useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
+import React, { useState } from "react"
 
-
-interface Props{
-  onIsActive: (active: string[])=> void;
-  tags:{
-    title: string,
-    details: {
-        items: string[];
-        color: string;
-    }
-  }
+interface TagGroup {
+  title: string;
+  tags: string[];
+  color: string;
 }
 
+interface Props {
+  onIsActive: (active: string[]) => void;
+  tags: TagGroup[];
+}
 
-export const DynamicCheckbox: React.FC<Props> =({ onIsActive, tags }) =>  {
-  
-
+export default function DynamicCheckbox({ onIsActive, tags }: Props) {
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const handleCheckboxChange = (item:string) => {
-    if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter((i) => i !== item))
-    } else {
-      setSelectedItems([...selectedItems, item])
-    }
-    
+
+  const handleCheckboxChange = (item: string) => {
     const updatedItems = selectedItems.includes(item)
       ? selectedItems.filter((i) => i !== item)
-      : [...selectedItems, item];
+      : [...selectedItems, item]
 
-    onIsActive(updatedItems);
-    
+    setSelectedItems(updatedItems)
+    onIsActive(updatedItems)
   }
-  console.log(tags);
+
+  const getColorForItem = (item: string): string => {
+    for (const tag of tags) {
+      if (tag.tags.includes(item)) {
+        return tag.color
+      }
+    }
+    return 'gray'
+  }
+
+  if (tags.length === 0) {
+    return <div className="text-center py-4">No tags available</div>
+  }
+
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        {selectedItems.length > 0 && (
-          <div className="inline-flex items-center rounded-md justify-between  px-2.5 py-0.5 text-xs font-semibold text-white">
-            {selectedItems.map((item) => (
-              <span key={item} className={`flex items-center border-rounded gap-2 px-2 bg-${tags.details.color}`}>
+    <div className="w-full max-w-md mx-auto space-y-4">
+      {selectedItems.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-4 p-2 bg-gray-100 rounded">
+          {selectedItems.map((item) => {
+            const color = getColorForItem(item)
+            return (
+              <span
+                key={item}
+                className={`inline-flex items-center px-2 py-1 rounded-full text-sm font-medium`}
+                style={{ backgroundColor: color, color: 'white' }}
+              >
                 {item}
                 <button
-                  className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-[#0070f3] focus:ring-offset-2"
-                  aria-label={`Remove ${item}`}
+                  className="ml-1 hover:bg-opacity-80 rounded-full p-0.5"
                   onClick={() => handleCheckboxChange(item)}
                 >
-                  <XIcon className="h-3 w-3" />
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                  <span className="sr-only">Remove {item}</span>
                 </button>
               </span>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="space-y-2 border-neutral-200">
-      <h2 className="text-neutral-500 font-medium">{tags.title}</h2>
-        {tags.details.items.map(( items ) => (
-          <div>
-            
-          <Label key={items} className="flex items-center gap-2 font-normal pt-2 hover:bg-neutral-200">
-            <Checkbox checked={selectedItems.includes(items)} onCheckedChange={() => handleCheckboxChange(items)} />
-            {items}
-          </Label>
-
-          </div>
-
-        ))}
-        <hr className=" h-0.5 border-t-0 bg-neutral-200 dark:bg-white/10" />
-      </div>
+            )
+          })}
+        </div>
+      )}
+      {tags.map((tagGroup, index) => (
+        <div key={index} className="space-y-2 border-t border-neutral-200 pt-4">
+          <h2 className="text-neutral-500 font-medium">{tagGroup.title}</h2>
+          {tagGroup.tags.map((item) => (
+            <div key={item} className="flex items-center space-x-2">
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  id={item}
+                  checked={selectedItems.includes(item)}
+                  onChange={() => handleCheckboxChange(item)}
+                  className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+                <label htmlFor={item} className="ml-2 block text-sm text-gray-900 cursor-pointer">
+                  {item}
+                </label>
+              </div>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
-  )
-}
- 
-function XIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
-    </svg>
   )
 }

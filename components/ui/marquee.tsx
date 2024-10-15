@@ -5,20 +5,20 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 export const Marquee = ({
-    logos,
-    direction ,
-    speed = "slow",
-    pauseOnHover = true,
-    className,
-  }: {
-    logos: {
-      src: string;
-      alt: string;
-    }[];
-    direction?: "left" | "right";
-    speed?: "fast" | "normal" | "slow";
-    pauseOnHover?: boolean;
-    className?: string;
+  logos,
+  direction,
+  speed = "slow",
+  pauseOnHover = true,
+  className,
+}: {
+  logos: {
+    src: string;
+    alt: string;
+  }[];
+  direction?: "left" | "right";
+  speed?: "fast" | "normal" | "slow";
+  pauseOnHover?: boolean;
+  className?: string;
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
@@ -27,8 +27,12 @@ export const Marquee = ({
 
   useEffect(() => {
     addAnimation();
+    addAnimation1();
   }, []);
+
   const [start, setStart] = useState(false);
+  const [starter, setStarter] = useState(false);
+
   function addAnimation() {
     if (containerRef.current && scrollerRef.current) {
       const scrollerContent = Array.from(scrollerRef.current.children);
@@ -40,15 +44,11 @@ export const Marquee = ({
         }
       });
 
-    //   getDirection();
       getSpeed();
       setStart(true);
     }
   }
-  useEffect(() => {
-    addAnimation1();
-  }, []);
-  const [Starter,setStarter] = useState(false);
+
   function addAnimation1() {
     if (containerRef1.current && scrollerRef1.current) {
       const scrollerContent = Array.from(scrollerRef1.current.children);
@@ -65,6 +65,7 @@ export const Marquee = ({
       setStarter(true);
     }
   }
+
   const getDirection = () => {
     if (containerRef.current) {
       if (direction === "left") {
@@ -80,6 +81,7 @@ export const Marquee = ({
       }
     }
   };
+
   const getSpeed = () => {
     if (containerRef.current) {
       if (speed === "fast") {
@@ -91,69 +93,73 @@ export const Marquee = ({
       }
     }
   };
-  return (
-    <div className="flex flex-col">
-            <div
-      ref={containerRef}
-      className={cn(
-        "scroller relative z-20  max-w-7xl overflow-hidden   ",
-        className
-      )}
-    >
-      <ul
-        ref={scrollerRef}
-        className={cn(
-          " flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
-          start && "animate-scroll ",
-          pauseOnHover && "hover:[animation-play-state:paused]",
-          direction && "left"
-        )}
-      >
-        {logos.map((item, idx) => (
-          <li
-            className="w-[350px] max-w-full relative  border border-b-0 flex-shrink-0 px-8 py-6 md:w-[450px]"
-            style={{
-              background:
-                "",
-            }}
-            key={idx}
-          >
-            <Image src={item.src} alt={item.alt} fill={true} className="grayscale hover:grayscale-0"></Image>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div
-      ref={containerRef1}
-      className={cn(
-        "scroller relative z-20  max-w-7xl overflow-hidden  ",
-        className
-      )}
-    >
-      <ul
-        ref={scrollerRef1}
-        className={cn(
-          "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
-          Starter && "animate-scroll ",
-          pauseOnHover && "hover:[animation-play-state:paused]",
-          direction && "right"
-        )}
-      >
-        {logos.map((item, idx) => (
-          <li
-            className="w-[350px] max-w-full relative border border-b-0 flex-shrink-0 border-slate-700 px-8 py-6 md:w-[450px]"
-            style={{
-              background:
-                "linear-gradient(180deg, var(--gray-800), var(--gray-900)",
-            }}
-            key={idx}
-          >
-            <Image src={item.src} alt={item.alt} fill={true} className="grayscale hover:grayscale-0"></Image>
-          </li>
-        ))}
-      </ul>
-    </div>
 
+  return (
+    <div className="flex flex-col w-full overflow-hidden">
+      <div
+        ref={containerRef}
+        className={cn(
+          "scroller relative z-20 w-full overflow-hidden",
+          className
+        )}
+      >
+        <ul
+          ref={scrollerRef}
+          className={cn(
+            "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+            start && "animate-scroll",
+            pauseOnHover && "hover:[animation-play-state:paused]",
+            direction === "left" ? "animate-scroll-left" : "animate-scroll-right"
+          )}
+        >
+          {logos.map((item, idx) => (
+            <li
+              className="w-[200px] h-[100px] max-w-full relative border border-b-0 flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
+              key={idx}
+            >
+              <Image 
+                src={item.src} 
+                alt={item.alt} 
+                fill={true} 
+                className="grayscale hover:grayscale-0 transition-all duration-300 object-contain p-2" 
+                style={{ objectFit: 'contain' }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div
+        ref={containerRef1}
+        className={cn(
+          "scroller relative z-20 w-full overflow-hidden",
+          className
+        )}
+      >
+        <ul
+          ref={scrollerRef1}
+          className={cn(
+            "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+            starter && "animate-scroll",
+            pauseOnHover && "hover:[animation-play-state:paused]",
+            direction === "left" ? "animate-scroll-right" : "animate-scroll-left"
+          )}
+        >
+          {logos.map((item, idx) => (
+            <li
+              className="w-[200px] h-[100px] max-w-full relative border border-b-0 flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
+              key={idx}
+            >
+              <Image 
+                src={item.src} 
+                alt={item.alt} 
+                fill={true} 
+                className="grayscale hover:grayscale-0 transition-all duration-300 object-contain p-2" 
+                style={{ objectFit: 'contain' }}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

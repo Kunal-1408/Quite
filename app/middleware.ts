@@ -1,30 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getToken } from 'next-auth/jwt'
 
-const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
+export async function middleware(request: NextRequest) {
+  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
 
-export async function middleware(req: NextRequest) {
-  const token = req.cookies.get('token');
-
-  
-  if (req.nextUrl.pathname.startsWith('/CMS')) {
+  if (request.nextUrl.pathname.startsWith('/CMS')) {
     if (!token) {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
-
-    try {
-      const decoded = jwt.verify(token, secretKey);
-      if (decoded.role !== 'admin') {
-        return NextResponse.redirect(new URL('/login', req.url));
-      }
-    } catch (error) {
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL('/login', request.url))
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/cms/:path*'],
-};
+  matcher: ['/CMS/:path*'],
+}

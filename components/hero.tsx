@@ -416,8 +416,8 @@ export default function () {
   ];
 
   return (
-    <div className="flex flex-row items-center justify-center py-20 max-h-screen md:h-auto bg-gradient-to-b from-black from-0% via-neutral-600 w-full">
-      <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
+    <div className="flex flex-row items-center justify-center py-20 max-h-full md:h-auto bg-gradient-to-b from-black from-0% via-neutral-600 w-full">
+      <div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[50rem] px-4">
         <motion.div
           initial={{
             opacity: 0,
@@ -448,7 +448,7 @@ export default function () {
           <World data={sampleArcs} globeConfig={globeConfig} />
 
         </div>
-        {/* <TypewriterEffect words={words}/> */}
+        
 
       </div>
     </div>
