@@ -6,6 +6,7 @@ import { BarChart, Bell, ChevronLeftIcon, ChevronRightIcon, CircleUser, Cog, Glo
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import Link from 'next/link'
+import { signOut, useSession } from 'next-auth/react'
 
 function ToggleButton({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSidebar: () => void }) {
   return (
@@ -24,6 +25,7 @@ export default function SidebarDemo() {
   const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+  const { data: session } = useSession()
 
   useEffect(() => {
     const checkViewport = () => {
@@ -62,6 +64,10 @@ export default function SidebarDemo() {
     }
   }
 
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    router.push('/login')
+  }
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <aside
@@ -91,7 +97,7 @@ export default function SidebarDemo() {
                               <DropdownMenuItem>Settings</DropdownMenuItem>
                               <DropdownMenuItem>Support</DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem>Logout</DropdownMenuItem>
+                              <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
                             </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

@@ -24,7 +24,7 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
   const isSecond = activeLogo()
 
   const navbarClass = cn(
-    "fixed top-0 w-full mx-auto z-50 transition-colors duration-300 flex items-center justify-between px-6 py-4",
+    "fixed top-0 w-full mx-auto z-50 transition-colors duration-300 flex items-center justify-between px-6",
     className,
     {
       'bg-transparent': !isSolid && isLandingPage,
@@ -47,7 +47,7 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
     <div className={navbarClass}>
       <div className="flex-shrink-0">
         <Link href="/">
-          <Image src={logoClass} alt="logo" width={120} height={60} className="w-auto h-12" />
+          <Image src={logoClass} alt="logo" width={70} height={70} className="" />
         </Link>
       </div>
 

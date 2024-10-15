@@ -40,7 +40,7 @@ export default function Choose() {
     }, [activeImage, previousImage])
   
     return (
-      <div className="container mx-auto  py-8 grid grid-cols-3 gap-10">
+      <div className="container  max-w-full mx-8  py-8 grid grid-cols-3 gap-10">
          <div className="grid grid-rows-1 md:grid-rows-3 gap-4 col-span-1">
           {features.map((feature, index) => (
             <Card 

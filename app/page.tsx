@@ -102,10 +102,10 @@ export default function Home() {
       <Infor/>
       <h1 className=" text-slate-900 font-bold text-5xl pb-5 mx-20">Why Choose us?</h1>
       <Choose/>
-      <div className="flex flex-col bg mx-10 py-16">
-          <h2 className=" text-slate-900 font-extrabold text-5xl pb-5 " >Our Clients </h2>  
+      <div className="flex flex-col bg mx-10 pt-16 pb-4">
+          <h2 className=" text-slate-900 font-extrabold text-5xl " >Our Clients </h2>  
       </div>
-      <div className="w-full py-12">
+      <div className="w-full pb-12 pt-4">
         <Marquee logos={images} />
       </div>
       
