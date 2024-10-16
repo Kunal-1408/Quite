@@ -76,23 +76,23 @@ export default function Component() {
   return (
     <section ref={sectionRef} className="w-full py-8 sm:py-12 md:py-16 lg:py-24 bg-white">
       <div className="w-full px-4 md:px-6">
-        <div className="flex flex-row space-y-8 md:space-y-12">
-          <div className="w-full">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent px-10 mb-4">
+        <div className="flex flex-col items-center space-y-8 md:space-y-12">
+          <div className="text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent mb-4">
               We are Quite Good
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 mb-4 px-10">
+            <p className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-600 mb-4">
               The Ultimate Marketing Agency
             </p>
-            <p className="text-sm sm:text-base md:text-lg text-gray-500 dark:text-gray-400 max-w-3xl px-10">
+            <p className="text-sm sm:text-base md:text-lg text-gray-500 dark:text-gray-400 max-w-3xl mx-auto">
               We build beautiful products with the latest technologies and frameworks.
               We are a team of passionate developers and designers that love to build
               amazing products.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
             {stats.map((item, index) => (
-              <Card key={index} className="relative bg-white border-2 border-orange-100 shadow-lg h-64 content-center hover:bg-neutral-200">
+              <Card key={index} className="relative  bg-white border-2 border-orange-100 shadow-lg hover:bg-neutral-200">
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white"></div>
                 <CardContent className="relative flex flex-col items-center justify-center p-4 sm:p-6">
                   <div className="flex items-center">
@@ -101,7 +101,7 @@ export default function Component() {
                       <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-400 ml-1">+</span>
                     )}
                   </div>
-                  <span className="text-sm font-semibold sm:text-sm md:text-base  text-neutral-500 mt-2 text-center">
+                  <span className="text-sm font-semibold sm:text-sm md:text-base text-neutral-500 mt-2 text-center">
                     {item.text}
                   </span>
                 </CardContent>

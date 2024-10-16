@@ -116,13 +116,14 @@ export default function Home() {
       <Cards/>
       <div className=" bg-white flex flex-row justify-between py-12">
         <div className="place-items-center flex-row px-5 py-5 mx-auto">
-            <h1 className="font-bold text-5xl text-orange-500 dark:text-neutral-200 justify-center py-10">
+            <h1 className="font-bold text-5xl text-orange-500 dark:text-neutral-200 justify-center py-10 mb-10">
               Want better Reach?
             <p className="text-slate-700 text-lg max-w-sm mt-2 dark:text-neutral-300 flex flex-col">
             <text>Connect with us!!</text>
              <text>Drop us a line and we&apos;ll get back!!!</text>
             </p>
           </h1>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13997.190483309128!2d77.178936!3d28.7106503!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d0354091c469d%3A0x6f369bf3f44dcee0!2sQuite%20Good%20%7C%20Adsversify%20Marketing%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1729075828599!5m2!1sen!2sin" width="500" height="250"  loading="lazy" ></iframe>
         </div>
           <div className="max-w-md w-full mx-auto rounded-none border-slate-400 md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
               <p className="text-2xl text-slate-700 text-bold py-5 ">Let us know your requirements!!</p>
@@ -187,32 +188,50 @@ export default function Home() {
     
   const images =[
     {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/budweiser-beer5343.jpg',
       alt:'second photo',
   
       
     },    {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/572_samuel_adams_logo.jpg',
       alt:'first photo',
   
       
     },    {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/493_carlsberg.jpg',
       alt:'third photo',
   
       
     },    {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/480_jagermeister_logo.jpg',
       alt:'fourth photo',
   
       
     },    {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/125_redbull.jpg',
       alt:'fifth photo',
   
       
     },    {
-      src:'https://i.imgur.com/WUtsRM9.png',
+      src:'https://logowik.com/content/uploads/images/867_heineken_14.jpg',
+      alt:'sixth photo',
+  
+      
+    },
+    {
+      src:'https://logowik.com/content/uploads/images/little-caesars.jpg',
+      alt:'sixth photo',
+  
+      
+    },
+    {
+      src:'https://logowik.com/content/uploads/images/586_iron_horse_logo.jpg',
+      alt:'sixth photo',
+  
+      
+    },
+    {
+      src:'https://logowik.com/content/uploads/images/587_brahma_logo.jpg',
       alt:'sixth photo',
   
       

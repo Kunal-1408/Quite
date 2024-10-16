@@ -29,6 +29,7 @@ export async function GET(request: Request) {
     });
 
     const total = await prisma.websites.count();
+    console.log(websites)
 
     return NextResponse.json({ websites, total });
   } catch (error) {

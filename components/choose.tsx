@@ -40,12 +40,12 @@ export default function Choose() {
     }, [activeImage, previousImage])
   
     return (
-      <div className="container  max-w-full mx-8  py-8 grid grid-cols-3 gap-10">
+      <div className="container  ml-36  py-8 grid grid-cols-3 gap-10">
          <div className="grid grid-rows-1 md:grid-rows-3 gap-4 col-span-1">
           {features.map((feature, index) => (
             <Card 
               key={index}
-              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-300 group h-64  ${
+              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-300 group w-96  ${
                 index === activeIndex ? 'ring-2 ring-primary' : ''
               }`}
               onMouseEnter={() => {

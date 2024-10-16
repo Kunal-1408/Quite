@@ -22,6 +22,16 @@ const nextConfig = {
         hostname: 'assets.aceternity.com',
         port: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'logowik.com',
+        port: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+        port: '',
+      }
     ],
   },
 };

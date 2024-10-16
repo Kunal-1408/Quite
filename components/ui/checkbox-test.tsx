@@ -41,7 +41,7 @@ export default function DynamicCheckbox({ onIsActive, tags }: Props) {
   return (
     <div className="w-full max-w-md mx-auto space-y-4">
       {selectedItems.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4 p-2 bg-gray-100 rounded">
+        <div className="flex flex-wrap gap-2 mb-4 p-2 bg-white rounded">
           {selectedItems.map((item) => {
             const color = getColorForItem(item)
             return (
@@ -66,8 +66,8 @@ export default function DynamicCheckbox({ onIsActive, tags }: Props) {
         </div>
       )}
       {tags.map((tagGroup, index) => (
-        <div key={index} className="space-y-2 border-t border-neutral-200 pt-4">
-          <h2 className="text-neutral-500 font-medium">{tagGroup.title}</h2>
+        <div key={index} className="space-y-2 ml-5 border-t border-neutral-200 pt-4">
+          <h2 className="text-neutral-700 font-bold text-2xl">{tagGroup.title}</h2>
           {tagGroup.tags.map((item) => (
             <div key={item} className="flex items-center space-x-2">
               <div className="relative flex items-center">
@@ -78,7 +78,7 @@ export default function DynamicCheckbox({ onIsActive, tags }: Props) {
                   onChange={() => handleCheckboxChange(item)}
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                 />
-                <label htmlFor={item} className="ml-2 block text-sm text-gray-900 cursor-pointer">
+                <label htmlFor={item} className="ml-2 block font-medium text-gray-900 cursor-pointer">
                   {item}
                 </label>
               </div>

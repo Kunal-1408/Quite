@@ -106,7 +106,7 @@ export const Marquee = ({
         <ul
           ref={scrollerRef}
           className={cn(
-            "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+            "flex min-w-full shrink-0 py-4 w-max flex-nowrap",
             start && "animate-scroll",
             pauseOnHover && "hover:[animation-play-state:paused]",
             direction === "left" ? "animate-scroll-left" : "animate-scroll-right"
@@ -114,20 +114,19 @@ export const Marquee = ({
         >
           {logos.map((item, idx) => (
             <li
-              className="w-[200px] h-[100px] max-w-full relative border border-b-0 flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
+              className="w-[200px] h-[100px] max-w-full relative flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
               key={idx}
             >
               <Image 
                 src={item.src} 
                 alt={item.alt} 
                 fill={true} 
-                className="grayscale hover:grayscale-0 transition-all duration-300 object-contain p-2" 
-                style={{ objectFit: 'contain' }}
+                className="grayscale transition-all duration-300 hover:grayscale-0 object-cover"
               />
             </li>
           ))}
         </ul>
-      </div>
+      </div> 
       <div
         ref={containerRef1}
         className={cn(
@@ -138,23 +137,23 @@ export const Marquee = ({
         <ul
           ref={scrollerRef1}
           className={cn(
-            "flex min-w-full shrink-0 gap-4 py-4 w-max flex-nowrap",
+            "flex min-w-full shrink-0  w-max flex-nowrap",
             starter && "animate-scroll",
             pauseOnHover && "hover:[animation-play-state:paused]",
-            direction === "left" ? "animate-scroll-right" : "animate-scroll-left"
+            direction === "left" ? "animate-scroll-right" : "animate-scroll-left",
+            speed==="slow"
           )}
         >
           {logos.map((item, idx) => (
             <li
-              className="w-[200px] h-[100px] max-w-full relative border border-b-0 flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
+              className="w-[200px] h-[100px] max-w-full relative flex-shrink-0 md:w-[250px] md:h-[125px] overflow-hidden"
               key={idx}
             >
               <Image 
                 src={item.src} 
                 alt={item.alt} 
                 fill={true} 
-                className="grayscale hover:grayscale-0 transition-all duration-300 object-contain p-2" 
-                style={{ objectFit: 'contain' }}
+                className="grayscale transition-all duration-300 hover:grayscale-0 object-cover"
               />
             </li>
           ))}
