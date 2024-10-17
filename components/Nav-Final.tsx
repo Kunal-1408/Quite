@@ -33,8 +33,8 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
   )
 
   const logoClass = cn({
-    '/QG BLACK.png': !isSecond && isLandingPage,
-    'Logo.svg': isSecond || !isLandingPage,
+    '/Logo-02.png': !isSecond && isLandingPage,
+    '/Logo-01.png': isSecond || !isLandingPage,
   })
 
   const textColorClass = isLandingPage
@@ -45,9 +45,15 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
 
   return (
     <div className={navbarClass}>
-      <div className="flex-shrink-0">
+      <div className="flex-shrink-0 w-48 h-20 flex items-center ml-12">
         <Link href="/">
-          <Image src={logoClass} alt="logo" width={70} height={70} className="" />
+          <Image 
+            src={logoClass} 
+            alt="logo" 
+            width={4500} 
+            height={4500} 
+            className="w-auto h-full object-contain"
+          />
         </Link>
       </div>
 
@@ -57,7 +63,7 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
             <Item title="Home" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
             <MenuItem setActive={setActive} active={active} item="Services" isLandingPage={isLandingPage} isSolid={isSolid}>
               <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/web-dev">Web Development</HoveredLink>
+                <HoveredLink href="/services/web">Web Development</HoveredLink>
                 <HoveredLink href="/interface-design">Interface Design</HoveredLink>
                 <HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
                 <HoveredLink href="/branding">Branding</HoveredLink>
@@ -70,7 +76,7 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
       </div>
 
       {/* This empty div balances the layout */}
-      <div className="flex-shrink-0 w-[120px]"></div>
+      <div className="flex-shrink-0 w-48"></div>
     </div>
   )
 }

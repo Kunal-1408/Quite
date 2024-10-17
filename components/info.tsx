@@ -90,7 +90,7 @@ export default function Component() {
               amazing products.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-[1500px] ">
             {stats.map((item, index) => (
               <Card key={index} className="relative  bg-white border-2 border-orange-100 shadow-lg hover:bg-neutral-200">
                 <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white"></div>

@@ -44,13 +44,13 @@ export default function Component() {
               className={`overflow-hidden h-[450px] transition-all duration-300 w-full min-w-[250px] relative group ${
                 hoveredIndex === null || hoveredIndex === index
                   ? "hover:shadow-xl scale-100 blur-none"
-                  : "scale-95 blur-[2px]"
+                  : "scale-90 blur-[2px] grayscale"
               }`}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div 
-                className="absolute inset-0 bg-cover bg-center transition-all duration-300 filter grayscale group-hover:grayscale-0"
+                className="absolute inset-0 bg-cover bg-center transition-all duration-300"
                 style={{ backgroundImage: `url(${service.image})` }}
               ></div>
               <div className="relative z-10 bg-black bg-opacity-50 h-full transition-all duration-300 group-hover:bg-opacity-30">
@@ -77,13 +77,13 @@ export default function Component() {
                 className={`overflow-hidden h-[450px] transition-all duration-300 w-full min-w-[250px] relative group ${
                   hoveredIndex === null || hoveredIndex === index + 3
                     ? "hover:shadow-xl scale-100 "
-                    : "scale-95 blur-[1px]"
+                    : "scale-90 blur-[2px] grayscale"
                 }`}
                 onMouseEnter={() => setHoveredIndex(index + 3)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div 
-                  className="absolute inset-0 bg-cover bg-center transition-all duration-300 filter grayscale group-hover:grayscale-0"
+                  className="absolute inset-0 bg-cover bg-center transition-all duration-300 filter "
                   style={{ backgroundImage: `url(${service.image})` }}
                 ></div>
                 <div className="relative z-10 bg-black bg-opacity-50 h-full transition-all duration-300 group-hover:bg-opacity-30">

@@ -40,12 +40,12 @@ export default function Choose() {
     }, [activeImage, previousImage])
   
     return (
-      <div className="container  ml-36  py-8 grid grid-cols-3 gap-10">
+      <div className="container  w-full  py-8 grid grid-cols-3 gap-10">
          <div className="grid grid-rows-1 md:grid-rows-3 gap-4 col-span-1">
           {features.map((feature, index) => (
             <Card 
               key={index}
-              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-300 group w-96  ${
+              className={`cursor-pointer transition-all duration-300 ease-in-out hover:bg-neutral-100 group h-fit  ${
                 index === activeIndex ? 'ring-2 ring-primary' : ''
               }`}
               onMouseEnter={() => {
@@ -60,7 +60,7 @@ export default function Choose() {
             </Card>
           ))}
         </div>
-        <div className=" overflow-hidden rounded-lg shadow-lg relative h-[600px] w-[950px] mx-16 mt-20 col-span-2">
+        <div className=" overflow-hidden rounded-lg shadow-lg relative h-[550px] w-[950px] mx-16  col-span-2">
         <img 
           ref={imageRef}
           src={previousImage} 

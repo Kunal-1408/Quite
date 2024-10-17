@@ -14,7 +14,7 @@ interface Website {
   Tags: string[]
   Title: string
   URL?: string
-  Images: string[]
+  Images: string
 }
 
 const LabelInputContainer = ({
@@ -60,7 +60,10 @@ export default function Works() {
   }
 
   return (
-    <div className="bg-white min-h-screen relative pb-20">
+    <div className="bg-white min-h-screen  relative pb-20">
+      <div className="mx-16">
+
+      
       <div className="max-w-7xl pt-20 md:pt-40 pb-10 px-4 w-full top-0 border-b-2 border-orange-100">
         <h1 className="text-xl md:text-7xl font-bold dark:text-white">
           Here's a peek at our <span className="text-orange-400">works</span>
@@ -76,7 +79,7 @@ export default function Works() {
         <div className="col-span-4 flex flex-col">
           <div className="flex flex-1 col-span-4">
             <div className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
-            <ExpandableCardDemo websites={websites} filterTags={active} imagePlaceholder="/website.png" />
+            <ExpandableCardDemo websites={websites} filterTags={active}  />
           </div>
         </div>
       </div>
@@ -100,6 +103,7 @@ export default function Works() {
         <div className="text-sm text-muted-foreground">
           Showing <strong>{websites.length > 0 ? (currentPage - 1) * websitesPerPage + 1 : 0}-{Math.min(currentPage * websitesPerPage, total)}</strong> of <strong>{total}</strong> websites
         </div>
+      </div>
       </div>
     </div>
   )

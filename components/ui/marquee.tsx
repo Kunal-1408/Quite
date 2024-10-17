@@ -99,7 +99,7 @@ export const Marquee = ({
       <div
         ref={containerRef}
         className={cn(
-          "scroller relative z-20 w-full overflow-hidden",
+          "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]",
           className
         )}
       >
@@ -121,7 +121,7 @@ export const Marquee = ({
                 src={item.src} 
                 alt={item.alt} 
                 fill={true} 
-                className="grayscale transition-all duration-300 hover:grayscale-0 object-cover"
+                className=" transition-all duration-300 object-cover"
               />
             </li>
           ))}
@@ -130,7 +130,7 @@ export const Marquee = ({
       <div
         ref={containerRef1}
         className={cn(
-          "scroller relative z-20 w-full overflow-hidden",
+          "scroller relative z-20 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]",
           className
         )}
       >
@@ -153,7 +153,7 @@ export const Marquee = ({
                 src={item.src} 
                 alt={item.alt} 
                 fill={true} 
-                className="grayscale transition-all duration-300 hover:grayscale-0 object-cover"
+                className=" transition-all duration-300 object-cover"
               />
             </li>
           ))}
