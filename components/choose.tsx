@@ -34,7 +34,7 @@ export default function Choose() {
         const timer = setTimeout(() => {
           setPreviousImage(activeImage)
           setIsTransitioning(false)
-        }, 500) // This should match the transition duration in the CSS
+        }, 500) 
         return () => clearTimeout(timer)
       }
     }, [activeImage, previousImage])

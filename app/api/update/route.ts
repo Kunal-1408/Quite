@@ -16,7 +16,8 @@ export async function POST(request: Request) {
           Status: data.Status,
           Tags: data.Tags,
           Description: data.Description,
-          archive: data.archive, // Update the specific 'archive' field
+          archive: data.archive,
+          highlighted:  data.highlighted// Update the specific 'archive' field
         },
       });
       return NextResponse.json(updatedRecord);
@@ -28,7 +29,8 @@ export async function POST(request: Request) {
           Status: data.Status,
           Tags: data.Tags,
           Description: data.Description,
-          archive: data.archive, // Include this field for the new record
+          archive: data.archive,
+          highlighted: data.highlighted // Include this field for the new record
         },
       });
       return NextResponse.json(newRecord, { status: 201 }); // 201 Created

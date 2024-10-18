@@ -15,6 +15,7 @@ interface Website {
   Title: string
   URL?: string
   Images: string
+  highlighted:boolean
 }
 
 const LabelInputContainer = ({

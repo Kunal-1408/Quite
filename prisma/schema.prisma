@@ -18,6 +18,7 @@ model Websites {
   Title               String
   URL                 String?
   archive             Boolean
+  highlighted         Boolean
 }
 
 model clients {
@@ -27,6 +28,10 @@ model clients {
   URL         String?
   description String
   tags        Json
+}
+
+model credentials {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 model queries {

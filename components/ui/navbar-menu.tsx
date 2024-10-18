@@ -83,7 +83,7 @@ export const MenuItem = ({
       <div onMouseEnter={() => setActive(item)} className="relative ">
         <motion.p
           transition={{ duration: 0.3 }}
-          className={`cursor-pointer hover:opacity-[0.9] ${textColorClass}`} 
+          className={`font-semibold text-lg cursor-pointer hover:opacity-[0.9] ${textColorClass}`} 
         >
           {item}
         </motion.p>
@@ -174,7 +174,7 @@ export const HoveredLink = ({ children, ...rest }: any) => {
   return (
     <Link
       {...rest}
-      className="text-neutral-700 dark:text-neutral-200 hover:text-black "
+      className="text-neutral-700 dark:text-neutral-200 hover:text-black  "
     >
       {children}
     </Link>
@@ -202,7 +202,7 @@ export const Item = ({
     <Link
       href={href}
       scroll={false}
-      className={`cursor-pointer hover:opacity-[0.9] ${textColor}`}
+      className={`font-semibold text-lg cursor-pointer hover:opacity-[0.9] ${textColor}`}
     >
       {title}
     </Link>

@@ -11,6 +11,7 @@ import {
   MoreHorizontal,
   PlusCircle,
   Search,
+  Star,
   X,
 } from "lucide-react"
 
@@ -40,7 +41,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-
 interface Website {
   id: string
   backupDate: string|null
@@ -51,7 +51,9 @@ interface Website {
   Title: string
   URL: string|null
   archive: boolean
+  highlighted: boolean
 }
+
 interface TagGroup {
   title: string
   tags: string[]
@@ -66,6 +68,18 @@ interface Notification {
 
 export default function Dashboard() {
   const [activeTagManager, setActiveTagManager] = useState<string | null>(null)
+  const [editingWebsite, setEditingWebsite] = useState<string | null>(null)
+  const [editedWebsite, setEditedWebsite] = useState<Website | null>(null)
+  const popoverRef = useRef<HTMLDivElement>(null)
+  const [websites, setWebsites] = useState<Website[]>([])
+  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
+  const [total, setTotal] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [isAddingWebsite, setIsAddingWebsite] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const websitesPerPage = 10
 
   const allTags: TagGroup[] = [
     {title:"Site Type", tags:["E-commerce","Dynamic","Micro"], color: "hsl(221, 83%, 53%)"},
@@ -73,17 +87,6 @@ export default function Dashboard() {
     {title:"Country", tags:["India","Dubai","Sri-Lanka"], color: "hsl(291, 64%, 42%)"}
   ]
 
-  const [editingWebsite, setEditingWebsite] = useState<string | null>(null)
-  const [editedWebsite, setEditedWebsite] = useState<Website | null>(null)
-  const popoverRef = useRef<HTMLDivElement>(null)
-  const [websites, setWebsites] = useState<Website[]>([])
-  const [total, setTotal] = useState(0)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isAddingWebsite, setIsAddingWebsite] = useState(false)
-  const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [isSearching, setIsSearching] = useState(false)
-  const [currentSearchQuery, setCurrentSearchQuery] = useState("")
   const [newWebsite, setNewWebsite] = useState<Website>({
     id: '',
     backupDate: '',
@@ -94,37 +97,12 @@ export default function Dashboard() {
     Title: '',
     URL: '',
     archive: false,
+    highlighted: false
   })
-  const [notifications, setNotifications] = useState<Notification[]>([])
-
-  const websitesPerPage = 10
 
   useEffect(() => {
-    const fetchWebsites = async () => {
-      try {
-        const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}`, {
-          method: 'GET',
-        })
-        const data = await response.json()
-        
-        if (Array.isArray(data.websites)) {
-          setWebsites(data.websites)
-          setFilteredWebsites(data.websites)
-          setTotal(data.total)
-        } else {
-          console.error('Unexpected data structure:', data)
-          addNotification("","error")
-        }
-      } catch (error) {
-        console.error('Error fetching websites:', error)
-        addNotification("","error")
-      }
-    }
-
-    if (!isSearching) {
-      fetchWebsites()
-    }
-  }, [currentPage, isSearching])
+    fetchWebsites()
+  }, [currentPage])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -140,7 +118,66 @@ export default function Dashboard() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+  const toggleHighlight = async (websiteId: string) => {
+    const websiteToUpdate = websites.find(w => w.id === websiteId)
+    if (websiteToUpdate) {
+      try {
+        // Optimistically update the UI
+        const updatedWebsites = websites.map(website =>
+          website.id === websiteId ? { ...website, highlighted: !website.highlighted } : website
+        )
+        setWebsites(updatedWebsites)
+        setFilteredWebsites(updatedWebsites)
 
+        const response = await fetch('/api/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: websiteId,
+            highlighted: !websiteToUpdate.highlighted,
+          }),
+        });
+
+        const updatedWebsite = await response.json();
+        
+        if (updatedWebsite) {
+          addNotification(`The website has been ${updatedWebsite.highlighted ? 'highlighted' : 'unhighlighted'} successfully.`, "success")
+        } else {
+          // If the API call fails, revert the optimistic update
+          setWebsites(websites)
+          setFilteredWebsites(filteredWebsites)
+          throw new Error('Failed to update highlight status')
+        }
+      } catch (error) {
+        console.error('Error updating highlight status:', error)
+        addNotification("There was an error updating the website. Please try again.", "error")
+      }
+    }
+  }
+
+
+  const fetchWebsites = async () => {
+    try {
+      const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}`, {
+        method: 'GET',
+      })
+      const data = await response.json()
+      
+      if (Array.isArray(data.websites)) {
+        setWebsites(data.websites)
+        setFilteredWebsites(data.websites)
+        setTotal(data.total)
+      } else {
+        console.error('Unexpected data structure:', data)
+        addNotification("Unexpected data structure received", "error")
+      }
+    } catch (error) {
+      console.error('Error fetching websites:', error)
+      addNotification("Failed to fetch websites", "error")
+    }
+  }
 
   const totalPages = Math.ceil(total / websitesPerPage)
 
@@ -198,7 +235,6 @@ export default function Dashboard() {
     }, 5000)
   }
 
-
   const updateWebsite = async () => {
     if (editedWebsite) {
       try {
@@ -207,16 +243,18 @@ export default function Dashboard() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            
-            ...editedWebsite,
-          }),
+          body: JSON.stringify(editedWebsite),
         });
 
         const updatedWebsite = await response.json();
         
         if (updatedWebsite) {
-          setWebsites(websites.map(w => w.id === updatedWebsite.id ? updatedWebsite : w))
+          setWebsites(prevWebsites => 
+            prevWebsites.map(w => w.id === updatedWebsite.id ? updatedWebsite : w)
+          )
+          setFilteredWebsites(prevFiltered => 
+            prevFiltered.map(w => w.id === updatedWebsite.id ? updatedWebsite : w)
+          )
           setEditingWebsite(null)
           setEditedWebsite(null)
           setActiveTagManager(null)
@@ -230,7 +268,6 @@ export default function Dashboard() {
       }
     }
   }
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: keyof Website) => {
     if (editedWebsite) {
@@ -259,8 +296,9 @@ export default function Dashboard() {
       const addedWebsite = await response.json();
       
       if (addedWebsite) {
-        setWebsites([...websites, addedWebsite])
-        setTotal(total + 1)
+        setWebsites(prevWebsites => [...prevWebsites, addedWebsite])
+        setFilteredWebsites(prevFiltered => [...prevFiltered, addedWebsite])
+        setTotal(prevTotal => prevTotal + 1)
         setIsAddingWebsite(false)
         setNewWebsite({
           id: '',
@@ -272,6 +310,7 @@ export default function Dashboard() {
           Title: '',
           URL: '',
           archive: false,
+          highlighted: false
         })
         addNotification("The website has been successfully added.", "success")
       } else {
@@ -301,9 +340,12 @@ export default function Dashboard() {
         const updatedWebsite = await response.json();
         
         if (updatedWebsite) {
-          setWebsites(websites.map(website => 
-            website.id === updatedWebsite.id ? updatedWebsite : website
-          ))
+          setWebsites(prevWebsites => 
+            prevWebsites.map(website => website.id === updatedWebsite.id ? updatedWebsite : website)
+          )
+          setFilteredWebsites(prevFiltered => 
+            prevFiltered.map(website => website.id === updatedWebsite.id ? updatedWebsite : website)
+          )
           addNotification(`The website has been ${updatedWebsite.archive ? 'archived' : 'unarchived'} successfully.`, "success")
         } else {
           throw new Error('Failed to update archive status')
@@ -315,11 +357,10 @@ export default function Dashboard() {
     }
   }
 
-
   const exportWebsites = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
       + "ID,Title,Description,Status,URL,Tags,Last Updated,Archived\n"
-      + websites.map(website => 
+      + filteredWebsites.map(website => 
           `${website.id},"${website.Title}","${website.Description}",${website.Status},${website.URL},"${website.Tags.join(', ')}",${website.Content_Update_Date},${website.archive}`
         ).join("\n")
 
@@ -331,14 +372,16 @@ export default function Dashboard() {
     link.click()
     document.body.removeChild(link)
   }
+
   const getTagColor = (tag: string) => {
     const tagGroup = allTags.find(group => group.tags.includes(tag));
     return tagGroup ? tagGroup.color : 'hsl(0, 0%, 50%)';
   }
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
-
   }
+
   const executeSearch = () => {
     setIsSearching(true)
     const lowercasedQuery = searchQuery.toLowerCase()
@@ -351,6 +394,7 @@ export default function Dashboard() {
     setFilteredWebsites(filtered)
     setCurrentPage(1)
   }
+
   const clearSearch = () => {
     setSearchQuery("")
     setIsSearching(false)
@@ -362,46 +406,52 @@ export default function Dashboard() {
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-        <div className="flex items-center">
+          <div className="flex items-center">
+            <div className="relative w-full max-w-sm">
               <Input
                 type="search"
                 placeholder="Search websites..."
-                className="w-full bg-neutral-200 rounded-l-lg pl-3 md:w-[200px] lg:w-[336px]"
+                className="w-full pr-20"
                 value={searchQuery}
                 onChange={handleSearch}
               />
-              <button 
-                className="rounded-l-none" 
-                onClick={executeSearch}
-                aria-label="Search"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-              {currentSearchQuery && (
-                <button
-                  onClick={clearSearch}
-                  className="ml-2 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
-                  aria-label="Clear search"
+              <div className="absolute inset-y-0 right-0 flex items-center">
+                <button 
+                  className="h-full px-2 text-gray-400 hover:text-gray-600" 
+                  onClick={executeSearch}
+                  aria-label="Search"
                 >
-                  <X className="h-4 w-4" />
+                  <Search className="h-4 w-4" />
                 </button>
-              )}
+                {isSearching && (
+                  <button
+                    onClick={clearSearch}
+                    className="h-full px-2 text-gray-400 hover:text-gray-600"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
             </div>
+          </div>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
-            <button
-            onClick={exportWebsites}
-            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-neutral-300 hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1">
-                <File className="h-3.5 w-3.5" />
+              <button
+                onClick={exportWebsites}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-neutral-300 hover:bg-accent hover:text-accent-foreground h-8 px-3 gap-1"
+              >
+                <File  className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Export
                 </span>
               </button>
               <button 
-              onClick={() => setIsAddingWebsite(true)}
-              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 gap-1">
+                onClick={() => setIsAddingWebsite(true)}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 gap-1"
+              >
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Add Website
@@ -421,7 +471,7 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[100px]">
-                    <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 p-0">
+                      <button className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 p-0">
                         Title
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </button>
@@ -437,42 +487,44 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                {filteredWebsites.length > 0 ? (
-                   filteredWebsites.map((website) => (
-                    <TableRow key={website.id} className={website.archive ? "opacity-50" : ""}>
-                      <TableCell className="font-medium">{website.Title}</TableCell>
-                      <TableCell>{website.Description}</TableCell>
-                      <TableCell onSelect={(e) => e.preventDefault()}>
-                      <label className="flex items-center cursor-pointer">
-                                <div className="relative">
-                                  <input
-                                    type="checkbox"
-                                    className="sr-only"
-                                    checked={website.archive}
-                                    onChange={() => toggleArchive(website.id)}
-                                  />
-                                  <div className={`block w-8 h-4 rounded-full ${website.archive ? 'bg-primary' : 'bg-gray-300'}`}></div>
-                                  <div className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition ${website.archive ? 'transform translate-x-4' : ''}`}></div>
-                                </div>
-                                <div className="ml-3 text-sm font-medium">
-                                  {website.archive ? 'Unarchive' : 'Archive'}
-                                </div>
-                              </label>
-                      </TableCell>
-                      <TableCell>
-                        {website.URL && (
-                          <Link href={website.URL} className="flex items-center gap-1 text-blue-500 hover:underline">
-                            <Globe className="h-4 w-4" />
-                            {website.URL}
-                          </Link>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                        {website.Tags.map((tag, index) => {
-
-                              return (
-                                <span 
+                  {filteredWebsites.length > 0 ? (
+                    filteredWebsites.map((website) => (
+                      <TableRow key={website.id} className={website.archive ? "opacity-50" : ""}>
+                        <TableCell className="font-medium">{website.Title}</TableCell>
+                        <TableCell className="max-w-md">
+                    <div className="line-clamp-3 overflow-hidden text-ellipsis">
+                      {website.Description}
+                    </div>
+                  </TableCell>
+                        <TableCell onSelect={(e) => e.preventDefault()}>
+                          <label className="flex items-center cursor-pointer">
+                            <div className="relative">
+                              <input
+                                type="checkbox"
+                                className="sr-only"
+                                checked={website.archive}
+                                onChange={() => toggleArchive(website.id)}
+                              />
+                              <div className={`block w-8 h-4 rounded-full ${website.archive ? 'bg-primary' : 'bg-gray-300'}`}></div>
+                              <div className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition ${website.archive ? 'transform translate-x-4' : ''}`}></div>
+                            </div>
+                            <div className="ml-3 text-sm font-medium">
+                              {website.archive ? 'Unarchive' : 'Archive'}
+                            </div>
+                          </label>
+                        </TableCell>
+                        <TableCell>
+                          {website.URL && (
+                            <Link href={website.URL} className="flex items-center gap-1 text-blue-500 hover:underline">
+                              <Globe className="h-4 w-4" />
+                              {website.URL}
+                            </Link>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {website.Tags.map((tag, index) => (
+                              <span 
                                 key={index} 
                                 className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" 
                                 style={{
@@ -482,49 +534,38 @@ export default function Dashboard() {
                               >
                                 {tag}
                               </span>
-                              );
-                            })}
-                        </div>
-                      </TableCell>
-                      
-                      <TableCell>{website.Content_Update_Date}</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                          
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>{website.Content_Update_Date}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
+                                aria-haspopup="true"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => toggleEdit(website)} className="items-center">
+                                Edit
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                        <TableCell>
                             <button
-                              className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0"
-                              aria-haspopup="true"
+                              onClick={() => toggleHighlight(website.id)}
+                              className={`p-1 rounded-full ${
+                                website.highlighted ? 'text-yellow-500' : 'text-gray-300'
+                              } hover:text-yellow-500 transition-colors`}
                             >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
+                              <Star className="h-5 w-5" fill={website.highlighted ? 'currentColor' : 'none'} />
                             </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => toggleEdit(website)} className="items-center">
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            {/* <DropdownMenuItem onSelect={(e) => e.preventDefault()} >
-                            <label className="flex items-center cursor-pointer">
-                                <div className="relative">
-                                  <input
-                                    type="checkbox"
-                                    className="sr-only"
-                                    checked={website.archive}
-                                    onChange={() => toggleArchive(website.id)}
-                                  />
-                                  <div className={`block w-8 h-4 rounded-full ${website.archive ? 'bg-primary' : 'bg-gray-300'}`}></div>
-                                  <div className={`dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition ${website.archive ? 'transform translate-x-4' : ''}`}></div>
-                                </div>
-                                <div className="ml-3 text-sm font-medium">
-                                  {website.archive ? 'Unarchive' : 'Archive'}
-                                </div>
-                              </label>
-                            </DropdownMenuItem> */}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
                       </TableCell>
                       </TableRow>
                     ))
@@ -539,12 +580,12 @@ export default function Dashboard() {
               </Table>
             </CardContent>
             <CardFooter className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
-              Showing <strong>{websites.length > 0 ? (currentPage - 1) * websitesPerPage + 1 : 0}-{Math.min(currentPage * websitesPerPage, total)}</strong> of <strong>{total}</strong> websites
-            </div>
+              <div className="text-sm text-muted-foreground">
+                Showing <strong>{filteredWebsites.length > 0 ? (currentPage - 1) * websitesPerPage + 1 : 0}-{Math.min(currentPage * websitesPerPage, filteredWebsites.length)}</strong> of <strong>{filteredWebsites.length}</strong> websites
+              </div>
               <div className="flex items-center space-x-2">
-              <button
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none  focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
+                <button
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
                   onClick={prevPage}
                   disabled={currentPage === 1}
                 >
@@ -567,7 +608,7 @@ export default function Dashboard() {
       {(editingWebsite && editedWebsite) || isAddingWebsite ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div ref={popoverRef} className="bg-white rounded-lg p-6 w-[800px] max-h-[90vh] overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4">{isAddingWebsite ? "Add Website" : "Edit Website"}</h2>
+            <h2 className="text-xl font-bold mb-4">{isAddingWebsite ? "Add Website" : "Edit Website"}</h2>
             <div className="space-y-4">
               <div>
                 <label htmlFor="title" className="block text-md font-semibold text-gray-700">Title</label>
@@ -687,7 +728,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-3">
-            <button
+              <button
                 onClick={() => {
                   setEditingWebsite(null)
                   setEditedWebsite(null)

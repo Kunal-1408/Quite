@@ -3,7 +3,7 @@
 import Image from "next/image"
 import React, { useEffect, useId, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { X } from "lucide-react"
+import { Star, X } from "lucide-react"
 
 interface Website {
   id: string
@@ -13,6 +13,7 @@ interface Website {
   Title: string
   URL?: string
   Images: string
+  highlighted: boolean
 }
 
 interface ExpandableCardDemoProps {
@@ -29,6 +30,12 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
   const filteredWebsites = filterTags.length
     ? websites.filter((website) => filterTags.every((tag) => website.Tags.includes(tag)))
     : websites
+
+    const sortedWebsites = [...filteredWebsites].sort((a, b) => {
+      if (a.highlighted && !b.highlighted) return -1
+      if (!a.highlighted && b.highlighted) return 1
+      return 0
+    })
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -89,17 +96,34 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
               ref={ref}
               className="w-full max-w-[800px] h-[800px] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
-              <motion.div layoutId={`image-${active.id}-${id}`} className="relative h-[400px] overflow-hidden">
-                <Image
-                  priority
-                  fill
-                  src={active.Images}
-                  alt={`${active.Title} - Full Image`}
-                  className="object-cover object-top"
-                />
-              </motion.div>
+              <div className="m-4">
+                <motion.div layoutId={`image-${active.id}-${id}`} className="relative h-[400px] overflow-hidden rounded-xl">
+                  <motion.div
+                    animate={{
+                      y: ["0%", "-62.5%", "-62.5%", "0%"],
+                    }}
+                    transition={{
+                      y: {
+                        duration: 20,
+                        repeat: Infinity,
+                        ease: "linear",
+                      },
+                    }}
+                    className="absolute inset-0 w-full"
+                    style={{ height: "268.75%" }}  
+                  >
+                    <Image
+                      priority
+                      fill
+                      src={active.Images}
+                      alt={`${active.Title} - Full Image`}
+                      className="object-cover object-top"
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
 
-              <div className="p-6">
+              <div className="p-6 flex flex-col h-full">
                 <div className="flex flex-row justify-between items-center">
                   <motion.h3
                     layoutId={`title-${active.id}-${id}`}
@@ -124,27 +148,31 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
                   )}
                 </div>
                 
-                <div className="mt-6">
-                  {active.Tags.map((tag, index) => (
-                    <motion.span
-                      key={`${tag}-${index}-${id}`}
-                      className="bg-white/0.2 text-gray-800 text-sm font-medium me-2 px-3 py-1 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{
-                        duration: 0.05,   
-                        ease: "easeInOut"  
-                      }}
-                    >
-                      {tag}
-                    </motion.span>
-                  ))}
-                  <motion.p
+                <div className="mt-6 flex-grow flex flex-col">
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {active.Tags.map((tag, index) => (
+                      <motion.span
+                        key={`${tag}-${index}-${id}`}
+                        className="bg-white/0.2 text-gray-800 text-sm font-medium px-3 py-1 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{
+                          duration: 0.05,   
+                          ease: "easeInOut"  
+                        }}
+                      >
+                        {tag}
+                      </motion.span>
+                    ))}
+                  </div>
+                  <motion.div
                     layoutId={`description-${active.id}-${id}`}
-                    className="text-neutral-600 mt-6 text-base lg:text-lg h-48 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                    className="flex-grow overflow-y-auto pr-2"
                   >
-                    {active.Description}
-                  </motion.p>
+                    <p className="text-neutral-600 text-base lg:text-lg dark:text-neutral-400">
+                      {active.Description}
+                    </p>
+                  </motion.div>
                 </div>
               </div>
             </motion.div>
@@ -152,7 +180,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
         )}
       </AnimatePresence>
       <ul className="max-w-7xl mx-auto w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 py-10">
-        {filteredWebsites.map((website) => (
+      {sortedWebsites.map((website) => (
           <motion.div
             key={website.id}
             onMouseEnter={() => handleMouseEnter(website)}
@@ -164,24 +192,30 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
           >
             <motion.div 
               layoutId={`image-${website.id}-${id}`} 
-              className="relative overflow-hidden"
+              className="relative overflow-hidden rounded-xl"
               animate={{
                 height: hoveredWebsite === website ? 300 : 192,
               }}
               transition={{ duration: 0.3 }}
             >
+              {website.highlighted && (
+                <div className="absolute top-2 right-2 z-10">
+                  <Star className="h-6 w-6 text-yellow-500" fill="currentColor" />
+                </div>
+              )}
               <motion.div
                 animate={{
-                  y: hoveredWebsite === website ? ["0%", "-62.5%"] : "0%",
+                  y: hoveredWebsite === website ? ["0%", "-62.5%", "-62.5%", "0%"] : "0%",
                 }}
                 transition={{
                   y: {
                     duration: hoveredWebsite === website ? 20 : 0,
+                    repeat: Infinity,
                     ease: "linear",
                   },
                 }}
                 className="absolute inset-0 w-full"
-                style={{ height: "268.75%" }}  // 5160 / 1920 = 2.6875
+                style={{ height: "268.75%" }}
               >
                 <Image
                   fill
@@ -206,11 +240,11 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
             >
               {website.Description}
             </motion.p>
-            <div className="my-3 flex flex-wrap gap-2">
+            <div className="mt-3 flex flex-wrap gap-1">
               {website.Tags.slice(0, 3).map((tag, index) => (
                 <motion.span
                   key={`${tag}-${index}-${id}`}
-                  className="bg-white/0.2 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
+                  className="bg-white/0.2 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0)] transition duration-200"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{
@@ -225,7 +259,13 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
                 <span className="text-muted-foreground text-xs">+{website.Tags.length - 3} more</span>
               )}
             </div>
-            <div className="mt-auto flex items-start">
+            <div className="mt-auto items-start">
+            <button
+                onClick={() => handleClick(website)}
+                className="px-4 py-2 mr-3 text-sm rounded-full font-bold text-white bg-black hover:bg-gray-800 transition-colors duration-200"
+              >
+                View Details
+              </button>
               {website.URL && (
                 <motion.a
                   layout
@@ -235,17 +275,11 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
                   href={website.URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block px-4 py-2 text-sm rounded-full font-bold text-white bg-orange-400 hover:bg-orange-500 text-primary-foreground mr-2"
+                  className="inline-block px-4 py-2 text-sm rounded-full font-bold text-white bg-orange-400 hover:bg-orange-500 text-primary-foreground"
                 >
                   Visit Website
                 </motion.a>
               )}
-                            <button
-                onClick={() => handleClick(website)}
-                className="px-4 py-2 text-sm rounded-full font-bold text-white bg-black hover:bg-gray-800 transition-colors duration-200"
-              >
-                View Details
-              </button>
             </div>
           </motion.div>
         ))}
