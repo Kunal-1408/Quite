@@ -28,7 +28,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -122,7 +121,6 @@ export default function Dashboard() {
     const websiteToUpdate = websites.find(w => w.id === websiteId)
     if (websiteToUpdate) {
       try {
-        // Optimistically update the UI
         const updatedWebsites = websites.map(website =>
           website.id === websiteId ? { ...website, highlighted: !website.highlighted } : website
         )
@@ -145,7 +143,7 @@ export default function Dashboard() {
         if (updatedWebsite) {
           addNotification(`The website has been ${updatedWebsite.highlighted ? 'highlighted' : 'unhighlighted'} successfully.`, "success")
         } else {
-          // If the API call fails, revert the optimistic update
+        
           setWebsites(websites)
           setFilteredWebsites(filteredWebsites)
           throw new Error('Failed to update highlight status')

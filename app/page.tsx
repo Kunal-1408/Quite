@@ -100,7 +100,7 @@ export default function Home() {
       <Hero/>
       
       <Infor />
-      <div className="pt-16 ml-14 ">
+      <div className="pt-16 ml-20">
           <h1 className=" text-slate-900 font-bold text-5xl pb-5 ml-10">Why Choose us?</h1>
           <Choose/>
       </div>

@@ -34,7 +34,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
     const sortedWebsites = [...filteredWebsites].sort((a, b) => {
       if (a.highlighted && !b.highlighted) return -1
       if (!a.highlighted && b.highlighted) return 1
-      return 0
+      return 0 
     })
 
   useEffect(() => {
@@ -198,11 +198,6 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
               }}
               transition={{ duration: 0.3 }}
             >
-              {website.highlighted && (
-                <div className="absolute top-2 right-2 z-10">
-                  <Star className="h-6 w-6 text-yellow-500" fill="currentColor" />
-                </div>
-              )}
               <motion.div
                 animate={{
                   y: hoveredWebsite === website ? ["0%", "-62.5%", "-62.5%", "0%"] : "0%",

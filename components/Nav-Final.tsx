@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { HoveredLink, Menu, MenuItem, useNavbarBackground, activeLogo, Item } from "./ui/navbar-menu"
+import { HoveredLink, Menu, MenuItem, useNavbarBackground, activeLogo, Item, ProductItem } from "./ui/navbar-menu"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import Image from "next/image"
@@ -62,20 +62,46 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
           <div className="flex space-x-8">
             <Item title="Home" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
             <MenuItem setActive={setActive} active={active} item="Services" isLandingPage={isLandingPage} isSolid={isSolid}>
+                  <div className="  text-sm grid grid-cols-2 gap-10 p-4">
+                    <ProductItem
+                      title="Web Development"
+                      href="/services/web"
+                      src="https://assets.aceternity.com/demos/algochurn.webp"
+                      description="Beautifully created dynamic websites tailored to your needs built on the best"
+                    />
+                    <ProductItem
+                      title="Branding"
+                      href="/services/branding"
+                      src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
+                      description="Skyrocket your reach using our creative and unique branding solutions"
+                    />
+                    <ProductItem
+                      title="Social Media"
+                      href="/services/social"
+                      src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.51.31%E2%80%AFPM.png"
+                      description="Tap into the unlimited potential of Social Media with us"
+                    />
+                    <ProductItem
+                      title="Designing"
+                      href="/services/designing"
+                      src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.47.07%E2%80%AFPM.png"
+                      description="Respond to government RFPs, RFIs and RFQs 10x faster using AI"
+                    />
+                  </div>
+        </MenuItem>
+            <MenuItem setActive={setActive} active={active} item="Works" isLandingPage={isLandingPage} isSolid={isSolid}>
               <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/services/web">Web Development</HoveredLink>
-                <HoveredLink href="/interface-design">Interface Design</HoveredLink>
-                <HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
-                <HoveredLink href="/branding">Branding</HoveredLink>
+                <HoveredLink href="/works/web">Web Development</HoveredLink>
+                <HoveredLink href="/works/web">Interface Design</HoveredLink>
+                <HoveredLink href="/works/web">Search Engine Optimization</HoveredLink>
+                <HoveredLink href="/works/web">Branding</HoveredLink>
               </div>
             </MenuItem>
-            <Item title="Works" href="/works" isLandingPage={isLandingPage} isSolid={isSolid} />
             <Item title="About" href="/AboutUs" isLandingPage={isLandingPage} isSolid={isSolid} />
           </div>
         </Menu>
       </div>
 
-      {/* This empty div balances the layout */}
       <div className="flex-shrink-0 w-48"></div>
     </div>
   )
