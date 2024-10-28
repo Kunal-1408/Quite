@@ -9,16 +9,16 @@ import { usePathname } from 'next/navigation'
 
 export const Navbarimpli: React.FC = () => {
   const pathname = usePathname()
-  const isLandingPage = pathname === '/'
+  const isLandingPage = pathname === '/' || pathname === '/contact'
 
   return (
     <div className="relative w-full flex items-center justify-center">
-      <Navbar className="" isLandingPage={isLandingPage} />
+      <Navbar className="" isLandingPage={isLandingPage} pathname={pathname} />
     </div>
   )
 }
 
-function Navbar({ className, isLandingPage }: { className?: string; isLandingPage: boolean }) {
+function Navbar({ className, isLandingPage, pathname }: { className?: string; isLandingPage: boolean; pathname: string }) {
   const [active, setActive] = useState<string | null>(null)
   const isSolid = useNavbarBackground()
   const isSecond = activeLogo()
@@ -27,21 +27,29 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
     "fixed top-0 w-full mx-auto z-50 transition-colors duration-300 flex items-center justify-between px-6",
     className,
     {
-      'bg-transparent': !isSolid && isLandingPage,
-      'bg-white shadow-md': isSolid || !isLandingPage,
+      'bg-transparent': !isSolid && (isLandingPage || pathname === '/contact'),
+      'bg-white shadow-md': isSolid || (!isLandingPage && pathname !== '/contact'),
     }
   )
 
   const logoClass = cn({
-    '/Logo-02.png': !isSecond && isLandingPage,
-    '/Logo-01.png': isSecond || !isLandingPage,
+    '/Logo-02.png': !isSecond && (isLandingPage || pathname === '/contact'),
+    '/Logo-01.png': isSecond || (!isLandingPage && pathname !== '/contact'),
   })
 
-  const textColorClass = isLandingPage
+  const textColorClass = (isLandingPage || pathname === '/contact')
     ? isSolid
       ? 'text-black'
       : 'text-neutral-300'
     : 'text-black'
+
+  const buttonClass = cn(
+    "px-4 py-2 rounded-md transition-colors duration-300",
+    {
+      'bg-transparent text-neutral-300 border border-neutral-300 hover:bg-white hover:text-black': !isSolid && (isLandingPage || pathname === '/contact'),
+      'bg-transparent text-black border border-black hover:bg-black hover:text-white': isSolid || (!isLandingPage && pathname !== '/contact'),
+    }
+  )
 
   return (
     <div className={navbarClass}>
@@ -57,11 +65,11 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
         </Link>
       </div>
 
-      <div className="flex-grow flex justify-center">
+      <div className="flex items-center space-x-2 mr-8">
         <Menu setActive={setActive} isLandingPage={isLandingPage} isSolid={isSolid}>
           <div className="flex space-x-8">
-            <Item title="Home" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
-            <MenuItem setActive={setActive} active={active} item="Services" isLandingPage={isLandingPage} isSolid={isSolid}>
+            {/* <Item title="Home" href="/" isLandingPage={isLandingPage} isSolid={isSolid} /> */}
+            {/* <MenuItem setActive={setActive} active={active} item="Services" isLandingPage={isLandingPage} isSolid={isSolid}>
                   <div className="  text-sm grid grid-cols-2 gap-10 p-4">
                     <ProductItem
                       title="Web Development"
@@ -88,23 +96,38 @@ function Navbar({ className, isLandingPage }: { className?: string; isLandingPag
                       description="Respond to government RFPs, RFIs and RFQs 10x faster using AI"
                     />
                   </div>
-        </MenuItem>
-            <MenuItem setActive={setActive} active={active} item="Works" isLandingPage={isLandingPage} isSolid={isSolid}>
+        </MenuItem> */}
+            {/* <MenuItem setActive={setActive} active={active} item="Works" isLandingPage={isLandingPage} isSolid={isSolid}>
               <div className="flex flex-col space-y-4 text-sm">
                 <HoveredLink href="/works/web">Web Development</HoveredLink>
                 <HoveredLink href="/works/web">Interface Design</HoveredLink>
                 <HoveredLink href="/works/web">Search Engine Optimization</HoveredLink>
                 <HoveredLink href="/works/web">Branding</HoveredLink>
               </div>
-            </MenuItem>
+            </MenuItem> */}
+            <Item title="Websites" href="/works/web" isLandingPage={isLandingPage} isSolid={isSolid} />
+            <Item title="Branding" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
+            <Item title="Design" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
+            <Item title="Social Media" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
             <Item title="About" href="/AboutUs" isLandingPage={isLandingPage} isSolid={isSolid} />
           </div>
         </Menu>
+        <Link href="/contact">
+          <button className={buttonClass}>
+            Contact Us
+          </button>
+        </Link>
       </div>
 
-      <div className="flex-shrink-0 w-48"></div>
+      {/* <div className="flex-shrink-0 w-48 flex justify-end">
+        <Link href="/contact">
+          <button className={buttonClass}>
+            Contact Us
+          </button>
+        </Link>
+      </div> */}
     </div>
   )
 }
 
-export default Navbarimpli
+export default Navbarimpli 

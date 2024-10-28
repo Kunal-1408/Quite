@@ -12,13 +12,14 @@ model Websites {
   Backup_Date         String?  @map("Backup Date")
   Content_Update_Date String?  @map("Content Update Date")
   Description         String
-  Images              String
+  Image               String
   Status              String?
   Tags                String[]
   Title               String
   URL                 String?
   archive             Boolean
   highlighted         Boolean
+  logo                String
 }
 
 model clients {
@@ -30,15 +31,11 @@ model clients {
   tags        Json
 }
 
-model credentials {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-}
-
 model queries {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  E_mail        String @map("E-mail")
-  First_Name    String @map("First Name")
-  Last_Name     String @map("Last Name")
-  Mobile_Number BigInt @map("Mobile Number")
-  Query         String
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  E_mail     String @map("E-mail")
+  First_Name String @map("First Name")
+  Last_Name  String @map("Last Name")
+  Mobile     String
+  Query      String
 }

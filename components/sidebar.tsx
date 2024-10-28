@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { BarChart, Bell, ChevronLeftIcon, ChevronRightIcon, CircleUser, Cog, Globe2, Home, LineChartIcon, Package, ShoppingCart, User, Users } from "lucide-react"
+import { BarChart, Bell, ChevronLeftIcon, ChevronRightIcon, CircleUser, Cog, FormInputIcon, Globe2, Home, LineChartIcon, Package, ShoppingCart, User, Users } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import Link from 'next/link'
@@ -138,11 +138,11 @@ export default function SidebarDemo() {
 
                     </li>
                     <li className='text-sm font-medium text-neutral-500 mx-auto'>
-                      <Link href="/CMS/analytics">
+                      <Link href="/CMS/Queries">
                       <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
-                      <LineChartIcon className='h-5 w-5'/>
+                      <FormInputIcon className='h-5 w-5'/>
                         <span className='px-2'>
-                          Analytics
+                          Queries
                         </span>
                       </button>
                       </Link>

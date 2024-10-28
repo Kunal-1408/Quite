@@ -74,6 +74,7 @@ export default function Dashboard() {
   const [filteredWebsites, setFilteredWebsites] = useState<Website[]>([])
   const [total, setTotal] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
+  const [highlightedCount, setHighlightedCount] = useState(0)
   const [isAddingWebsite, setIsAddingWebsite] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
@@ -99,9 +100,9 @@ export default function Dashboard() {
     highlighted: false
   })
 
-  useEffect(() => {
-    fetchWebsites()
-  }, [currentPage])
+  // useEffect(() => {
+  //   fetchWebsites()
+  // }, [currentPage])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -143,7 +144,7 @@ export default function Dashboard() {
         if (updatedWebsite) {
           addNotification(`The website has been ${updatedWebsite.highlighted ? 'highlighted' : 'unhighlighted'} successfully.`, "success")
         } else {
-        
+         
           setWebsites(websites)
           setFilteredWebsites(filteredWebsites)
           throw new Error('Failed to update highlight status')
@@ -158,7 +159,7 @@ export default function Dashboard() {
 
   const fetchWebsites = async () => {
     try {
-      const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}`, {
+      const response = await fetch(`/api/fetch?page=${currentPage}&limit=${websitesPerPage}&search=${encodeURIComponent(searchQuery)}`, {
         method: 'GET',
       })
       const data = await response.json()
@@ -167,6 +168,7 @@ export default function Dashboard() {
         setWebsites(data.websites)
         setFilteredWebsites(data.websites)
         setTotal(data.total)
+        setHighlightedCount(data.highlightedCount)
       } else {
         console.error('Unexpected data structure:', data)
         addNotification("Unexpected data structure received", "error")
@@ -176,6 +178,10 @@ export default function Dashboard() {
       addNotification("Failed to fetch websites", "error")
     }
   }
+
+  useEffect(() => {
+    fetchWebsites()
+  }, [currentPage, searchQuery])
 
   const totalPages = Math.ceil(total / websitesPerPage)
 

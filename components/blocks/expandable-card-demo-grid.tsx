@@ -3,7 +3,7 @@
 import Image from "next/image"
 import React, { useEffect, useId, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Star, X } from "lucide-react"
+import { X } from "lucide-react"
 
 interface Website {
   id: string
@@ -12,8 +12,9 @@ interface Website {
   Tags: string[]
   Title: string
   URL?: string
-  Images: string
+  Image: string
   highlighted: boolean
+  logo: string
 }
 
 interface ExpandableCardDemoProps {
@@ -115,7 +116,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
                     <Image
                       priority
                       fill
-                      src={active.Images}
+                      src={active.Image}
                       alt={`${active.Title} - Full Image`}
                       className="object-cover object-top"
                     />
@@ -185,7 +186,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
             key={website.id}
             onMouseEnter={() => handleMouseEnter(website)}
             onMouseLeave={handleMouseLeave}
-            className="p-4 flex flex-col h-[450px] w-[400px] bg-card hover:bg-card/90 rounded-xl bg-neutral-100 cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-200"
+            className="p-4 flex flex-col h-[450px] w-[400px] md:h-[400px] md:w[250px] bg-card hover:bg-card/90 rounded-xl bg-neutral-100 cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-200"
             style={{
               zIndex: hoveredWebsite === website ? 20 : 1,
             }}
@@ -214,20 +215,31 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
               >
                 <Image
                   fill
-                  src={website.Images}
+                  src={website.Image}
                   alt={website.Title}
                   className="object-cover object-top"
                 />
               </motion.div>
             </motion.div>
-            <div className="mt-4 flex justify-between items-start">
+            <div className="mt-4 flex justify-between items-center">
               <motion.h3
                 layoutId={`title-${website.id}-${id}`}
                 className="font-medium text-card-foreground text-lg"
               >
                 {website.Title}
               </motion.h3>
-
+              <motion.div 
+                layoutId={`logo-${website.id}-${id}`} 
+                className="relative w-16 h-16 ml-4 flex-shrink-0"
+              >
+                <Image 
+                  src={website.logo} 
+                  alt={`${website.Title} logo`} 
+                  className="object-contain"
+                  width={64}
+                  height={64}
+                />
+              </motion.div>
             </div>
             <motion.p
               layoutId={`description-${website.id}-${id}`}
@@ -254,7 +266,7 @@ export default function ExpandableCardDemo({ websites, filterTags = [] }: Expand
                 <span className="text-muted-foreground text-xs">+{website.Tags.length - 3} more</span>
               )}
             </div>
-            <div className="mt-auto items-start">
+            <div className="mt-4 items-start">
             <button
                 onClick={() => handleClick(website)}
                 className="px-4 py-2 mr-3 text-sm rounded-full font-bold text-white bg-black hover:bg-gray-800 transition-colors duration-200"

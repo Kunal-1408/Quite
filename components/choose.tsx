@@ -40,7 +40,7 @@ export default function Choose() {
     }, [activeImage, previousImage])
   
     return (
-      <div className="container  w-full  py-8 grid grid-cols-3 gap-10">
+      <div className="container  w-full  py-8 grid grid-cols-3 gap-10 overflow-hidden">
          <div className="grid grid-rows-1 md:grid-rows-3 gap-4 col-span-1">
           {features.map((feature, index) => (
             <Card 
@@ -60,7 +60,7 @@ export default function Choose() {
             </Card>
           ))}
         </div>
-        <div className=" overflow-hidden rounded-lg shadow-lg relative h-[550px] w-[950px] mx-16  col-span-2">
+        <div className=" overflow-hidden rounded-lg shadow-lg relative h-[550px] w-[950px] md:h[400px] md:[w-750px] mx-16  col-span-2">
         <img 
           ref={imageRef}
           src={previousImage} 
