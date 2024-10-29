@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Input } from "@/components/ui/input"
 
@@ -9,23 +9,22 @@ import { PlusCircle, Minus } from 'lucide-react'
 interface ContentItem {
   title: string;
   description: string;
-  image: File | null;
-  imagePreview: string | null;
+  imageUrl: string;
 }
 
 interface ServiceItem extends ContentItem {}
 
 interface ServicePageContent {
   description: string;
-  carouselImages: { image: File | null; imagePreview: string | null }[];
+  carouselImages: { imageUrl: string }[];
   whatWeDo: {
     description: string;
     cards: { title: string; description: string }[];
   };
-  relatedProjects: { title: string; description: string; image: File | null; imagePreview: string | null }[];
+  relatedProjects: { title: string; description: string; imageUrl: string }[];
 }
 
-interface Content {
+interface LandingPageContent {
   hero: {
     title: string;
     subtitle: string;
@@ -34,9 +33,11 @@ interface Content {
   whyChooseUs: ContentItem[];
   services: ServiceItem[];
   clients: {
-    logo: File | null;
-    logoPreview: string | null;
+    logoUrl: string;
   }[];
+}
+
+interface ServicePagesContent {
   servicePages: {
     [key: string]: ServicePageContent;
   };
@@ -46,192 +47,106 @@ export default function ContentManager() {
   const [activeMainTab, setActiveMainTab] = useState<string>('landingPage')
   const [activeLandingPageTab, setActiveLandingPageTab] = useState<string>('hero')
   const [activeServicePageTab, setActiveServicePageTab] = useState<string>('webDevelopment')
-  const [content, setContent] = useState<Content>({
-    hero: {
-      title: "We are Quite Good",
-      subtitle: "The Ultimate Marketing Agency",
-      description: "We build beautiful products with the latest technologies and frameworks. We are a team of passionate developers and designers that love to build amazing products."
-    },
-    whyChooseUs: [
-      { title: "Get online fast. No design skills needed.", description: "Build your site in minutes. Choose from 100s of beautiful, mobile-friendly templates with our Website Builder, many optimized for SEO.", image: null, imagePreview: null },
-      { title: "Build trust with email that matches your domain.", description: "Keep your brand credibility with customers with free custom email that matches your domain name.", image: null, imagePreview: null },
-      { title: "Engage with marketing tools.", description: "Grow your audience fast with built-in SEO and promote your business with social media and email marketing tools.", image: null, imagePreview: null }
-    ],
-    services: [
-      { title: "Web Development", description: "Custom websites tailored to your unique business needs. Built with cutting-edge technologies for optimal performance and user experience.", image: null, imagePreview: null },
-      { title: "SEO", description: "Boost your online visibility and rankings with our data-driven SEO strategies. We help you reach your target audience effectively.", image: null, imagePreview: null },
-      { title: "Design", description: "Create stunning visuals that captivate your audience and elevate your brand identity.", image: null, imagePreview: null },
-      { title: "Branding", description: "Develop a strong, cohesive brand identity that sets you apart from the competition and resonates with your target audience.", image: null, imagePreview: null }
-    ],
-    clients: Array(8).fill({ logo: null, logoPreview: null }),
-    servicePages: {
-      webDevelopment: {
-        description: "We create custom websites that drive results.",
-        carouselImages: Array(3).fill({ image: null, imagePreview: null }),
-        whatWeDo: {
-          description: "Our web development services cover all aspects of creating a successful online presence.",
-          cards: Array(5).fill({ title: "Service", description: "Description of the service" })
-        },
-        relatedProjects: Array(3).fill({ title: "Project", description: "Project description", image: null, imagePreview: null })
-      },
-      seo: {
-        description: "We boost your online visibility and rankings.",
-        carouselImages: Array(3).fill({ image: null, imagePreview: null }),
-        whatWeDo: {
-          description: "Our SEO services are designed to improve your search engine rankings and drive organic traffic.",
-          cards: Array(5).fill({ title: "Service", description: "Description of the service" })
-        },
-        relatedProjects: Array(3).fill({ title: "Project", description: "Project description", image: null, imagePreview: null })
-      },
-      design: {
-        description: "We create stunning visuals that captivate your audience.",
-        carouselImages: Array(3).fill({ image: null, imagePreview: null }),
-        whatWeDo: {
-          description: "Our design services cover everything from branding to user interface design.",
-          cards: Array(5).fill({ title: "Service", description: "Description of the service" })
-        },
-        relatedProjects: Array(3).fill({ title: "Project", description: "Project description", image: null, imagePreview: null })
-      },
-      branding: {
-        description: "We develop strong, cohesive brand identities.",
-        carouselImages: Array(3).fill({ image: null, imagePreview: null }),
-        whatWeDo: {
-          description: "Our branding services help you create a unique and memorable brand identity.",
-          cards: Array(5).fill({ title: "Service", description: "Description of the service" })
-        },
-        relatedProjects: Array(3).fill({ title: "Project", description: "Project description", image: null, imagePreview: null })
-      }
-    }
+  const [landingPageContent, setLandingPageContent] = useState<LandingPageContent>({
+    hero: { title: '', subtitle: '', description: '' },
+    whyChooseUs: [],
+    services: [],
+    clients: []
   })
+  const [servicePagesContent, setServicePagesContent] = useState<ServicePagesContent>({ servicePages: {} })
 
-  const handleHeroChange = (field: keyof Content['hero'], value: string) => {
-    setContent(prev => ({
+  useEffect(() => {
+    // Fetch landing page content
+    fetch('/api/landing-page-content')
+      .then(response => response.json())
+      .then(data => setLandingPageContent(data))
+      .catch(error => console.error('Error fetching landing page content:', error))
+
+    // Fetch service pages content
+    fetch('/api/service-pages-content')
+      .then(response => response.json())
+      .then(data => setServicePagesContent(data))
+      .catch(error => console.error('Error fetching service pages content:', error))
+  }, [])
+
+  const handleHeroChange = (field: keyof LandingPageContent['hero'], value: string) => {
+    setLandingPageContent(prev => ({
       ...prev,
       hero: { ...prev.hero, [field]: value }
     }))
   }
 
-  const handleWhyChooseUsChange = (index: number, field: keyof ContentItem, value: string | File | null) => {
-    if (field === 'image' && value instanceof File) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContent(prev => ({
-          ...prev,
-          whyChooseUs: prev.whyChooseUs.map((item, i) => 
-            i === index ? { ...item, image: value, imagePreview: reader.result as string } : item
-          )
-        }))
-      };
-      reader.readAsDataURL(value);
-    } else {
-      setContent(prev => ({
-        ...prev,
-        whyChooseUs: prev.whyChooseUs.map((item, i) => 
-          i === index ? { ...item, [field]: value } : item
-        )
-      }))
-    }
+  const handleWhyChooseUsChange = (index: number, field: keyof ContentItem, value: string) => {
+    setLandingPageContent(prev => ({
+      ...prev,
+      whyChooseUs: prev.whyChooseUs.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }))
   }
 
-  const handleServicesChange = (index: number, field: keyof ServiceItem, value: string | File | null) => {
-    if (field === 'image' && value instanceof File) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContent(prev => ({
-          ...prev,
-          services: prev.services.map((service, i) => 
-            i === index ? { ...service, image: value, imagePreview: reader.result as string } : service
-          )
-        }))
-      };
-      reader.readAsDataURL(value);
-    } else {
-      setContent(prev => ({
-        ...prev,
-        services: prev.services.map((service, i) => 
-          i === index ? { ...service, [field]: value } : service
-        )
-      }))
-    }
+  const handleServicesChange = (index: number, field: keyof ServiceItem, value: string) => {
+    setLandingPageContent(prev => ({
+      ...prev,
+      services: prev.services.map((service, i) => 
+        i === index ? { ...service, [field]: value } : service
+      )
+    }))
   }
 
-  const handleClientLogoChange = (index: number, file: File | null) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContent(prev => ({
-          ...prev,
-          clients: prev.clients.map((client, i) => 
-            i === index ? { logo: file, logoPreview: reader.result as string } : client
-          )
-        }))
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setContent(prev => ({
-        ...prev,
-        clients: prev.clients.map((client, i) => 
-          i === index ? { logo: null, logoPreview: null } : client
-        )
-      }))
-    }
+  const handleClientLogoChange = (index: number, logoUrl: string) => {
+    setLandingPageContent(prev => ({
+      ...prev,
+      clients: prev.clients.map((client, i) => 
+        i === index ? { logoUrl } : client
+      )
+    }))
   }
 
   const handleAddClientLogo = () => {
-    setContent(prev => ({
+    setLandingPageContent(prev => ({
       ...prev,
-      clients: [...prev.clients, { logo: null, logoPreview: null }]
+      clients: [...prev.clients, { logoUrl: '' }]
     }))
   }
 
   const handleRemoveClientLogo = (index: number) => {
-    setContent(prev => ({
+    setLandingPageContent(prev => ({
       ...prev,
       clients: prev.clients.filter((_, i) => i !== index)
     }))
   }
 
-  const handleServicePageChange = (service: string, field: keyof ServicePageContent, value: string | File | null) => {
-    if (field === 'description') {
-      setContent(prev => ({
-        ...prev,
-        servicePages: {
-          ...prev.servicePages,
-          [service]: { ...prev.servicePages[service], description: value as string }
-        }
-      }))
-    }
+  const handleServicePageChange = (service: string, field: keyof ServicePageContent, value: string) => {
+    setServicePagesContent(prev => ({
+      servicePages: {
+        ...prev.servicePages,
+        [service]: { ...prev.servicePages[service], [field]: value }
+      }
+    }))
   }
 
-  const handleServicePageImageChange = (service: string, index: number, file: File | null) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContent(prev => ({
-          ...prev,
-          servicePages: {
-            ...prev.servicePages,
-            [service]: {
-              ...prev.servicePages[service],
-              carouselImages: prev.servicePages[service].carouselImages.map((img, i) => 
-                i === index ? { image: file, imagePreview: reader.result as string } : img
-              )
-            }
-          }
-        }))
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  const handleAddServicePageImage = (service: string) => {
-    setContent(prev => ({
-      ...prev,
+  const handleServicePageImageChange = (service: string, index: number, imageUrl: string) => {
+    setServicePagesContent(prev => ({
       servicePages: {
         ...prev.servicePages,
         [service]: {
           ...prev.servicePages[service],
-          carouselImages: [...prev.servicePages[service].carouselImages, { image: null, imagePreview: null }]
+          carouselImages: prev.servicePages[service].carouselImages.map((img, i) => 
+            i === index ? { imageUrl } : img
+          )
+        }
+      }
+    }))
+  }
+
+  const handleAddServicePageImage = (service: string) => {
+    setServicePagesContent(prev => ({
+      servicePages: {
+        ...prev.servicePages,
+        [service]: {
+          ...prev.servicePages[service],
+          carouselImages: [...prev.servicePages[service].carouselImages, { imageUrl: '' }]
         }
       }
     }))
@@ -239,8 +154,7 @@ export default function ContentManager() {
 
   const handleWhatWeDoChange = (service: string, field: 'description' | 'cards', value: string | { title: string; description: string }, index?: number) => {
     if (field === 'description') {
-      setContent(prev => ({
-        ...prev,
+      setServicePagesContent(prev => ({
         servicePages: {
           ...prev.servicePages,
           [service]: {
@@ -253,8 +167,7 @@ export default function ContentManager() {
         }
       }))
     } else if (field === 'cards' && typeof index === 'number' && typeof value === 'object') {
-      setContent(prev => ({
-        ...prev,
+      setServicePagesContent(prev => ({
         servicePages: {
           ...prev.servicePages,
           [service]: {
@@ -272,8 +185,7 @@ export default function ContentManager() {
   }
 
   const handleAddWhatWeDoCard = (service: string) => {
-    setContent(prev => ({
-      ...prev,
+    setServicePagesContent(prev => ({
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -287,57 +199,58 @@ export default function ContentManager() {
     }))
   }
 
-  const handleRelatedProjectChange = (service: string, index: number, field: keyof (typeof content.servicePages)[keyof typeof content.servicePages]['relatedProjects'][0], value: string | File | null) => {
-    if (field === 'image' && value instanceof File) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setContent(prev => ({
-          ...prev,
-          servicePages: {
-            ...prev.servicePages,
-            [service]: {
-              ...prev.servicePages[service],
-              relatedProjects: prev.servicePages[service].relatedProjects.map((project, i) => 
-                i === index ? { ...project, image: value, imagePreview: reader.result as string } : project
-              )
-            }
-          }
-        }))
-      };
-      reader.readAsDataURL(value);
-    } else {
-      setContent(prev => ({
-        ...prev,
-        servicePages: {
-          ...prev.servicePages,
-          [service]: {
-            ...prev.servicePages[service],
-            relatedProjects: prev.servicePages[service].relatedProjects.map((project, i) => 
-              i === index ? { ...project, [field]: value } : project
-            )
-          }
-        }
-      }))
-    }
-  }
-
-  const handleAddRelatedProject = (service: string) => {
-    setContent(prev => ({
-      ...prev,
+  const handleRelatedProjectChange = (service: string, index: number, field: keyof ServicePageContent['relatedProjects'][0], value: string) => {
+    setServicePagesContent(prev => ({
       servicePages: {
         ...prev.servicePages,
         [service]: {
           ...prev.servicePages[service],
-          relatedProjects: [...prev.servicePages[service].relatedProjects, { title: "New Project", description: "Description of the new project", image: null, imagePreview: null }]
+          relatedProjects: prev.servicePages[service].relatedProjects.map((project, i) => 
+            i === index ? { ...project, [field]: value } : project
+          )
         }
       }
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleAddRelatedProject = (service: string) => {
+    setServicePagesContent(prev => ({
+      servicePages: {
+        ...prev.servicePages,
+        [service]: {
+          ...prev.servicePages[service],
+          relatedProjects: [...prev.servicePages[service].relatedProjects, { title: "New Project", description: "Description of the new project", imageUrl: "" }]
+        }
+      }
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Submitting content:', content)
-    // Here you would typically send this data to your backend
+    try {
+      // Save landing page content
+      await fetch('/api/landing-page-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(landingPageContent),
+      })
+
+      // Save service pages content
+      await fetch('/api/service-pages-content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(servicePagesContent),
+      })
+
+      alert('Content saved successfully!')
+    } catch (error) {
+      console.error('Error saving content:', error)
+      alert('Error saving content. Please try again.')
+    }
   }
 
   const TabButton: React.FC<{ id: string; active: boolean; onClick: () => void; children: React.ReactNode }> = ({ id, active, onClick, children }) => (
@@ -393,17 +306,17 @@ export default function ContentManager() {
                   <CardContent className="space-y-4">
                     <Input
                       placeholder="Title"
-                      value={content.hero.title}
+                      value={landingPageContent.hero.title}
                       onChange={(e) => handleHeroChange('title', e.target.value)}
                     />
                     <Input
                       placeholder="Subtitle"
-                      value={content.hero.subtitle}
+                      value={landingPageContent.hero.subtitle}
                       onChange={(e) => handleHeroChange('subtitle', e.target.value)}
                     />
                     <textarea
                       placeholder="Description"
-                      value={content.hero.description}
+                      value={landingPageContent.hero.description}
                       onChange={(e) => handleHeroChange('description', e.target.value)}
                       rows={3}
                       className='flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
@@ -418,7 +331,7 @@ export default function ContentManager() {
                     <CardTitle>Why Choose Us</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {content.whyChooseUs.map((item, index) => (
+                    {landingPageContent.whyChooseUs.map((item, index) => (
                       <div key={index} className="mb-4 p-4 border rounded">
                         <Input
                           placeholder="Title"
@@ -433,19 +346,11 @@ export default function ContentManager() {
                           rows={3}
                           className="mb-2 flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                         />
-                        <div className="flex items-center space-x-4">
-                          <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files ? e.target.files[0] : null;
-                              if (file) handleWhyChooseUsChange(index, 'image', file);
-                            }}
-                            accept="image/*"
-                          />
-                          {item.imagePreview && (
-                            <img src={item.imagePreview} alt={`Preview of ${item.title}`} className="w-24 h-24 object-cover" />
-                          )}
-                        </div>
+                        <Input
+                          placeholder="Image URL"
+                          value={item.imageUrl}
+                          onChange={(e) => handleWhyChooseUsChange(index, 'imageUrl', e.target.value)}
+                        />
                       </div>
                     ))}
                   </CardContent>
@@ -458,7 +363,7 @@ export default function ContentManager() {
                     <CardTitle>Services</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {content.services.map((service, index) => (
+                    {landingPageContent.services.map((service, index) => (
                       <div key={index} className="mb-4 p-4 border rounded">
                         <Input
                           placeholder="Service Title"
@@ -473,19 +378,11 @@ export default function ContentManager() {
                           rows={3}
                           className="mb-2 flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                         />
-                        <div className="flex items-center space-x-4">
-                          <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files ? e.target.files[0] : null;
-                              if (file) handleServicesChange(index, 'image', file);
-                            }}
-                            accept="image/*"
-                          />
-                          {service.imagePreview && (
-                            <img src={service.imagePreview} alt={`Preview of ${service.title}`} className="w-24 h-24 object-cover" />
-                          )}
-                        </div>
+                        <Input
+                          placeholder="Image URL"
+                          value={service.imageUrl}
+                          onChange={(e) => handleServicesChange(index, 'imageUrl',   e.target.value)}
+                        />
                       </div>
                     ))}
                   </CardContent>
@@ -499,20 +396,14 @@ export default function ContentManager() {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {content.clients.map((client, index) => (
+                      {landingPageContent.clients.map((client, index) => (
                         <div key={index} className="flex flex-col items-center">
                           <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files ? e.target.files[0] : null;
-                              handleClientLogoChange(index, file);
-                            }}
-                            accept="image/*"
+                            placeholder="Logo URL"
+                            value={client.logoUrl}
+                            onChange={(e) => handleClientLogoChange(index, e.target.value)}
                             className="mb-2"
                           />
-                          {client.logoPreview && (
-                            <img src={client.logoPreview} alt={`Client logo ${index + 1}`} className="w-24 h-24 object-contain mb-2" />
-                          )}
                           <button type="button" className="bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-8 rounded-md px-3 text-xs" onClick={() => handleRemoveClientLogo(index)}>
                             <Minus className="w-4 h-4" />
                           </button>
@@ -552,7 +443,7 @@ export default function ContentManager() {
                 <CardContent className="space-y-4">
                   <textarea
                     placeholder="Description"
-                    value={content.servicePages[activeServicePageTab].description}
+                    value={servicePagesContent.servicePages[activeServicePageTab]?.description || ''}
                     onChange={(e) => handleServicePageChange(activeServicePageTab, 'description', e.target.value)}
                     rows={3}
                     className='flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50'
@@ -560,24 +451,18 @@ export default function ContentManager() {
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Image Carousel</h3>
                     <div className="grid grid-cols-3 gap-4">
-                      {content.servicePages[activeServicePageTab].carouselImages.map((img, index) => (
+                      {servicePagesContent.servicePages[activeServicePageTab]?.carouselImages.map((img, index) => (
                         <div key={index} className="flex flex-col items-center">
                           <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files ? e.target.files[0] : null;
-                              if (file) handleServicePageImageChange(activeServicePageTab, index, file);
-                            }}
-                            accept="image/*"
+                            placeholder="Image URL"
+                            value={img.imageUrl}
+                            onChange={(e) => handleServicePageImageChange(activeServicePageTab, index, e.target.value)}
                             className="mb-2"
                           />
-                          {img.imagePreview && (
-                            <img src={img.imagePreview} alt={`Carousel image ${index + 1}`} className="w-24 h-24 object-cover" />
-                          )}
                         </div>
                       ))}
                     </div>
-                    <button type="button"  onClick={() => handleAddServicePageImage(activeServicePageTab)} className="mt-2 flex flex-col px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">
+                    <button type="button" onClick={() => handleAddServicePageImage(activeServicePageTab)} className="mt-2 flex flex-col px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500">
                       <PlusCircle className="w-4 h-4 mr-2" /> Add Image
                     </button>
                   </div>
@@ -585,12 +470,12 @@ export default function ContentManager() {
                     <h3 className="text-lg font-semibold mb-2">What We Do</h3>
                     <textarea
                       placeholder="Section Description"
-                      value={content.servicePages[activeServicePageTab].whatWeDo.description}
+                      value={servicePagesContent.servicePages[activeServicePageTab]?.whatWeDo.description || ''}
                       onChange={(e) => handleWhatWeDoChange(activeServicePageTab, 'description', e.target.value)}
                       rows={3}
                       className="mb-2 flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                     />
-                    {content.servicePages[activeServicePageTab].whatWeDo.cards.map((card, index) => (
+                    {servicePagesContent.servicePages[activeServicePageTab]?.whatWeDo.cards.map((card, index) => (
                       <div key={index} className="mb-2 p-2 border rounded">
                         <Input
                           placeholder="Card Title"
@@ -613,7 +498,7 @@ export default function ContentManager() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Related Projects</h3>
-                    {content.servicePages[activeServicePageTab].relatedProjects.map((project, index) => (
+                    {servicePagesContent.servicePages[activeServicePageTab]?.relatedProjects.map((project, index) => (
                       <div key={index} className="mb-2 p-2 border rounded">
                         <Input
                           placeholder="Project Title"
@@ -628,19 +513,11 @@ export default function ContentManager() {
                           rows={2}
                           className="mb-2 flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                         />
-                        <div className="flex items-center space-x-4">
-                          <Input
-                            type="file"
-                            onChange={(e) => {
-                              const file = e.target.files ? e.target.files[0] : null;
-                              if (file) handleRelatedProjectChange(activeServicePageTab, index, 'image', file);
-                            }}
-                            accept="image/*"
-                          />
-                          {project.imagePreview && (
-                            <img src={project.imagePreview} alt={`Preview of ${project.title}`} className="w-24 h-24 object-cover" />
-                          )}
-                        </div>
+                        <Input
+                          placeholder="Image URL"
+                          value={project.imageUrl}
+                          onChange={(e) => handleRelatedProjectChange(activeServicePageTab, index, 'imageUrl', e.target.value)}
+                        />
                       </div>
                     ))}
                     <button type="button" className='px-4 flex flex-col py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500' onClick={() => handleAddRelatedProject(activeServicePageTab)}>

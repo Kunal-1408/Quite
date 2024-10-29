@@ -7,19 +7,166 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type TextsClients {
+  logo        String
+  logoPreview String
+}
+
+type TextsHero {
+  description String
+  subtitle    String
+  title       String
+}
+
+type TextsServicePages {
+  branding       TextsServicePagesBranding
+  design         TextsServicePagesDesign
+  seo            TextsServicePagesSeo
+  webDevelopment TextsServicePagesWebDevelopment
+}
+
+type TextsServicePagesBranding {
+  carouselImages  TextsServicePagesBrandingCarouselImages[]
+  description     String
+  relatedProjects TextsServicePagesBrandingRelatedProjects[]
+  whatWeDo        TextsServicePagesBrandingWhatWeDo
+}
+
+type TextsServicePagesBrandingCarouselImages {
+  image        String
+  imagePreview String
+}
+
+type TextsServicePagesBrandingRelatedProjects {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
+type TextsServicePagesBrandingWhatWeDo {
+  cards       TextsServicePagesBrandingWhatWeDoCards[]
+  description String
+}
+
+type TextsServicePagesBrandingWhatWeDoCards {
+  description String
+  title       String
+}
+
+type TextsServicePagesDesign {
+  carouselImages  TextsServicePagesDesignCarouselImages[]
+  description     String
+  relatedProjects TextsServicePagesDesignRelatedProjects[]
+  whatWeDo        TextsServicePagesDesignWhatWeDo
+}
+
+type TextsServicePagesDesignCarouselImages {
+  image        String
+  imagePreview String
+}
+
+type TextsServicePagesDesignRelatedProjects {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
+type TextsServicePagesDesignWhatWeDo {
+  cards       TextsServicePagesDesignWhatWeDoCards[]
+  description String
+}
+
+type TextsServicePagesDesignWhatWeDoCards {
+  description String
+  title       String
+}
+
+type TextsServicePagesSeo {
+  carouselImages  TextsServicePagesSeoCarouselImages[]
+  description     String
+  relatedProjects TextsServicePagesSeoRelatedProjects[]
+  whatWeDo        TextsServicePagesSeoWhatWeDo
+}
+
+type TextsServicePagesSeoCarouselImages {
+  image        String
+  imagePreview String
+}
+
+type TextsServicePagesSeoRelatedProjects {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
+type TextsServicePagesSeoWhatWeDo {
+  cards       TextsServicePagesSeoWhatWeDoCards[]
+  description String
+}
+
+type TextsServicePagesSeoWhatWeDoCards {
+  description String
+  title       String
+}
+
+type TextsServicePagesWebDevelopment {
+  carouselImages  TextsServicePagesWebDevelopmentCarouselImages[]
+  description     String
+  relatedProjects TextsServicePagesWebDevelopmentRelatedProjects[]
+  whatWeDo        TextsServicePagesWebDevelopmentWhatWeDo
+}
+
+type TextsServicePagesWebDevelopmentCarouselImages {
+  image        String
+  imagePreview String
+}
+
+type TextsServicePagesWebDevelopmentRelatedProjects {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
+type TextsServicePagesWebDevelopmentWhatWeDo {
+  cards       TextsServicePagesWebDevelopmentWhatWeDoCards[]
+  description String
+}
+
+type TextsServicePagesWebDevelopmentWhatWeDoCards {
+  description String
+  title       String
+}
+
+type TextsServices {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
+type TextsWhyChooseUs {
+  description  String
+  image        String
+  imagePreview String
+  title        String
+}
+
 model Websites {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   Backup_Date         String?  @map("Backup Date")
   Content_Update_Date String?  @map("Content Update Date")
   Description         String
-  Image               String
+  Images              String
   Status              String?
   Tags                String[]
   Title               String
   URL                 String?
   archive             Boolean
   highlighted         Boolean
-  logo                String
 }
 
 model clients {
@@ -31,6 +178,10 @@ model clients {
   tags        Json
 }
 
+model credentials {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
 model queries {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   E_mail     String @map("E-mail")
@@ -38,4 +189,13 @@ model queries {
   Last_Name  String @map("Last Name")
   Mobile     String
   Query      String
+}
+
+model texts {
+  id           String             @id @default(auto()) @map("_id") @db.ObjectId
+  clients      TextsClients[]
+  hero         TextsHero?
+  servicePages TextsServicePages?
+  services     TextsServices[]
+  whyChooseUs  TextsWhyChooseUs[]
 }
