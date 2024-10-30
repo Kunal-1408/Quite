@@ -6,78 +6,102 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { PlusCircle, Minus } from 'lucide-react'
 
-interface ContentItem {
-  title: string;
-  description: string;
-  imageUrl: string;
+interface Hero {
+  title: string
+  subtitle: string
+  description: string
 }
 
-interface ServiceItem extends ContentItem {}
+interface WhyChooseUsItem {
+  title: string
+  description: string
+  imageUrl: string
+}
 
-interface ServicePageContent {
-  description: string;
-  carouselImages: { imageUrl: string }[];
+interface Service {
+  title: string
+  description: string
+  imageUrl: string
+}
+
+interface Client {
+  logoUrl: string
+}
+
+interface WhatWeDoCard {
+  title: string
+  description: string
+}
+
+interface RelatedProject {
+  title: string
+  description: string
+  imageUrl: string
+}
+
+interface ServicePage {
+  description: string
+  carouselImages: { imageUrl: string }[]
   whatWeDo: {
-    description: string;
-    cards: { title: string; description: string }[];
-  };
-  relatedProjects: { title: string; description: string; imageUrl: string }[];
+    description: string
+    cards: WhatWeDoCard[]
+  }
+  relatedProjects: RelatedProject[]
 }
 
-interface LandingPageContent {
-  hero: {
-    title: string;
-    subtitle: string;
-    description: string;
-  };
-  whyChooseUs: ContentItem[];
-  services: ServiceItem[];
-  clients: {
-    logoUrl: string;
-  }[];
-}
-
-interface ServicePagesContent {
+interface Content {
+  hero: Hero
+  whyChooseUs: WhyChooseUsItem[]
+  services: Service[]
+  clients: Client[]
   servicePages: {
-    [key: string]: ServicePageContent;
-  };
+    webDevelopment: ServicePage
+    seo: ServicePage
+    design: ServicePage
+    branding: ServicePage
+  }
 }
 
 export default function ContentManager() {
   const [activeMainTab, setActiveMainTab] = useState<string>('landingPage')
   const [activeLandingPageTab, setActiveLandingPageTab] = useState<string>('hero')
   const [activeServicePageTab, setActiveServicePageTab] = useState<string>('webDevelopment')
-  const [landingPageContent, setLandingPageContent] = useState<LandingPageContent>({
+  const [content, setContent] = useState<Content>({
     hero: { title: '', subtitle: '', description: '' },
     whyChooseUs: [],
     services: [],
-    clients: []
+    clients: [],
+    servicePages: {
+      webDevelopment: { description: '', carouselImages: [], whatWeDo: { description: '', cards: [] }, relatedProjects: [] },
+      seo: { description: '', carouselImages: [], whatWeDo: { description: '', cards: [] }, relatedProjects: [] },
+      design: { description: '', carouselImages: [], whatWeDo: { description: '', cards: [] }, relatedProjects: [] },
+      branding: { description: '', carouselImages: [], whatWeDo: { description: '', cards: [] }, relatedProjects: [] },
+    }
   })
-  const [servicePagesContent, setServicePagesContent] = useState<ServicePagesContent>({ servicePages: {} })
 
   useEffect(() => {
     // Fetch landing page content
     fetch('/api/landing-page-content')
       .then(response => response.json())
-      .then(data => setLandingPageContent(data))
+      .then(data => setContent(prevContent => ({ ...prevContent, ...data })))
       .catch(error => console.error('Error fetching landing page content:', error))
 
     // Fetch service pages content
     fetch('/api/service-pages-content')
       .then(response => response.json())
-      .then(data => setServicePagesContent(data))
+      .then(data => setContent(prevContent => ({ ...prevContent, ...data })))
       .catch(error => console.error('Error fetching service pages content:', error))
   }, [])
 
-  const handleHeroChange = (field: keyof LandingPageContent['hero'], value: string) => {
-    setLandingPageContent(prev => ({
+  const handleHeroChange = (field: keyof Hero, value: string) => {
+    setContent(prev => ({
       ...prev,
       hero: { ...prev.hero, [field]: value }
     }))
   }
 
-  const handleWhyChooseUsChange = (index: number, field: keyof ContentItem, value: string) => {
-    setLandingPageContent(prev => ({
+  const handleWhyChooseUsChange = (index: number, field: keyof WhyChooseUsItem, value: string) => {
+    setContent(prev => ({
       ...prev,
       whyChooseUs: prev.whyChooseUs.map((item, i) => 
         i === index ? { ...item, [field]: value } : item
@@ -85,8 +109,8 @@ export default function ContentManager() {
     }))
   }
 
-  const handleServicesChange = (index: number, field: keyof ServiceItem, value: string) => {
-    setLandingPageContent(prev => ({
+  const handleServicesChange = (index: number, field: keyof Service, value: string) => {
+    setContent(prev => ({
       ...prev,
       services: prev.services.map((service, i) => 
         i === index ? { ...service, [field]: value } : service
@@ -95,7 +119,7 @@ export default function ContentManager() {
   }
 
   const handleClientLogoChange = (index: number, logoUrl: string) => {
-    setLandingPageContent(prev => ({
+    setContent(prev => ({
       ...prev,
       clients: prev.clients.map((client, i) => 
         i === index ? { logoUrl } : client
@@ -104,21 +128,22 @@ export default function ContentManager() {
   }
 
   const handleAddClientLogo = () => {
-    setLandingPageContent(prev => ({
+    setContent(prev => ({
       ...prev,
       clients: [...prev.clients, { logoUrl: '' }]
     }))
   }
 
   const handleRemoveClientLogo = (index: number) => {
-    setLandingPageContent(prev => ({
+    setContent(prev => ({
       ...prev,
       clients: prev.clients.filter((_, i) => i !== index)
     }))
   }
 
-  const handleServicePageChange = (service: string, field: keyof ServicePageContent, value: string) => {
-    setServicePagesContent(prev => ({
+  const handleServicePageChange = (service: keyof Content['servicePages'], field: keyof ServicePage, value: string) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: { ...prev.servicePages[service], [field]: value }
@@ -126,8 +151,9 @@ export default function ContentManager() {
     }))
   }
 
-  const handleServicePageImageChange = (service: string, index: number, imageUrl: string) => {
-    setServicePagesContent(prev => ({
+  const handleServicePageImageChange = (service: keyof Content['servicePages'], index: number, imageUrl: string) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -140,8 +166,9 @@ export default function ContentManager() {
     }))
   }
 
-  const handleAddServicePageImage = (service: string) => {
-    setServicePagesContent(prev => ({
+  const handleAddServicePageImage = (service: keyof Content['servicePages']) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -152,9 +179,10 @@ export default function ContentManager() {
     }))
   }
 
-  const handleWhatWeDoChange = (service: string, field: 'description' | 'cards', value: string | { title: string; description: string }, index?: number) => {
+  const handleWhatWeDoChange = (service: keyof Content['servicePages'], field: 'description' | 'cards', value: string | WhatWeDoCard, index?: number) => {
     if (field === 'description') {
-      setServicePagesContent(prev => ({
+      setContent(prev => ({
+        ...prev,
         servicePages: {
           ...prev.servicePages,
           [service]: {
@@ -166,8 +194,9 @@ export default function ContentManager() {
           }
         }
       }))
-    } else if (field === 'cards' && typeof index === 'number' && typeof value === 'object') {
-      setServicePagesContent(prev => ({
+    } else if (field === 'cards' && typeof index === 'number') {
+      setContent(prev => ({
+        ...prev,
         servicePages: {
           ...prev.servicePages,
           [service]: {
@@ -175,7 +204,7 @@ export default function ContentManager() {
             whatWeDo: {
               ...prev.servicePages[service].whatWeDo,
               cards: prev.servicePages[service].whatWeDo.cards.map((card, i) => 
-                i === index ? value : card
+                i === index ? value as WhatWeDoCard : card
               )
             }
           }
@@ -184,8 +213,9 @@ export default function ContentManager() {
     }
   }
 
-  const handleAddWhatWeDoCard = (service: string) => {
-    setServicePagesContent(prev => ({
+  const handleAddWhatWeDoCard = (service: keyof Content['servicePages']) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -199,8 +229,9 @@ export default function ContentManager() {
     }))
   }
 
-  const handleRelatedProjectChange = (service: string, index: number, field: keyof ServicePageContent['relatedProjects'][0], value: string) => {
-    setServicePagesContent(prev => ({
+  const handleRelatedProjectChange = (service: keyof Content['servicePages'], index: number, field: keyof RelatedProject, value: string) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -213,8 +244,9 @@ export default function ContentManager() {
     }))
   }
 
-  const handleAddRelatedProject = (service: string) => {
-    setServicePagesContent(prev => ({
+  const handleAddRelatedProject = (service: keyof Content['servicePages']) => {
+    setContent(prev => ({
+      ...prev,
       servicePages: {
         ...prev.servicePages,
         [service]: {
@@ -234,7 +266,12 @@ export default function ContentManager() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(landingPageContent),
+        body: JSON.stringify({
+          hero: content.hero,
+          whyChooseUs: content.whyChooseUs,
+          services: content.services,
+          clients: content.clients,
+        }),
       })
 
       // Save service pages content
@@ -243,7 +280,9 @@ export default function ContentManager() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(servicePagesContent),
+        body: JSON.stringify({
+          servicePages: content.servicePages,
+        }),
       })
 
       alert('Content saved successfully!')
@@ -252,6 +291,7 @@ export default function ContentManager() {
       alert('Error saving content. Please try again.')
     }
   }
+
 
   const TabButton: React.FC<{ id: string; active: boolean; onClick: () => void; children: React.ReactNode }> = ({ id, active, onClick, children }) => (
     <button

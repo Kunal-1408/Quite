@@ -6,10 +6,10 @@ const prisma = new PrismaClient()
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const landingPageContent = await prisma.textcollections.findFirst({
+      const landingPageContent = await prisma.texts.findFirst({
         where: { type: 'landingPage' }
       })
-      const servicePageContent = await prisma.textcollections.findFirst({
+      const servicePageContent = await prisma.texts.findFirst({
         where: { type: 'servicePage' }
       })
 
@@ -26,13 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const { landingPage, servicePage } = req.body
 
-      const updatedLandingPage = await prisma.textcollections.upsert({
+      const updatedLandingPage = await prisma.texts.upsert({
         where: { type: 'landingPage' },
         update: landingPage,
         create: { ...landingPage, type: 'landingPage' },
       })
 
-      const updatedServicePage = await prisma.textcollections.upsert({
+      const updatedServicePage = await prisma.texts.upsert({
         where: { type: 'servicePage' },
         update: servicePage,
         create: { ...servicePage, type: 'servicePage' },
