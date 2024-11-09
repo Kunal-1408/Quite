@@ -1,52 +1,41 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { PrismaClient } from '@prisma/client'
+import { NextResponse } from 'next/server'
+import {prisma} from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+export async function GET() {
+  try {
+    const content = await prisma.texts.findFirst()
+    return NextResponse.json(content)
+  } catch (error) {
+    console.error('Error fetching content:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
+}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'GET') {
-    try {
-      const landingPageContent = await prisma.texts.findFirst({
-        where: { type: 'landingPage' }
-      })
-      const servicePageContent = await prisma.texts.findFirst({
-        where: { type: 'servicePage' }
-      })
+export async function POST(request: Request) {
+  try {
+    const data = await request.json()
+    
+    const updatedContent = await prisma.texts.upsert({
+      where: { id: data.id || 'default_id' },
+      update: {
+        hero: data.hero,
+        clients: data.clients,
+        servicePages: data.servicePages,
+        services: data.services,
+        whyChooseUs: data.whyChooseUs,
+      },
+      create: {
+        hero: data.hero,
+        clients: data.clients,
+        servicePages: data.servicePages,
+        services: data.services,
+        whyChooseUs: data.whyChooseUs,
+      },
+    })
 
-      const content = {
-        landingPage: landingPageContent,
-        servicePage: servicePageContent
-      }
-
-      res.status(200).json(content)
-    } catch (error) {
-      res.status(500).json({ error: 'Error fetching content' })
-    }
-  } else if (req.method === 'POST') {
-    try {
-      const { landingPage, servicePage } = req.body
-
-      const updatedLandingPage = await prisma.texts.upsert({
-        where: { type: 'landingPage' },
-        update: landingPage,
-        create: { ...landingPage, type: 'landingPage' },
-      })
-
-      const updatedServicePage = await prisma.texts.upsert({
-        where: { type: 'servicePage' },
-        update: servicePage,
-        create: { ...servicePage, type: 'servicePage' },
-      })
-
-      res.status(200).json({
-        landingPage: updatedLandingPage,
-        servicePage: updatedServicePage
-      })
-    } catch (error) {
-      res.status(500).json({ error: 'Error updating content' })
-    }
-  } else {
-    res.setHeader('Allow', ['GET', 'POST'])
-    res.status(405).end(`Method ${req.method} Not Allowed`)
+    return NextResponse.json({ message: 'Content updated successfully', content: updatedContent })
+  } catch (error) {
+    console.error('Error updating content:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

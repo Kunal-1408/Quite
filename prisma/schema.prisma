@@ -25,20 +25,13 @@ type TextsServicePages {
 }
 
 type TextsServicePagesBranding {
-  carouselImages  TextsServicePagesBrandingCarouselImages[]
-  description     String
-  relatedProjects TextsServicePagesBrandingRelatedProjects[]
-  whatWeDo        TextsServicePagesBrandingWhatWeDo
+  carouselImages TextsServicePagesBrandingCarouselImages[]
+  description    String
+  whatWeDo       TextsServicePagesBrandingWhatWeDo
 }
 
 type TextsServicePagesBrandingCarouselImages {
   imageUrl String
-}
-
-type TextsServicePagesBrandingRelatedProjects {
-  description String
-  imageUrl    String
-  title       String
 }
 
 type TextsServicePagesBrandingWhatWeDo {
@@ -52,20 +45,13 @@ type TextsServicePagesBrandingWhatWeDoCards {
 }
 
 type TextsServicePagesDesign {
-  carouselImages  TextsServicePagesDesignCarouselImages[]
-  description     String
-  relatedProjects TextsServicePagesDesignRelatedProjects[]
-  whatWeDo        TextsServicePagesDesignWhatWeDo
+  carouselImages TextsServicePagesDesignCarouselImages[]
+  description    String
+  whatWeDo       TextsServicePagesDesignWhatWeDo
 }
 
 type TextsServicePagesDesignCarouselImages {
   imageUrl String
-}
-
-type TextsServicePagesDesignRelatedProjects {
-  description String
-  imageUrl    String
-  title       String
 }
 
 type TextsServicePagesDesignWhatWeDo {
@@ -79,20 +65,13 @@ type TextsServicePagesDesignWhatWeDoCards {
 }
 
 type TextsServicePagesSeo {
-  carouselImages  TextsServicePagesSeoCarouselImages[]
-  description     String
-  relatedProjects TextsServicePagesSeoRelatedProjects[]
-  whatWeDo        TextsServicePagesSeoWhatWeDo
+  carouselImages TextsServicePagesSeoCarouselImages[]
+  description    String
+  whatWeDo       TextsServicePagesSeoWhatWeDo
 }
 
 type TextsServicePagesSeoCarouselImages {
   imageUrl String
-}
-
-type TextsServicePagesSeoRelatedProjects {
-  description String
-  imageUrl    String
-  title       String
 }
 
 type TextsServicePagesSeoWhatWeDo {
@@ -106,20 +85,13 @@ type TextsServicePagesSeoWhatWeDoCards {
 }
 
 type TextsServicePagesWebDevelopment {
-  carouselImages  TextsServicePagesWebDevelopmentCarouselImages[]
-  description     String
-  relatedProjects TextsServicePagesWebDevelopmentRelatedProjects[]
-  whatWeDo        TextsServicePagesWebDevelopmentWhatWeDo
+  carouselImages TextsServicePagesWebDevelopmentCarouselImages[]
+  description    String
+  whatWeDo       TextsServicePagesWebDevelopmentWhatWeDo
 }
 
 type TextsServicePagesWebDevelopmentCarouselImages {
   imageUrl String
-}
-
-type TextsServicePagesWebDevelopmentRelatedProjects {
-  description String
-  imageUrl    String
-  title       String
 }
 
 type TextsServicePagesWebDevelopmentWhatWeDo {
