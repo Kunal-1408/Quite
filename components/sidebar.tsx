@@ -115,15 +115,32 @@ export default function SidebarDemo() {
    
                     </li>
                     <li className='text-sm font-medium text-neutral-500 mx-auto'>
-                      <Link href="/CMS/website_manager">
-                      <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
-                      <Globe2 className='h-5 w-5'/>
-                        <span className='px-2'>
-                          Website Manager
-                        </span>
-                      </button>
-                      </Link>
+                          <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <button className=" bg-secondary text-secondary-foreground hover:bg-secondary/80 items-center">
+                                      <span className="">Content Managers</span>
+                                    </button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>
+                                    <Link href="/CMS/website_manager">
+                                        <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
+                                        <Globe2 className='h-5 w-5'/>
+                                          <span className='px-2'>
+                                            Website Manager
+                                          </span>
+                                        </button>
+                                        </Link>
 
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>Social Manager</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem >Design Manager</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                        </DropdownMenu>
+                      
                     </li>
                     <li className='text-sm font-medium text-neutral-500 mx-auto'>
 
