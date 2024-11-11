@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type BrandStats {
+  impression   String?
+  interactions String?
+  reach        String?
+}
+
 type TextsClients {
   logoUrl String
 }
@@ -116,6 +122,17 @@ type TextsWhyChooseUs {
   title       String
 }
 
+model Brand {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  Brand       String
+  Description String
+  Logo        String
+  Stats       BrandStats[]
+  banner      String
+  highlighted Boolean
+  tags        String[]
+}
+
 model Websites {
   id                  String   @id @default(auto()) @map("_id") @db.ObjectId
   Backup_Date         String?  @map("Backup Date")
@@ -143,6 +160,17 @@ model credentials {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
+model design {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  Banner      String
+  Brands      String
+  Description String
+  Logo        String
+  Type        String
+  highlighted Boolean
+  tags        String[]
+}
+
 model queries {
   id         String @id @default(auto()) @map("_id") @db.ObjectId
   E_mail     String @map("E-mail")
@@ -150,6 +178,10 @@ model queries {
   Last_Name  String @map("Last Name")
   Mobile     String
   Query      String
+}
+
+model social {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 model texts {

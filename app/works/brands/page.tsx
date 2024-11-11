@@ -1,22 +1,25 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import ExpandableCardDemo from "@/components/blocks/expandable-card-demo-grid";
+import BrandingProjectsGrid from "@/components/blocks/design-card";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import DynamicCheckbox from "@/components/ui/checkbox-test";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface Website {
+interface BrandStats {
+  impression?: string
+  interactions?: string
+  reach?: string
+}
+
+interface Brand {
   id: string
+  Brand: string
   Description: string
-  Status?: string
-  Tags: string[]
-  Title: string
-  URL?: string
-  Image: string
-  highlighted: boolean
-  logo:string
+  Logo: string
+  Stats: BrandStats[]
+  tags: string[]
 }
 
 const LabelInputContainer = ({
@@ -36,18 +39,18 @@ const LabelInputContainer = ({
 export default function Works() {
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
-  const [websites, setWebsites] = useState<Website[]>([])
+  const [brands, setBrands] = useState<Brand[]>([])
   const [highlightedCount, setHighlightedCount] = useState(0)
   const [searchTerm, setSearchTerm] = useState("")
 
   const websitesPerPage = 9;
 
   const fetchWebsites = async (page: number, search: string) => {
-    const response = await fetch(`/api/fetch?page=${page}&limit=${websitesPerPage}&search=${encodeURIComponent(search)}`, {
+    const response = await fetch(`/api/brand?page=${page}&limit=${websitesPerPage}&search=${encodeURIComponent(search)}`, {
       method: 'GET',
     });
-    const { websites, total, highlightedCount } = await response.json();
-    setWebsites(websites);
+    const { brands, total, highlightedCount } = await response.json();
+    setBrands(brands);
     setTotal(total);
     setHighlightedCount(highlightedCount);
   };
@@ -96,7 +99,7 @@ export default function Works() {
           <div className="col-span-4 flex flex-col">
             <div className="flex flex-1 col-span-4">
               <div className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
-              <ExpandableCardDemo websites={websites} filterTags={active}  />
+              <BrandingProjectsGrid brands={brands} filterTags={active}  />
             </div>
           </div>
         </div>
