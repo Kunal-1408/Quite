@@ -70,7 +70,7 @@ function Navbar({ className, isLandingPage, pathname }: { className?: string; is
           <div className="flex space-x-8">
             <Item title="Website works" href="/works/web" isLandingPage={isLandingPage} isSolid={isSolid} />
             <Item title="Branding works" href="/works/brands" isLandingPage={isLandingPage} isSolid={isSolid} />
-            <Item title="Design works" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
+            <Item title="Design works" href="/works/design" isLandingPage={isLandingPage} isSolid={isSolid} />
             <Item title="Social Media works" href="/" isLandingPage={isLandingPage} isSolid={isSolid} />
             <Item title="About" href="/AboutUs" isLandingPage={isLandingPage} isSolid={isSolid} />
           </div>

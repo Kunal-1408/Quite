@@ -1,32 +1,22 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import BrandingProjects from "@/components/blocks/Branding";
+import DesignProjects from "@/components/blocks/design-card";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import DynamicCheckbox from "@/components/ui/checkbox-test";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface BrandStats {
-  impression?: string
-  interactions?: string
-  reach?: string
-}
-
-interface Brand {
-  id: string
-  Brand: string
-  Description: string
-  Logo: string
-  Stats: {
-    impression?: string
-    interactions?: string
-    reach?: string
+interface DesignProject {
+    id: string
+    Banner: string
+    Brands: string
+    Description: string
+    Logo: string
+    Type: string
+    highlighted: boolean
+    tags: string[]
   }
-  banner: string
-  highlighted: boolean
-  tags: string[]
-}
 
 const LabelInputContainer = ({
   children,
@@ -45,14 +35,14 @@ const LabelInputContainer = ({
 export default function Works() {
   const [currentPage, setCurrentPage] = useState(1)
   const [total, setTotal] = useState(0)
-  const [brands, setBrands] = useState<Brand[]>([])
+  const [brands, setBrands] = useState<DesignProject[]>([])
   const [highlightedCount, setHighlightedCount] = useState(0)
   const [searchTerm, setSearchTerm] = useState("")
 
   const websitesPerPage = 9;
 
   const fetchWebsites = async (page: number, search: string) => {
-    const response = await fetch(`/api/brand?page=${page}&limit=${websitesPerPage}&search=${encodeURIComponent(search)}`, {
+    const response = await fetch(`/api/design?page=${page}&limit=${websitesPerPage}&search=${encodeURIComponent(search)}`, {
       method: 'GET',
     });
     const { brands, total, highlightedCount } = await response.json();
@@ -105,7 +95,7 @@ export default function Works() {
           <div className="col-span-4 flex flex-col">
             <div className="flex flex-1 col-span-4">
               <div className="inline-block h-full min-h-[1em] w-0.5 self-stretch bg-neutral-100 dark:bg-white/10 my-4"></div>
-              <BrandingProjects projects={brands} filterTags={active}  />
+              <DesignProjects projects={brands} filterTags={active}  />
             </div>
           </div>
         </div>

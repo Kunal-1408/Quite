@@ -20,7 +20,6 @@ const config = {
   prefix: "",
   theme: {
   	container: {
-  		
   		padding: '2rem',
   		screens: {
   			'2xl': '1400px'
@@ -132,20 +131,36 @@ const config = {
   				to: {
   					transform: 'translateY(calc(-100% - var(--gap)))'
   				}
+  			},
+  			'accordion-down': {
+  				from: {
+  					height: '0'
+  				},
+  				to: {
+  					height: 'var(--radix-accordion-content-height)'
+  				}
+  			},
+  			'accordion-up': {
+  				from: {
+  					height: 'var(--radix-accordion-content-height)'
+  				},
+  				to: {
+  					height: '0'
+  				}
   			}
   		},
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out',
-  			'aurora': 'aurora 60s linear infinite',
+  			aurora: 'aurora 60s linear infinite',
   			first: 'moveVertical 30s ease infinite',
   			second: 'moveInCircle 20s reverse infinite',
   			third: 'moveInCircle 40s linear infinite',
   			fourth: 'moveHorizontal 40s ease infinite',
   			fifth: 'moveInCircle 20s ease infinite',
   			scroll: 'scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite',
- 			marquee: "marquee var(--duration) linear infinite",
-        	"marquee-vertical": "marquee-vertical var(--duration) linear infinite"
+  			marquee: 'marquee var(--duration) linear infinite',
+  			'marquee-vertical': 'marquee-vertical var(--duration) linear infinite'
   		}
   	}
   },

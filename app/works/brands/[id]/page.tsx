@@ -1,7 +1,10 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Users, BarChart3, MousePointerClick, Activity } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 interface BrandStats {
   impression?: string
@@ -18,37 +21,77 @@ interface Brand {
   tags: string[]
 }
 
-async function getBrand(id: string): Promise<Brand | null> {
-  try {
-    const res = await fetch(`/api/brands?id=${id}`, { cache: 'no-store' })
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error('Failed to fetch brand')
-    }
-    return res.json()
-  } catch (error) {
-    console.error('Error fetching brand:', error)
-    return null
-  }
-}
+export default function BrandPage({ params }: { params: { id: string } }) {
+  const [brand, setBrand] = useState<Brand | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
-export default async function BrandPage({ params }: { params: { id: string } }) {
-  const brand = await getBrand(params.id)
+  useEffect(() => {
+    const fetchBrand = async () => {
+      try {
+        // Updated API endpoint to match the correct route
+        const response = await fetch(`/api/brands?id=${params.id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            router.push('/404')
+            return
+          }
+          throw new Error('Failed to fetch brand')
+        }
+
+        const data = await response.json()
+        
+        if (!data) {
+          console.log(data);
+          router.push('/404')
+          return
+        }
+        
+        setBrand(data)
+      } catch (error) {
+        console.error('Error fetching brand:', error)
+        router.push('/error')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (params.id) {
+      fetchBrand()
+    }
+  }, [params.id, router])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    )
+  }
 
   if (!brand) {
-    notFound()
+    return null
   }
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Rest of the component remains the same */}
       {/* Header Section */}
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-4xl font-bold text-gray-900">{brand.Brand}</h1>
           <div className="mt-2">
-            <span className="inline-block bg-gray-100 px-3 py-1 text-sm rounded-full">
-              {brand.tags[0]}
-            </span>
+            {brand.tags.map((tag, index) => (
+              <span key={index} className="inline-block bg-gray-100 px-3 py-1 text-sm rounded-full mr-2 mb-2">
+                {tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
@@ -143,31 +186,15 @@ export default async function BrandPage({ params }: { params: { id: string } }) 
         </div>
       </div>
 
-      {/* View Projects Section */}
-      {/* <div className="container mx-auto px-4 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold">VIEW PROJECTS</h2>
-          <Link 
-            href="/brands" 
-            className="text-red-500 hover:text-red-600 flex items-center gap-2"
-          >
-            See More
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((index) => (
-            <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg">
-              <Image
-                src="/placeholder.svg"
-                alt="Project Thumbnail"
-                width={300}
-                height={200}
-                className="w-full h-48 object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </div> */}
+      {/* Back to Brands Link */}
+      <div className="container mx-auto px-4 py-12">
+        <Link 
+          href="/brands" 
+          className="text-red-500 hover:text-red-600 flex items-center gap-2"
+        >
+          ← Back to All Brands
+        </Link>
+      </div>
     </div>
   )
 }

@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { BarChart, Bell, ChevronLeftIcon, ChevronRightIcon, CircleUser, Cog, FormInputIcon, Globe2, Home, LineChartIcon, Package, ShoppingCart, User, Users } from "lucide-react"
+import { BarChart, Bell, ChevronLeftIcon, ChevronRightIcon, CircleUser, Cog, FormInputIcon, Globe2, Home, LineChartIcon, Package, ShoppingCart, User, Users, Palette, Brush, Share2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import Link from 'next/link'
 import { signOut, useSession } from 'next-auth/react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
 
 function ToggleButton({ isOpen, toggleSidebar }: { isOpen: boolean; toggleSidebar: () => void }) {
   return (
@@ -68,6 +69,7 @@ export default function SidebarDemo() {
     await signOut({ redirect: false })
     router.push('/login')
   }
+
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <aside
@@ -78,97 +80,106 @@ export default function SidebarDemo() {
           }`}
       >
         <div className={`p-6 h-full bg-slate-50 overflow-y-auto ${isMobile && !isOpen ? 'hidden' : 'block'}`}>
-        <div className="w-full bg-slate-50 border-t border-gray-200 flex flex-col">
-                <div className="p-4 flex justify-between items-center border-b border-gray-200">
-                  <h1 className="text-xl font-semibold flex items-center">
-                    <Package className="mr-2 h-6 w-6" />
-                    Quite Good
-                  </h1>
-                  <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 items-center">
-                                <CircleUser className="h-6 w-6 " />
-                                <span className="sr-only">Toggle user menu</span>
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>Settings</DropdownMenuItem>
-                              <DropdownMenuItem>Support</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
-                            </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <nav className="flex-1 overflow-y-auto">
-                  <ul className="py-8 space-y-2">
-                    <li className='text-sm font-medium text-neutral-500 mx-auto'>
-                      <Link href="/CMS/Dashboard">
-                      <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
+          <div className="w-full bg-slate-50 border-t border-gray-200 flex flex-col">
+            <div className="p-4 flex justify-between items-center border-b border-gray-200">
+              <h1 className="text-xl font-semibold flex items-center">
+                <Package className="mr-2 h-6 w-6" />
+                Quite Good
+              </h1>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 items-center">
+                    <CircleUser className="h-6 w-6 " />
+                    <span className="sr-only">Toggle user menu</span>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuItem>Support</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <nav className="flex-1 overflow-y-auto">
+              <ul className="py-8 space-y-2">
+                <li className='text-sm font-medium text-neutral-500 mx-auto'>
+                  <Link href="/CMS/Dashboard">
+                    <button className='flex flex-row p-4 rounded w-full hover:bg-slate-200'>
                       <Home className='h-5 w-5'/>
-                        <span className='px-2'>
-                          Dashoard
+                      <span className='px-2'>Dashboard</span>
+                    </button>  
+                  </Link>
+                </li>
+                <li className='text-sm font-medium text-neutral-500 mx-auto'>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger className="hover:bg-slate-200 rounded p-4">
+                        <span className="flex items-center">
+                          <Cog className="h-5 w-5 mr-2" />
+                          Content Manager
                         </span>
-                      </button>  
-                      </Link>
-   
-                    </li>
-                    <li className='text-sm font-medium text-neutral-500 mx-auto'>
-                          <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <button className=" bg-secondary text-secondary-foreground hover:bg-secondary/80 items-center">
-                                      <span className="">Content Managers</span>
-                                    </button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem>
-                                    <Link href="/CMS/website_manager">
-                                        <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
-                                        <Globe2 className='h-5 w-5'/>
-                                          <span className='px-2'>
-                                            Website Manager
-                                          </span>
-                                        </button>
-                                        </Link>
-
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>Social Manager</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem >Design Manager</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                        </DropdownMenu>
-                      
-                    </li>
-                    <li className='text-sm font-medium text-neutral-500 mx-auto'>
-
-                      <Link href="/CMS/Customers">
-                      <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <ul className="pl-6 space-y-2">
+                          <li>
+                            <Link href="/CMS/website_manager">
+                              <button className='flex flex-row p-2 rounded w-full hover:bg-slate-200'>
+                                <Globe2 className='h-5 w-5'/>
+                                <span className='px-2'>Website Manager</span>
+                              </button>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/CMS/social_manager">
+                              <button className='flex flex-row p-2 rounded w-full hover:bg-slate-200'>
+                                <Share2 className='h-5 w-5'/>
+                                <span className='px-2'>Social Manager</span>
+                              </button>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/CMS/branding_manager">
+                              <button className='flex flex-row p-2 rounded w-full hover:bg-slate-200'>
+                                <Palette className='h-5 w-5'/>
+                                <span className='px-2'>Branding Manager</span>
+                              </button>
+                            </Link>
+                          </li>
+                          <li>
+                            <Link href="/CMS/design_manager">
+                              <button className='flex flex-row p-2 rounded w-full hover:bg-slate-200'>
+                                <Brush className='h-5 w-5'/>
+                                <span className='px-2'>Design Manager</span>
+                              </button>
+                            </Link>
+                          </li>
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                </li>
+                <li className='text-sm font-medium text-neutral-500 mx-auto'>
+                  <Link href="/CMS/Customers">
+                    <button className='flex flex-row p-4 rounded w-full hover:bg-slate-200'>
                       <User className='h-5 w-5'/>
-                        <span className='px-2'>
-                          Clients
-                        </span>
-                      </button>
-                      </Link>
-
-                    </li>
-                    <li className='text-sm font-medium text-neutral-500 mx-auto'>
-                      <Link href="/CMS/Queries">
-                      <button className='flex flex-row p-4  rounded w-full hover:bg-slate-200'>
+                      <span className='px-2'>Clients</span>
+                    </button>
+                  </Link>
+                </li>
+                <li className='text-sm font-medium text-neutral-500 mx-auto'>
+                  <Link href="/CMS/Queries">
+                    <button className='flex flex-row p-4 rounded w-full hover:bg-slate-200'>
                       <FormInputIcon className='h-5 w-5'/>
-                        <span className='px-2'>
-                          Queries
-                        </span>
-                      </button>
-                      </Link>
-
-                    </li>
-
-                  </ul>
-                </nav>
-              </div>
+                      <span className='px-2'>Queries</span>
+                    </button>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </aside>
       {isMobile && isOpen && (
