@@ -66,7 +66,7 @@ export default function Works() {
   }, [currentPage, searchTerm]);
 
   const totalPages = Math.ceil((total - highlightedCount) / websitesPerPage);
-  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages)) 
   const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1))
 
   const [active, Isactive] = useState<string[]>([]);
