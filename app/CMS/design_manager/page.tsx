@@ -100,37 +100,46 @@ export default function DesignDashboard() {
   }, [currentPage, searchQuery])
 
   const fetchDesigns = async () => {
-    // Implement fetching logic here
-    // This is a placeholder implementation
-    const mockDesigns: Design[] = [
-      {
-        id: '1',
-        Banner: '/placeholder.svg?height=200&width=400',
-        Brands: 'Example Brand',
-        Description: 'This is an example design project.',
-        Logo: '/placeholder.svg?height=100&width=100',
-        Type: 'Logo',
-        highlighted: false,
-        tags: ['Minimalist', 'Monochrome']
-      },
-      // Add more mock designs as needed
-    ]
-    setDesigns(mockDesigns)
-    setFilteredDesigns(mockDesigns)
-    setTotal(mockDesigns.length)
-    setHighlightedCount(mockDesigns.filter(d => d.highlighted).length)
+    try {
+      const response = await fetch(`/api/fetch?projectType=design&page=${currentPage}&search=${searchQuery}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setDesigns(data.designs);
+      setFilteredDesigns(data.designs);
+      setTotal(data.total);
+      setHighlightedCount(data.designs.filter((d: { highlighted: any }) => d.highlighted).length);
+    } catch (error) {
+      console.error("Error fetching designs:", error);
+      addNotification("Failed to fetch designs.", "error");
+    }
   }
 
   const toggleHighlight = async (designId: string) => {
-    // Implement highlight toggling logic here
-    // This is a placeholder implementation
-    const updatedDesigns = designs.map(design =>
-      design.id === designId ? { ...design, highlighted: !design.highlighted } : design
-    )
-    setDesigns(updatedDesigns)
-    setFilteredDesigns(updatedDesigns)
-    setHighlightedCount(updatedDesigns.filter(d => d.highlighted).length)
-    addNotification(`Design has been ${updatedDesigns.find(d => d.id === designId)?.highlighted ? 'highlighted' : 'unhighlighted'}.`, 'success')
+    try {
+      const response = await fetch(`/api/designs/${designId}/highlight`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ projectType: 'design' }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedDesign = await response.json();
+      const updatedDesigns = designs.map(design =>
+        design.id === designId ? { ...design, highlighted: !design.highlighted } : design
+      );
+      setDesigns(updatedDesigns);
+      setFilteredDesigns(updatedDesigns);
+      setHighlightedCount(updatedDesigns.filter(d => d.highlighted).length);
+      addNotification(`Design has been ${updatedDesign.highlighted ? 'highlighted' : 'unhighlighted'}.`, 'success');
+    } catch (error) {
+      console.error("Error toggling highlight:", error);
+      addNotification("Failed to toggle highlight.", "error");
+    }
   }
 
   const addNotification = (message: string, type: 'success' | 'error') => {
@@ -156,7 +165,7 @@ export default function DesignDashboard() {
   }
 
   const toggleTagManager = () => {
-    setActiveTagManager(activeTagManager ? null : editingDesign || 'new')
+    setActiveTagManager(activeTagManager ? null : 'active');
   }
 
   const addTag = (newTag: string) => {
@@ -208,6 +217,43 @@ export default function DesignDashboard() {
     console.log('Exporting designs...')
     addNotification('Designs exported successfully', 'success')
   }
+
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/api/designs', {
+        method: isAddingDesign ? 'POST' : 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...(isAddingDesign ? newDesign : editedDesign!), projectType: 'design' }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const savedDesign = await response.json();
+      addNotification('Design saved successfully!', 'success');
+      fetchDesigns();
+      setEditingDesign(null);
+      setEditedDesign(null);
+      setIsAddingDesign(false);
+      setNewDesign({
+        id: '',
+        Banner: '',
+        Brands: '',
+        Description: '',
+        Logo: '',
+        Type: '',
+        highlighted: false,
+        tags: []
+      });
+    } catch (error) {
+      console.error('Error saving design:', error);
+      addNotification('Failed to save design.', 'error');
+    }
+  };
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -469,7 +515,7 @@ export default function DesignDashboard() {
                   onClick={toggleTagManager}
                   className="mt-2 px-2 py-1 text-sm text-blue-600 hover:text-blue-800"
                 >
-                  Manage Tags
+                  {activeTagManager ? 'Close Tag Manager' : 'Manage Tags'}
                 </button>
                 {activeTagManager && (
                   <div className="mt-2 p-2 border border-gray-200 rounded">
@@ -509,14 +555,7 @@ export default function DesignDashboard() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  // Implement save logic here
-                  console.log('Saving design...')
-                  setEditingDesign(null)
-                  setEditedDesign(null)
-                  setIsAddingDesign(false)
-                  addNotification('Design saved successfully', 'success')
-                }}
+                onClick={handleSave}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 {isAddingDesign ? "Add" : "Save"}

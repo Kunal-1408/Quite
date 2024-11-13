@@ -106,38 +106,50 @@ export default function BrandingDashboard() {
   }, [currentPage, searchQuery])
 
   const fetchBrands = async () => {
-    // Implement fetching logic here
-    // This is a placeholder implementation
-    const mockBrands: Brand[] = [
-      {
-        id: '1',
-        Brand: 'Example Brand',
-        Description: 'This is an example brand description.',
-        Logo: '/placeholder.svg?height=100&width=100',
-        Stats: { impression: '1000', interactions: '500', reach: '5000' },
-        banner: '/placeholder.svg?height=200&width=400',
-        highlighted: false,
-        tags: ['Luxury', 'Technology']
-      },
-      // Add more mock brands as needed
-    ]
-    setBrands(mockBrands)
-    setFilteredBrands(mockBrands)
-    setTotal(mockBrands.length)
-    setHighlightedCount(mockBrands.filter(b => b.highlighted).length)
-  }
+    try {
+      const response = await fetch(`/api/fetch?type=branding&page=${currentPage}&limit=${brandsPerPage}&search=${searchQuery}`);
+      if (!response.ok) throw new Error('Failed to fetch brands');
+      const data = await response.json();
+      setBrands(data.items);
+      setFilteredBrands(data.items);
+      setTotal(data.total);
+      setHighlightedCount(data.highlightedCount);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+      addNotification('Failed to fetch brands', 'error');
+    }
+  };
 
   const toggleHighlight = async (brandId: string) => {
-    // Implement highlight toggling logic here
-    // This is a placeholder implementation
-    const updatedBrands = brands.map(brand =>
-      brand.id === brandId ? { ...brand, highlighted: !brand.highlighted } : brand
-    )
-    setBrands(updatedBrands)
-    setFilteredBrands(updatedBrands)
-    setHighlightedCount(updatedBrands.filter(b => b.highlighted).length)
-    addNotification(`Brand has been ${updatedBrands.find(b => b.id === brandId)?.highlighted ? 'highlighted' : 'unhighlighted'}.`, 'success')
-  }
+    try {
+      const brandToUpdate = brands.find(brand => brand.id === brandId);
+      if (!brandToUpdate) return;
+
+      const response = await fetch('/api/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectType: 'branding',
+          id: brandId,
+          highlighted: !brandToUpdate.highlighted,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update brand');
+
+      const updatedBrand = await response.json();
+      const updatedBrands = brands.map(brand =>
+        brand.id === brandId ? { ...brand, highlighted: updatedBrand.highlighted } : brand
+      );
+      setBrands(updatedBrands);
+      setFilteredBrands(updatedBrands);
+      setHighlightedCount(updatedBrands.filter(b => b.highlighted).length);
+      addNotification(`Brand has been ${updatedBrand.highlighted ? 'highlighted' : 'unhighlighted'}.`, 'success');
+    } catch (error) {
+      console.error('Error updating brand:', error);
+      addNotification('Failed to update brand', 'error');
+    }
+  };
 
   const addNotification = (message: string, type: 'success' | 'error') => {
     const id = Date.now()
@@ -182,7 +194,7 @@ export default function BrandingDashboard() {
   }
 
   const toggleTagManager = () => {
-    setActiveTagManager(activeTagManager ? null : editingBrand || 'new')
+    setActiveTagManager(activeTagManager ? null : 'active');
   }
 
   const addTag = (newTag: string) => {
@@ -234,6 +246,42 @@ export default function BrandingDashboard() {
     console.log('Exporting brands...')
     addNotification('Brands exported successfully', 'success')
   }
+
+  const handleSave = async () => {
+    try {
+      const brandData = isAddingBrand ? newBrand : editedBrand;
+      if (!brandData) return;
+
+      const response = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectType: 'branding',
+          ...brandData,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to save brand');
+
+      const savedBrand = await response.json();
+      let updatedBrands;
+      if (isAddingBrand) {
+        updatedBrands = [...brands, savedBrand];
+      } else {
+        updatedBrands = brands.map(brand => brand.id === savedBrand.id ? savedBrand : brand);
+      }
+      setBrands(updatedBrands);
+      setFilteredBrands(updatedBrands);
+      setEditingBrand(null);
+      setEditedBrand(null);
+      setIsAddingBrand(false);
+      addNotification('Brand saved successfully', 'success');
+    } catch (error) {
+      console.error('Error saving brand:', error);
+      addNotification('Failed to save brand', 'error');
+    }
+  };
+
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -506,7 +554,7 @@ export default function BrandingDashboard() {
                   onClick={toggleTagManager}
                   className="mt-2 px-2 py-1 text-sm text-blue-600 hover:text-blue-800"
                 >
-                  Manage Tags
+                  {activeTagManager ? 'Close Tag Manager' : 'Manage Tags'}
                 </button>
                 {activeTagManager && (
                   <div className="mt-2 p-2 border border-gray-200 rounded">
@@ -546,14 +594,7 @@ export default function BrandingDashboard() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  // Implement save logic here
-                  console.log('Saving brand...')
-                  setEditingBrand(null)
-                  setEditedBrand(null)
-                  setIsAddingBrand(false)
-                  addNotification('Brand saved successfully', 'success')
-                }}
+                onClick={handleSave}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 {isAddingBrand ? "Add" : "Save"}
