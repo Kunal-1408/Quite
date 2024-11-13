@@ -10,6 +10,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -105,7 +106,7 @@ export default function SocialDashboard() {
       setProjects(data);
       setFilteredProjects(data);
       setTotal(data.length);
-      setHighlightedCount(data.filter(p => p.highlighted).length);
+      setHighlightedCount(data.filter((p: { highlighted: any }) => p.highlighted).length);
     } catch (error) {
       console.error("Error fetching projects:", error);
       addNotification("Failed to fetch projects.", "error");
