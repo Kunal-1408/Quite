@@ -8,9 +8,9 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter
 } from "@/components/ui/card"
 import {
   DropdownMenu,
@@ -75,9 +75,9 @@ export default function SocialDashboard() {
   const projectsPerPage = 10
 
   const allTags: TagGroup[] = [
-    {title:"Platform", tags:["Facebook", "Instagram", "Twitter", "LinkedIn"], color: "hsl(221, 83%, 53%)"},
+    {title:"Platform", tags:["Instagram", "Facebook", "Twitter", "LinkedIn"], color: "hsl(221, 83%, 53%)"},
     {title:"Campaign Type", tags:["Awareness", "Engagement", "Conversion"], color: "hsl(140, 71%, 45%)"},
-    {title:"Target Audience", tags:["Youth", "Adults", "Seniors"], color: "hsl(291, 64%, 42%)"}
+    {title:"Content Type", tags:["Image", "Video", "Carousel", "Story"], color: "hsl(291, 64%, 42%)"}
   ]
 
   const [newProject, setNewProject] = useState<SocialProject>({
@@ -93,93 +93,86 @@ export default function SocialDashboard() {
 
   useEffect(() => {
     fetchProjects()
-  }, [currentPage, searchQuery])
+  }, [currentPage])
 
-  const fetchProjects = async () => {
-    // Implement fetching logic here with projectType: 'social'
-    try {
-      const response = await fetch('/api/projects?projectType=social');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+        setEditingProject(null)
+        setEditedProject(null)
+        setIsAddingProject(false)
       }
-      const data = await response.json();
-      setProjects(data);
-      setFilteredProjects(data);
-      setTotal(data.length);
-      setHighlightedCount(data.filter((p: { highlighted: any }) => p.highlighted).length);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-      addNotification("Failed to fetch projects.", "error");
     }
-  }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const toggleHighlight = async (projectId: string) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}/highlight`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ projectType: 'social' }),
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    const projectToUpdate = projects.find(p => p.id === projectId)
+    if (projectToUpdate) {
+      try {
+        const updatedProjects = projects.map(project =>
+          project.id === projectId ? { ...project, highlighted: !project.highlighted } : project
+        )
+        setProjects(updatedProjects)
+        setFilteredProjects(updatedProjects)
+
+        const response = await fetch('/api/social/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: projectId,
+            highlighted: !projectToUpdate.highlighted,
+          }),
+        });
+
+        const updatedProject = await response.json();
+        
+        if (updatedProject) {
+          addNotification(`The project has been ${updatedProject.highlighted ? 'highlighted' : 'unhighlighted'} successfully.`, "success")
+        } else {
+          setProjects(projects)
+          setFilteredProjects(filteredProjects)
+          throw new Error('Failed to update highlight status')
+        }
+      } catch (error) {
+        console.error('Error updating highlight status:', error)
+        addNotification("There was an error updating the project. Please try again.", "error")
       }
-      const updatedProjects = projects.map(project =>
-        project.id === projectId ? { ...project, highlighted: !project.highlighted } : project
-      );
-      setProjects(updatedProjects);
-      setFilteredProjects(updatedProjects);
-      setHighlightedCount(updatedProjects.filter(p => p.highlighted).length);
-      addNotification(`Project has been ${updatedProjects.find(p => p.id === projectId)?.highlighted ? 'highlighted' : 'unhighlighted'}.`, 'success');
+    }
+  }
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch(`/api/social/fetch?page=${currentPage}&limit=${projectsPerPage}&search=${encodeURIComponent(searchQuery)}`, {
+        method: 'GET',
+      })
+      const data = await response.json()
+      
+      if (Array.isArray(data.projects)) {
+        setProjects(data.projects)
+        setFilteredProjects(data.projects)
+        setTotal(data.total)
+        setHighlightedCount(data.highlightedCount)
+      } else {
+        console.error('Unexpected data structure:', data)
+        addNotification("Unexpected data structure received", "error")
+      }
     } catch (error) {
-      console.error("Error toggling highlight:", error);
-      addNotification("Failed to toggle highlight.", "error");
-    }
-  };
-
-
-  const addNotification = (message: string, type: 'success' | 'error') => {
-    const id = Date.now()
-    setNotifications(prev => [...prev, { id, message, type }])
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(notification => notification.id !== id))
-    }, 5000)
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, field: keyof SocialProject) => {
-    if (editedProject) {
-      setEditedProject({
-        ...editedProject,
-        [field]: e.target.value
-      })
-    } else if (isAddingProject) {
-      setNewProject({
-        ...newProject,
-        [field]: e.target.value
-      })
+      console.error('Error fetching projects:', error)
+      addNotification("Failed to fetch projects", "error")
     }
   }
 
-  const handleStatsChange = (e: React.ChangeEvent<HTMLInputElement>, stat: keyof SocialStats) => {
-    if (editedProject) {
-      setEditedProject({
-        ...editedProject,
-        Stats: {
-          ...editedProject.Stats,
-          [stat]: e.target.value
-        }
-      })
-    } else if (isAddingProject) {
-      setNewProject({
-        ...newProject,
-        Stats: {
-          ...newProject.Stats,
-          [stat]: e.target.value
-        }
-      })
-    }
-  }
+  const totalPages = Math.ceil(total / projectsPerPage)
+
+  const nextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+  const prevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1))
 
   const toggleTagManager = () => {
     setActiveTagManager(activeTagManager ? null : editingProject || 'new')
@@ -213,25 +206,152 @@ export default function SocialDashboard() {
     }
   }
 
+  const toggleEdit = (project: SocialProject) => {
+    if (editingProject === project.id) {
+      setEditingProject(null)
+      setEditedProject(null)
+      setActiveTagManager(null)
+    } else {
+      setEditingProject(project.id)
+      setEditedProject(project)
+    }
+  }
+
+  const addNotification = (message: string, type: 'success' | 'error') => {
+    const id = Date.now()
+    setNotifications(prev => [...prev, { id, message, type }])
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(notification => notification.id !== id))
+    }, 5000)
+  }
+
+  const updateProject = async () => {
+    if (editedProject) {
+      try {
+        const response = await fetch('/api/social/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(editedProject),
+        });
+
+        const updatedProject = await response.json();
+        
+        if (updatedProject) {
+          setProjects(prevProjects => 
+            prevProjects.map(p => p.id === updatedProject.id ? updatedProject : p)
+          )
+          setFilteredProjects(prevFiltered => 
+            prevFiltered.map(p => p.id === updatedProject.id ? updatedProject : p)
+          )
+          setEditingProject(null)
+          setEditedProject(null)
+          setActiveTagManager(null)
+          addNotification("The project has been successfully updated.", "success")
+        } else {
+          throw new Error('Failed to update project')
+        }
+      } catch (error) {
+        console.error('Error updating project:', error)
+        addNotification("There was an error updating the project. Please try again.", "error")
+      }
+    }
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof SocialProject) => {
+    if (editedProject) {
+      setEditedProject({
+        ...editedProject,
+        [field]: e.target.value
+      })
+    } else if (isAddingProject) {
+      setNewProject({
+        ...newProject,
+        [field]: e.target.value
+      })
+    }
+  }
+
+  const addProject = async () => {
+    try {
+      const response = await fetch('/api/social/update', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProject),
+      });
+
+      const addedProject = await response.json();
+      
+      if (addedProject) {
+        setProjects(prevProjects => [...prevProjects, addedProject])
+        setFilteredProjects(prevFiltered => [...prevFiltered, addedProject])
+        setTotal(prevTotal => prevTotal + 1)
+        setIsAddingProject(false)
+        setNewProject({
+          id: '',
+          Brand: '',
+          Description: '',
+          Logo: '',
+          Stats: {},
+          banner: '',
+          highlighted: false,
+          tags: []
+        })
+        addNotification("The project has been successfully added.", "success")
+      } else {
+        throw new Error('Failed to add project')
+      }
+    } catch (error) {
+      console.error('Error adding project:', error)
+      addNotification("There was an error adding the project. Please try again.", "error")
+    }
+  }
+
+  const exportProjects = () => {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "ID,Brand,Description,Logo,Banner,Tags,Highlighted,Impressions,Interactions,Reach\n"
+      + filteredProjects.map(project => 
+          `${project.id},"${project.Brand}","${project.Description}",${project.Logo},${project.banner},"${project.tags.join(', ')}",${project.highlighted},${project.Stats.impression || ''},${project.Stats.interactions || ''},${project.Stats.reach || ''}`
+        ).join("\n")
+
+    const encodedUri = encodeURI(csvContent)
+    const link = document.createElement("a")
+    link.setAttribute("href", encodedUri)
+    link.setAttribute("download", "social_projects_export.csv")
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
   const getTagColor = (tag: string) => {
-    const tagGroup = allTags.find(group => group.tags.includes(tag))
-    return tagGroup ? tagGroup.color : 'hsl(0, 0%, 50%)'
+    const tagGroup = allTags.find(group => group.tags.includes(tag));
+    return tagGroup ? tagGroup.color : 'hsl(0, 0%, 50%)';
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
+  }
+
+  const executeSearch = () => {
     setIsSearching(true)
+    const lowercasedQuery = searchQuery.toLowerCase()
+    const filtered = projects.filter(project => 
+      (project.Brand?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+      (project.Description?.toLowerCase().includes(lowercasedQuery) ?? false) ||
+      (project.tags?.some(tag => tag.toLowerCase().includes(lowercasedQuery)) ?? false)
+    )
+    setFilteredProjects(filtered)
+    setCurrentPage(1)
   }
 
   const clearSearch = () => {
     setSearchQuery("")
     setIsSearching(false)
     setFilteredProjects(projects)
-  }
-
-  const exportProjects = () => {
-    console.log('Exporting social projects...')
-    addNotification('Social projects exported successfully', 'success')
+    setCurrentPage(1)
   }
 
   return (
@@ -250,7 +370,7 @@ export default function SocialDashboard() {
               <div className="absolute inset-y-0 right-0 flex items-center">
                 <button 
                   className="h-full px-2 text-gray-400 hover:text-gray-600" 
-                  onClick={() => fetchProjects()}
+                  onClick={executeSearch}
                   aria-label="Search"
                 >
                   <Search className="h-4 w-4" />
@@ -295,7 +415,7 @@ export default function SocialDashboard() {
             <CardHeader>
               <CardTitle>Social Projects</CardTitle>
               <CardDescription>
-                Manage your social media projects and view their statistics.
+                Manage your social media projects and view their status.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -310,8 +430,9 @@ export default function SocialDashboard() {
                     </TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead>Logo</TableHead>
-                    <TableHead>Stats</TableHead>
+                    <TableHead>Banner</TableHead>
                     <TableHead>Tags</TableHead>
+                    <TableHead>Stats</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -331,9 +452,7 @@ export default function SocialDashboard() {
                           <img src={project.Logo} alt={`${project.Brand} logo`} className="w-10 h-10 object-contain" />
                         </TableCell>
                         <TableCell>
-                          <div>Impressions: {project.Stats.impression}</div>
-                          <div>Interactions: {project.Stats.interactions}</div>
-                          <div>Reach: {project.Stats.reach}</div>
+                          <img src={project.banner} alt={`${project.Brand} banner`} className="w-20 h-10 object-cover" />
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
@@ -352,6 +471,13 @@ export default function SocialDashboard() {
                           </div>
                         </TableCell>
                         <TableCell>
+                          <div className="text-sm">
+                            <p>Impressions: {project.Stats.impression || 'N/A'}</p>
+                            <p>Interactions: {project.Stats.interactions || 'N/A'}</p>
+                            <p>Reach: {project.Stats.reach || 'N/A'}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <button
@@ -364,7 +490,7 @@ export default function SocialDashboard() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => setEditingProject(project.id)} className="items-center">
+                              <DropdownMenuItem onClick={() => toggleEdit(project)} className="items-center">
                                 Edit
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -399,7 +525,7 @@ export default function SocialDashboard() {
               <div className="flex items-center space-x-2">
                 <button
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={prevPage}
                   disabled={currentPage === 1}
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
@@ -407,8 +533,8 @@ export default function SocialDashboard() {
                 </button>
                 <button
                   className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-black text-neutral-200 hover:bg-accent hover:text-accent-foreground h-8 px-4"
-                  onClick={() => setCurrentPage(prev => prev + 1)}
-                  disabled={currentPage === Math.ceil(total / projectsPerPage)}
+                  onClick={nextPage}
+                  disabled={currentPage === totalPages}
                 >
                   Next
                   <ChevronRight className="h-4 w-4 ml-2" />
@@ -418,7 +544,7 @@ export default function SocialDashboard() {
           </Card>
         </main>
       </div>
-      {(editingProject !== null || isAddingProject) && (
+      {(editingProject && editedProject) || isAddingProject ? (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div ref={popoverRef} className="bg-white rounded-lg p-6 w-[800px] max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">{isAddingProject ? "Add Social Project" : "Edit Social Project"}</h2>
@@ -434,11 +560,12 @@ export default function SocialDashboard() {
               </div>
               <div>
                 <label htmlFor="description" className="block text-md font-semibold text-gray-700">Description</label>
-                <Input
+                <textarea
                   id="description"
                   value={isAddingProject ? newProject.Description : editedProject?.Description ?? ''}
                   onChange={(e) => handleInputChange(e, 'Description')}
-                  className="mt-1"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  rows={3}
                 />
               </div>
               <div>
@@ -460,28 +587,8 @@ export default function SocialDashboard() {
                 />
               </div>
               <div>
-                <label className="block text-md font-semibold text-gray-700">Stats</label>
-                <div className="mt-1 space-y-2">
-                  <Input
-                    placeholder="Impressions"
-                    value={isAddingProject ? newProject.Stats.impression : editedProject?.Stats.impression ?? ''}
-                    onChange={(e) => handleStatsChange(e, 'impression')}
-                  />
-                  <Input
-                    placeholder="Interactions"
-                    value={isAddingProject ? newProject.Stats.interactions : editedProject?.Stats.interactions ?? ''}
-                    onChange={(e) => handleStatsChange(e, 'interactions')}
-                  />
-                  <Input
-                    placeholder="Reach"
-                    value={isAddingProject ? newProject.Stats.reach : editedProject?.Stats.reach ?? ''}
-                    onChange={(e) => handleStatsChange(e, 'reach')}
-                  />
-                </div>
-              </div>
-              <div>
                 <label htmlFor="tags" className="block text-md font-semibold text-gray-700">Tags</label>
-                <div className="mt-1 flex flex-wrap gap-2">
+                <div className="mt-1 flex flex-wrap gap-2 cursor-pointer" onClick={toggleTagManager}>
                   {(isAddingProject ? newProject.tags : editedProject?.tags ?? []).map((tag, index) => (
                     <span 
                       key={index} 
@@ -492,43 +599,49 @@ export default function SocialDashboard() {
                       }}
                     >
                       {tag}
-                      <button
-                        onClick={() => removeTag(tag)}
-                        className="ml-1 inline-flex items-center justify-center rounded-full h-4 w-4 text-gray-400 hover:text-gray-600"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
                     </span>
                   ))}
                 </div>
-                <button
-                  onClick={toggleTagManager}
-                  className="mt-2 px-2 py-1 text-sm text-blue-600 hover:text-blue-800"
-                >
-                  Manage Tags
-                </button>
-                {activeTagManager && (
-                  <div className="mt-2 p-2 border border-gray-200 rounded">
-                    {allTags.map((tagGroup, groupIndex) => (
-                      <div key={groupIndex} className="mb-2">
-                        <h6 className="font-semibold" style={{ color: tagGroup.color }}>{tagGroup.title}</h6>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {tagGroup.tags.map((tag, tagIndex) => (
-                            <button
-                              key={tagIndex}
-                              onClick={() => addTag(tag)}
-                              className="px-2 py-1 text-xs rounded"
-                              style={{
-                                backgroundColor: `color-mix(in srgb, ${tagGroup.color} 25%, white)`,
-                                color: tagGroup.color,
-                              }}
-                            >
-                              {tag}
-                            </button>
-                          ))}
+                {activeTagManager === editingProject && (
+                  <div className="mt-2 p-2 ">
+                    <div className="flex flex-col space-y-4">
+                      {allTags.map((tagGroup, index) => (
+                        <div key={index} className="pb-2 flex flex-col border border-dashed border-gray-200 rounded-md"> 
+                          <h5 className={`text-${tagGroup.color}-600 text-md font-semibold mb-2`}>
+                            {tagGroup.title}
+                          </h5>
+                          <div className="flex flex-wrap gap-2 "> 
+                            {tagGroup.tags.map((tag, idx) => (
+                              <span
+                                key={idx}
+                                className="cursor-pointer h-6 max-w-full flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-full border hover:shadow-[3px_3px_0px_0px_rgba(0,0,0)] transition duration-200"
+                                style={{
+                                  backgroundColor: (isAddingProject ? newProject.tags : editedProject?.tags ?? []).includes(tag)
+                                    ? `color-mix(in srgb, ${tagGroup.color} 25%, white)`
+                                    : 'white',
+                                  color: tagGroup.color,
+                                  borderColor: tagGroup.color,
+                                }}
+                                onClick={() =>
+                                  (isAddingProject ? newProject.tags : editedProject?.tags ?? []).includes(tag) ? removeTag(tag) : addTag(tag)
+                                }
+                              >
+                                {tag}
+                                {(isAddingProject ? newProject.tags : editedProject?.tags ?? []).includes(tag) && (
+                                  <X
+                                    className="ml-1 h-3 w-3"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeTag(tag);
+                                    }}
+                                  />
+                                )}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -538,6 +651,7 @@ export default function SocialDashboard() {
                 onClick={() => {
                   setEditingProject(null)
                   setEditedProject(null)
+                  setActiveTagManager(null)
                   setIsAddingProject(false)
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -545,14 +659,7 @@ export default function SocialDashboard() {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  console.log('Saving social project...')
-                  // Implement save logic here with projectType: 'social'
-                  addNotification('Social project saved successfully', 'success')
-                  setEditingProject(null)
-                  setEditedProject(null)
-                  setIsAddingProject(false)
-                }}
+                onClick={isAddingProject ? addProject : updateProject}
                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 {isAddingProject ? "Add" : "Save"}
@@ -560,7 +667,7 @@ export default function SocialDashboard() {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
       <div className="fixed bottom-4 right-4 z-50">
         {notifications.map((notification) => (
           <div
