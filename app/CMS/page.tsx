@@ -1,14 +1,13 @@
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../api/auth/[...nextauth]/auth'
+import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
-import CMSContent from './CMSContent'
+import  {CMSContent}  from './CMSContent'
 
 export default async function CMS() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session) {
     redirect('/login')
   }
 
-  return <CMSContent />
+  return <CMSContent userEmail={session.user?.email} />
 }

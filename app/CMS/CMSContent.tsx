@@ -1,42 +1,34 @@
-'use client'
+import { Card } from '@/components/ui/card'
 
-import Link from "next/link"
-import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+interface CMSContentProps {
+  userEmail?: string | null
+}
 
-export default function CMSContent() {
-  const { data: session, status } = useSession()
-
-  if (status === 'loading') {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>
-  }
-
-  if (status === 'unauthenticated') {
-    redirect('/login')
-  }
-
+export function CMSContent({ userEmail }: CMSContentProps) {
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-white min-h-screen w-full">
-      <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">CMS Dashboard</h1>
+        <p className="text-gray-500">Welcome back, {userEmail}</p>
       </div>
-      <div
-        className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
-      >
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h3 className="text-2xl font-bold tracking-tight">
-            Welcome to <span className="text-orange-400">Quite Good</span>
-          </h3>
-          <p className="text-muted-foreground">
-            You are logged in as: {session?.user?.email}
-          </p>
-          <Link href="/CMS/Dashboard">
-            <button className="mt-4 bg-orange-400 text-sm text-white font-semibold h-10 px-4 py-2 border hover:bg-orange-500 rounded">
-              Get Started
-            </button>
-          </Link>
-        </div>
+      
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-2">Content Management</h2>
+          <p className="text-gray-500">Manage your website content and assets</p>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-2">User Management</h2>
+          <p className="text-gray-500">Manage user accounts and permissions</p>
+        </Card>
+
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-2">Settings</h2>
+          <p className="text-gray-500">Configure your CMS preferences</p>
+        </Card>
       </div>
-    </main>
+    </div>
   )
 }
+
